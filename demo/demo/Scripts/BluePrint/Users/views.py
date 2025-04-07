@@ -446,17 +446,65 @@ def load_tab_content(request):
 
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.template.defaultfilters import truncatewords
 
 def load_posts_content(request):
     section = request.GET.get('section', 'blogs')  # Default to 'blogs' if no section is provided
 
-    # Render the appropriate template based on the section
     if section == 'blogs':
-        return render(request, 'tabs/blogs.html')
+        # Fetch blogs for the logged-in user
+        posts = Blog.objects.filter(
+            user_profile__user=request.user,  # Filter by the logged-in user
+            is_draft=False
+        ).order_by('-created_at')
+
+        # Prepare the data to return as JSON
+        posts_data = []
+        for post in posts:
+            # Example metrics (replace with actual data if you have models for likes/comments)
+            likes = 12  # Placeholder
+            comments = 1  # Placeholder
+
+            # Use the content field as the description, truncated to 20 words
+            description = truncatewords(post.content, 20)
+
+            posts_data.append({
+                'title': post.title,
+                'description': description,
+                'likes': likes,
+                'comments': comments,
+                'created_at': post.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            })
+
     elif section == 'whitepapers':
-        return render(request, 'tabs/whitepapers.html')
+        # Fetch whitepapers for the logged-in user
+        posts = Whitepaper.objects.filter(
+            user_profile__user=request.user,  # Filter by the logged-in user
+            is_draft=False
+        ).order_by('-created_at')
+
+        # Prepare the data to return as JSON
+        posts_data = []
+        for post in posts:
+            # Example metrics (replace with actual data if you have models for likes/comments)
+            likes = 12  # Placeholder
+            comments = 1  # Placeholder
+
+            # Use the summary field if available, otherwise fall back to content, truncated to 20 words
+            description = truncatewords(post.summary if post.summary else post.content, 20)
+
+            posts_data.append({
+                'title': post.title,
+                'description': description,
+                'likes': likes,
+                'comments': comments,
+                'created_at': post.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            })
+
     else:
         return JsonResponse({'error': 'Invalid section'}, status=400)
+
+    return JsonResponse({'posts': posts_data}, safe=False)
     
 
 

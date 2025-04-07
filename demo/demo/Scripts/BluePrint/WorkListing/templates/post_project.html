@@ -610,12 +610,10 @@
 
             <div class="action-buttons">
                 <button class="btn check-status-btn" data-project-id="{{ item.project.id }}">Check Status</button>
-                <button class="btn continue-applications-btn" data-project-id="{{ item.project.id }}"
-                    {% if item.has_accepted_professional %}disabled{% endif %}>
+                <button class="btn continue-applications-btn" data-project-id="{{ item.project.id }}" {% if item.has_accepted_professional %}disabled{% endif %}>
                     Continue Applications
                 </button>
-                <button class="btn stop-applications-btn" data-project-id="{{ item.project.id }}"
-                    {% if item.has_accepted_professional %}disabled{% endif %}>
+                <button class="btn stop-applications-btn" data-project-id="{{ item.project.id }}" {% if item.has_accepted_professional%}disabled{% endif %}>
                     Stop Applications
                 </button>
             </div>
@@ -844,36 +842,42 @@
 
             // Function to update application status
             function updateApplicationStatus(applicantId, status, button) {
-                console.log("Sending application ID:", applicantId);  // Debugging log
+    console.log("Sending application ID:", applicantId);  // Debugging log
 
-                fetch("/update-application-status/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": getCSRFToken(),
-                    },
-                    body: JSON.stringify({
-                        application_id: parseInt(applicantId),  // Ensure it's an integer
-                        status: status
-                    }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log("Response from server:", data);  // Log backend response
+    fetch("/update-application-status/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFToken(),
+        },
+        body: JSON.stringify({
+            application_id: parseInt(applicantId),  // Ensure it's an integer
+            status: status
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Response from server:", data);  // Log backend response
 
-                        if (data.success) {
-                            let applicantItem = button.closest(".applicant-item");
-                            applicantItem.querySelector(".action-buttons").remove();
-                            applicantItem.querySelector(".info").innerHTML += `
+            if (data.success) {
+                let applicantItem = button.closest(".applicant-item");
+                applicantItem.querySelector(".action-buttons").remove();
+                applicantItem.querySelector(".info").innerHTML += `
                     <p class="status-label">Status: ${status.charAt(0).toUpperCase() + status.slice(1)}</p>
                 `;
-                        } else {
-                            console.error("Error:", data);
-                            alert(data.error || "Failed to update status");
-                        }
-                    })
-                    .catch(error => console.error("Fetch Error:", error));
+                // Show a notification if the applicant was accepted
+                if (status === 'accepted') {
+                    alert("Applicant accepted! The project is now closed to further applications.");
+                }
+                // Reload the page to reflect the project moving to the "Running Projects" tab
+                window.location.reload();
+            } else {
+                console.error("Error:", data);
+                alert(data.error || "Failed to update status");
             }
+        })
+        .catch(error => console.error("Fetch Error:", error));
+}
 
 
             // Function to get CSRF token

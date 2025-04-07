@@ -279,34 +279,32 @@ from .models import ProjectRequest  # Replace 'your_app' with actual app name
 
 @csrf_exempt
 def update_application_status(request):
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)  # Parse JSON correctly
-            application_id = int(data.get("application_id"))  # Ensure ID is an integer
-            status = data.get("status")
+    try:
+        data = json.loads(request.body)
+        application_id = data.get('application_id')
+        status = data.get('status')
 
-            print(f"Received ID: {application_id}, Status: {status}")  # Debugging log
+        if not application_id or not status:
+            return JsonResponse({'success': False, 'error': 'Invalid request data'}, status=400)
 
-            # Fetch the ProjectRequest object
-            try:
-                application = ProjectRequest.objects.get(id=application_id)
-                print(f"Found application: {application}")  # Debugging log
-            except ProjectRequest.DoesNotExist:
-                print(f"Application ID {application_id} not found!")  # Debugging log
-                return JsonResponse({"error": "Application not found."}, status=404)
+        # Fetch the application (ProjectRequest)
+        application = ProjectRequest.objects.get(id=application_id, project__org=request.user)
 
-            # Update the status
-            application.status = status
-            application.save()
+        # Update the application status
+        application.status = status
+        application.save()
 
-            return JsonResponse({"message": "Status updated successfully.", "success": True})
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
-        except Exception as e:
-            print(f"Unexpected error: {e}")  # Debugging log
-            return JsonResponse({"error": "An unexpected error occurred."}, status=500)
-    
-    return JsonResponse({"error": "Invalid request."}, status=400)
+        # If the applicant is accepted, close the project applications
+        if status == 'accepted':
+            project = application.project
+            project.applications_open = False
+            project.save()
+
+        return JsonResponse({'success': True, 'message': f'Application {status} successfully'})
+    except ProjectRequest.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Application not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
 
