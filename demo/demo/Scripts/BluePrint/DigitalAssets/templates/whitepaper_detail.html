@@ -1,0 +1,34 @@
+{% extends 'base_detail.html' %}
+
+{% block title %}{{ whitepaper.title }}{% endblock %}
+
+{% block content_title %}{{ whitepaper.title }}{% endblock %}
+
+{% block content_body %}
+<div class="whitepaper-content">
+    <h2>Summary</h2>
+    <p>{{ whitepaper.summary|linebreaks }}</p>
+    <h2>Full Content</h2>
+    <p>{{ whitepaper.content|safe }}</p>
+    <a href="#" class="btn btn-success mt-3" id="downloadWhitepaper"><i class="bi bi-download"></i> Download Whitepaper</a>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<h5>Categories</h5>
+<ul class="category-list">
+    {% for category in whitepaper.categories %}
+    <li><span>{{ category }}</span></li>
+    {% empty %}
+    <li>No categories available.</li>
+    {% endfor %}
+</ul>
+<h5>Sources</h5>
+<ul class="source-list">
+    {% for source in whitepaper.sources %}
+    <li><a href="{{ source }}" target="_blank">{{ source|truncatechars:50 }}</a></li>
+    {% empty %}
+    <li>No sources available.</li>
+    {% endfor %}
+</ul>
+{% endblock %}  

@@ -1,0 +1,812 @@
+.logo {
+  cursor: pointer;
+}
+
+.image1 {
+  height: 35px;
+  width: 35px;
+}
+
+.text {
+  color: #200a58;
+  font-family: Inter;
+  font-size: 25px;
+  font-weight: 600;
+}
+
+
+.sectional-nav {
+  border-bottom: 1px solid #cecece;
+}
+
+.nav {
+  background-color: #f2f4f7;
+  border-radius: 20px;
+}
+
+.nav-button {
+  color: #252525;
+  font-family: Inter;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 20px;
+}
+
+.nav-button:hover {
+  color: white;
+  font-family: Inter;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 20px;
+  background-color: #064c89;
+}
+
+icon {
+  width: 45px;
+}
+
+i {
+  font-size: 1rem;
+  color: #252525;
+}
+
+.avatar {
+  cursor: pointer;
+  height: 42px;
+  width: 42px;
+}
+
+.form-select {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 14px;
+  border: 1px solid #101828;
+  color: #101828;
+}
+
+.search {
+  color: #252525;
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 20px;
+  background-color: #f2f4f7;
+}
+
+.search-button {
+  background-color: #064c89;
+  font-family: Inter;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.white-icon {
+  font-size: 1rem;
+  color: white;
+}
+
+.result-heading {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 20px;
+  color: #252525;
+}
+
+.nav-content {
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  color: #252525;
+  border: none;
+}
+
+.nav-content:hover {
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 16px;
+  background-color: #064c89;
+  color: white;
+  border-radius: 20px;
+  border: none;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 14px;
+  color: #575757;
+  background-color: #fafafa;
+}
+
+.header {
+  background-image: linear-gradient(
+    to right,
+    #003380,
+    #04345d,
+    #0056b3,
+    #0865b5
+  );
+}
+
+.card {
+  width: 328;
+  height: 418;
+  gap: 24px;
+  border-radius: 8px;
+  border-width: 1px;
+}
+
+.card-desc {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 16px;
+  color: #575757;
+}
+
+.card-title {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 24px;
+  color: #101828;
+}
+
+.text-muted {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 20px;
+  color: #667085;
+}
+
+.image-date {
+  margin-top: 3px;
+  height: 19px;
+  width: 19px;
+}
+
+.date-text {
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 14px;
+  color: #000000;
+}
+
+.badge {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 14px;
+  color: #120f62;
+  background-color: #d9f3ff;
+  border-radius: 10px;
+  border: 1px solid#ABB0D9;
+}
+
+.exp {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 14px;
+  color: #000000;
+}
+
+.price-text {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 14px;
+  color: #575757;
+}
+
+.text-success {
+  color: #14ac19;
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.skill-title {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 14px;
+  color: #000000;
+}
+
+.card-button1 {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  border: 1px solid #064c89;
+  color: #04345d;
+}
+
+.card-button2 {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  background-color: #064c89;
+  color: #ffffff;
+}
+
+
+
+.banner-title {
+  color: #101828;
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.banner-desc {
+  color: #475467;
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.subs {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 14px;
+  color: #ecf5f9;
+  background-image: linear-gradient(to right, #04345d, #5790c2, #0a7ee1);
+}
+
+.close {
+  color: #1a91f7;
+  font-family: Inter;
+  font-weight: 300;
+  font-size: 16px;
+}
+
+.modal-header {
+  background-color: #f2f4f7;
+}
+
+.company-logo {
+  height: 84px;
+  width: 84px;
+}
+
+.company-name {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 32px;
+  color: #000000;
+}
+
+.subtitle {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 24px;
+  color: #020202;
+}
+
+.posted {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 16px;
+  color: #051363;
+}
+
+.project-desc {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 14px;
+  color: #252525;
+}
+
+.text-t {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 16px;
+  color: #000000;
+}
+
+.text-d {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 15px;
+  color: #4f4f4f;
+}
+
+.skill {
+  gap: 20px;
+}
+
+.skill-box {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 14px;
+  color: #200a58;
+  background-color: #d3eafd;
+  border: 1px solid#7BBFF9;
+  border-radius: 20px;
+}
+
+.price-d {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 15px;
+  color: #14ac19;
+}
+
+.modal-btn {
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 20px;
+  color: #ffffff;
+  background-color: #04345d;
+  border-radius: 10px;
+}
+
+.app-button1 {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  border: 1px solid #064c89;
+  color: #04345d;
+  border-radius: 20px;
+}
+
+.app-button2 {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  background-color: #064c89;
+  color: #ffffff;
+  border-radius: 20px;
+}
+
+.stage {
+  display: none;
+  font-family: Inter;
+}
+
+.stage.active {
+  display: block;
+  font-family: Inter;
+}
+
+.application-logo {
+  height: 64px;
+  width: 64px;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 26px;
+  color: #000000;
+}
+
+.apply-date {
+  display: block;
+  font-weight: 500;
+  font-size: 12px;
+  color: #98a2b3;
+}
+
+.apply-date-1 {
+  display: none;
+  font-weight: 500;
+  font-size: 12px;
+  color: #98a2b3;
+}
+
+.disabled {
+  font-weight: 500;
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.not {
+  font-weight: 500;
+  font-size: 14px;
+  color: #e88686;
+}
+
+.not-1 {
+  display: none;
+  font-weight: 500;
+  font-size: 14px;
+  color: #e88686;
+}
+
+.project {
+  border-radius: 20px;
+}
+
+.ai {
+  width: 219px;
+  height: 250px;
+  border-radius: 20px;
+}
+
+.project-tile {
+  font-family: Inter;
+  background-color: #fcfcfd;
+  border-radius: 20px;
+  border: 1px solid var(--Primitive-Colors-400, #98a2b3);
+}
+
+.project-title {
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 21px;
+  color: #667085;
+}
+
+.project-description {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 16px;
+  color: #1d2939;
+}
+
+.project-label {
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 22px;
+  color: #252525;
+}
+
+.sub-date {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  color: #667085;
+}
+
+.amount {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  color: #cd6060;
+}
+
+.payment {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 20px;
+  color: #000000;
+}
+
+.submit {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 20px;
+  color: #000000;
+}
+
+
+
+.explore-1 {
+  height: 488px;
+  width: 100%;
+}
+
+.explore-2 {
+  width: 100%;
+  display: flex;
+  justify-content: end;
+}
+
+.header a {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 18px;
+  background-color: #fcfcfd;
+  color: #064c89;
+}
+
+.explore h1 {
+  font-family: Inter;
+  font-size: 46px;
+  color: #064c89;
+  font-weight: 700;
+}
+
+.explore p {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 18px;
+  color: #101828;
+}
+
+.submitted {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  color: #101828;
+  border: none;
+  background-color: #eec9c9;
+}
+
+.submitted1 {
+  display: none;
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  color: #101828;
+  border: none;
+  background-color: #eec9c9;
+}
+
+.accepted {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  color: #101828;
+  border: none;
+}
+
+.accepted1 {
+  display: none;
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  color: #101828;
+  border: none;
+}
+
+.action-btn1 {
+  font-family: Inter;
+  width: 158px;
+  height: 40px;
+  border-radius: 10px;
+  color: #064c89;
+  background-color: #ffffff;
+  border: 1px solid var(--Primary-Colors-700, #064c89);
+}
+
+.action-btn2 {
+  font-family: Inter;
+  width: 158px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: #064c89;
+}
+
+input {
+  width: 100%;
+  font-family: "Inter";
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+input[type="url"]:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+.text-completed {
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 20px;
+  color: #070053;
+}
+
+.text-comp {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 16px;
+  color: #070053;
+}
+
+.status-card {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1.5px solid #cdcdcd;
+  text-align: center;
+}
+
+.status-card .title {
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 32px;
+  text-align: center;
+  color: #000000;
+}
+
+.status-card .subtitle {
+  font-family: Inter;
+  font-weight: 400;
+  font-size: 20px;
+  color: #4a4a4a;
+}
+
+.status-card:hover,
+.status-card.active {
+  transform: scale(1.05);
+  border: 2px solid #007bff;
+}
+
+/* Invoice List */
+.invoice-card {
+  display: flex;
+  font-family: Inter;
+  align-items: center;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h5 {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 20px;
+  color: #101828;
+}
+
+h6 {
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 24px;
+  color: #000000;
+}
+
+.invoice-card img {
+  width: 190px;
+  height: 180px;
+  border-radius: 10px;
+  margin-right: 15px;
+}
+
+.invoice-details {
+  flex-grow: 1;
+}
+
+.invoice-date {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  color: #2d2d2d;
+}
+
+.invoice-payment {
+  font-family: Inter;
+  font-weight: 500;
+  font-size: 16px;
+  color: #2d2d2d;
+}
+
+.btn-primary {
+  min-width: 90px;
+}
+
+.hidden,
+.ms-btn1 {
+  display: none;
+}
+
+.coloured-1 {
+  background-color: #00ad1a;
+  border: 1px solid #03ec1e;
+  border-radius: 4px;
+  width: 42px;
+  height: 30px;
+}
+
+.coloured-2 {
+  background-color: #b9b9b9;
+  border: 1px solid #9a9a9a;
+  border-radius: 4px;
+  width: 42px;
+  height: 30px;
+}
+
+.coloured-3 {
+  background-color: #0865b5;
+  border: 1px solid #5b36ff;
+  border-radius: 4px;
+  width: 42px;
+  height: 30px;
+}
+
+.modal-dialog {
+  max-width: 90%;
+  margin: 10px auto;
+}
+
+.download-1,
+.invoice-date-1,
+.invoice-title-1,
+.money-1,
+.invoice-payment-1 {
+  display: none;
+}
+
+@media (max-width: 990px) {
+  .modal-dialog {
+    max-width: 90%;
+    margin: 10px auto;
+  }
+}
+
+@media (max-width: 840px) {
+  .pro-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .company-description,
+  .project,
+  .apply-date,
+  .project-description,
+  .ai {
+    display: none;
+  }
+
+  .apply-date-1 {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .foot,
+  .download {
+    display: none;
+  }
+
+  .post-title,
+  .project-title {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .category {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .modal-dialog {
+    max-width: 90%;
+    margin: 10px auto; /* Adjust margins */
+  }
+
+  .download {
+    display: none;
+  }
+
+  .download-1 {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .invoice-date,
+  .invoice-details,
+  .invoice-title,
+  .invoice-payment,
+  .money,
+  .project,
+  .ai,
+  .ms-btn,
+  .submitted,
+  .accepted {
+    display: none;
+  }
+
+  .invoice-date-1,
+  .invoice-title-1,
+  .money-1,
+  .invoice-payment-1,
+  .ms-btn1,
+  .submitted1,
+  .accepted1 {
+    display: block;
+  }
+}

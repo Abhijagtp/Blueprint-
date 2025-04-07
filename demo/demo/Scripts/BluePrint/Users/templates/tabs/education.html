@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Education Section</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fff;
+            color: #333;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .education-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .education-card {
+            position: relative;
+            background: #fff;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: border-color 0.2s ease;
+        }
+        .education-card:hover {
+            border-color: #ccc;
+        }
+        .edit-delete-icons {
+            position: absolute;
+            top: 1.2rem;
+            right: 1.2rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .icon-button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #555;
+        }
+        .icon-button:hover {
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Education Header -->
+        
+
+        <div class="section-header">
+            {% if is_owner %}
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEducationModal">
+                <i class="bi bi-plus-lg"></i> Add Education
+            </button>
+            {% endif %}
+        </div>
+    
+        <!-- Education List -->
+        <div class="education-list">
+            {% for education in educations %}
+            <article class="education-card">
+                <div class="education-content">
+                    <h3 class="institution">{{ education.institute_name }}</h3>
+                    <p class="degree">{{ education.degree }} in {{ education.field_of_study }}</p>
+                    <p class="duration">
+                        {{ education.start_date|date:"F Y" }} - 
+                        {% if education.is_studying %} Present {% else %} {{ education.end_date|date:"F Y" }} {% endif %}
+                    </p>
+                </div>
+                {% if is_owner %}
+                <div class="edit-delete-icons">
+                    <!-- Edit Button -->
+                    <button class="icon-button" data-bs-toggle="modal" data-bs-target="#editEducationModal{{ education.id }}">
+                        <i class="bi bi-pencil-square"></i>
+                    </button>
+                    <!-- Delete Button -->
+                    <button class="icon-button text-danger" data-bs-toggle="modal" data-bs-target="#deleteEducationModal{{ education.id }}">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+                {% endif %}
+            </article>
+    
+            {% if is_owner %}
+            <!-- Edit Education Modal -->
+            <div class="modal fade" id="editEducationModal{{ education.id }}" tabindex="-1" aria-labelledby="editEducationLabel{{ education.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Education</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="{% url 'edit_education' education.id %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label class="form-label">Institute Name</label>
+                                    <input type="text" name="institute_name" class="form-control" value="{{ education.institute_name }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Degree</label>
+                                    <input type="text" name="degree" class="form-control" value="{{ education.degree }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Field of Study</label>
+                                    <input type="text" name="field_of_study" class="form-control" value="{{ education.field_of_study }}" required>
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" name="is_studying" class="form-check-input" {% if education.is_studying %}checked{% endif %}>
+                                    <label class="form-check-label">Currently Studying</label>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Start Date</label>
+                                    <input type="date" name="start_date" class="form-control" value="{{ education.start_date|date:'Y-m-d' }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">End Date</label>
+                                    <input type="date" name="end_date" class="form-control" value="{{ education.end_date|date:'Y-m-d' }}">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Delete Education Modal -->
+            <div class="modal fade" id="deleteEducationModal{{ education.id }}" tabindex="-1" aria-labelledby="deleteEducationLabel{{ education.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Delete Education</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete <strong>{{ education.institute_name }}</strong>?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <form method="post" action="{% url 'delete_education' education.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    
+        {% if is_owner %}
+        <!-- Add Education Modal -->
+        <div class="modal fade" id="addEducationModal" tabindex="-1" aria-labelledby="addEducationLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Education</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="{% url 'add_education' %}">
+                            {% csrf_token %}
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Institute Name</label>
+                                <input type="text" name="institute_name" class="form-control" required>
+                            </div>
+        
+                            <div class="mb-3">
+                                <label class="form-label">Degree</label>
+                                <input type="text" name="degree" class="form-control" required>
+                            </div>
+        
+                            <div class="mb-3">
+                                <label class="form-label">Field of Study</label>
+                                <input type="text" name="field_of_study" class="form-control">
+                            </div>
+        
+                            <div class="mb-3">
+                                <label class="form-label">Start Date</label>
+                                <input type="date" name="start_date" class="form-control" required>
+                            </div>
+        
+                            <div class="mb-3">
+                                <label class="form-label">End Date (or Expected)</label>
+                                <input type="date" name="end_date" class="form-control">
+                            </div>
+        
+                            <div class="mb-3">
+                                <label class="form-label">Grade (Optional)</label>
+                                <input type="text" name="grade" class="form-control">
+                            </div>
+        
+                            <div class="mb-3">
+                                <label class="form-label">Description (Optional)</label>
+                                <textarea name="description" class="form-control" rows="3"></textarea>
+                            </div>
+        
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Add</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+        
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

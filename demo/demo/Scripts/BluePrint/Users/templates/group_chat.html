@@ -1,0 +1,492 @@
+{% extends 'timeline.html' %}
+{% load static %}
+{% block main_content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-mart/css/emoji-mart.css">
+<script src="https://cdn.jsdelivr.net/npm/emoji-mart/dist/browser.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<style>
+    .chat-container {
+        max-width: 600px;
+        margin: auto;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background-color: #ECF5F9;
+    }
+
+    .chat-header {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+    }
+
+    .chat-profile-pic {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 10px;
+    }
+
+    .chat-header-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chat-header-info h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .chat-header-info p {
+        margin: 2px 0 0;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .message {
+        padding: 8px 12px;
+        margin: 5px;
+        border-radius: 8px;
+        max-width: 75%;
+        word-wrap: break-word;
+    }
+
+    .sent {
+        background: #8afce9;
+        align-self: flex-end;
+        text-align: right;
+    }
+
+    .received {
+        background: rgb(208, 206, 206);
+        align-self: flex-start;
+    }
+
+    .chat-input {
+        padding: 10px;
+        background: #fff;
+        border-top: 1px solid #ddd;
+        display: flex;
+        justify-content: center;
+        position: relative;
+    }
+
+    .input-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+        background: #f1f1f1;
+        border-radius: 30px;
+        padding: 8px 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-container input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .input-container button {
+        border: none;
+        background: none;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 8px;
+        transition: transform 0.2s ease-in-out;
+        color: #666;
+    }
+
+    .input-container button:hover {
+        transform: scale(1.2);
+    }
+
+    #send-button {
+        color: #007bff;
+    }
+
+    #emoji-button {
+        color: #ffcc00;
+    }
+
+    /* Styles for search members input inside the modal */
+    .member-search {
+        margin-bottom: 10px;
+    }
+
+    .search-results {
+        max-height: 150px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        padding: 5px;
+        margin-bottom: 10px;
+    }
+
+    .search-result-item {
+        padding: 5px;
+        cursor: pointer;
+    }
+
+    .search-result-item:hover {
+        background-color: #f8f9fa;
+    }
+
+  
+</style>
+
+<div class="chat-container">
+    <!-- Chat Header -->
+    <div class="chat-header" id="group-details-header">
+        <img src="{% if group.group_picture %}{{ group.group_picture.url }}{% else %}{% static 'images/Group-default.png' %}{% endif %}"
+            alt="Group Picture" class="chat-profile-pic">
+        <div class="chat-header-info">
+            <h3>{{ group.name }}</h3>
+            <p>Created by ~ {{ group.creator.get_full_name }}</p>
+        </div>
+    </div>
+
+    <!-- Chat Messages -->
+    <div class="chat-messages" id="chat-box">
+        {% for message in chats %}
+        <div class="message {% if message.sender == request.user %}sent{% else %}received{% endif %}">
+            <strong>{{ message.sender.first_name }}</strong>: {{ message.content }}<br>
+            <small>{{ message.timestamp|time:"h:i A" }}</small>
+        </div>
+        {% empty %}
+        <p>No messages yet.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Chat Input -->
+    <div class="chat-input">
+        <div class="input-container">
+            <button id="emoji-button"><i class="fas fa-smile"></i></button>
+            <input type="text" id="message-content" placeholder="Type your message...">
+            <button id="send-button"><i class="fas fa-paper-plane"></i></button>
+        </div>
+        <div id="emoji-picker" style="display: none; position: absolute; bottom: 60px;"></div>
+    </div>
+</div>
+
+<!-- Group Details Modal -->
+<div class="modal fade" id="groupDetailsModal" tabindex="-1" aria-labelledby="groupDetailsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="groupDetailsModalLabel">
+                    <i class="fas fa-users-cog me-2"></i> Group Details
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <form id="editGroupDetailsForm" method="POST" action="{% url 'update_group_details' group.id %}"
+                    enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Group Picture & Name -->
+                    <div class="text-center mb-3">
+                        <div class="position-relative d-inline-block">
+                            <img id="groupPicPreview"
+                                src="{% if group.group_picture %}{{ group.group_picture.url }}{% else %}{% static 'images/Group-default.png' %}{% endif %}"
+                                alt="Group Picture" class="rounded-circle shadow-sm"
+                                style="width: 120px; height: 120px; object-fit: cover;">
+                            {% if request.user in group.members.all %}
+                            <label for="editGroupPicture"
+                                class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                                style="background: rgba(0,0,0,0.5); color: #fff; opacity: 0; transition: opacity 0.3s; cursor: pointer;">
+                                <i class="fas fa-camera fa-2x"></i>
+                            </label>
+                            <input type="file" class="d-none" id="editGroupPicture" name="group_picture"
+                                accept="image/*">
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if request.user in group.members.all %}
+                    <div class="mb-3">
+                        <label for="editGroupName" class="form-label">
+                            <i class="fas fa-edit me-2"></i> Edit Group Name
+                        </label>
+                        <input type="text" class="form-control text-center" id="editGroupName" name="name"
+                            value="{{ group.name }}" required>
+                    </div>
+                    {% endif %}
+
+                    <hr>
+
+                    <!-- Group Creator -->
+                    <p><strong>Created by:</strong> <i class="fas fa-user-shield"></i> {{ group.creator.get_full_name }}
+                    </p>
+
+                    <!-- Group Members List -->
+                    <p><strong>Members:</strong></p>
+                    <ul class="list-group">
+                        {% for member in group.members.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="fas fa-user-circle me-2"></i> {{ member.get_full_name }}
+                                {% if member == group.creator %} <span class="badge bg-primary">Admin</span>{% endif %}
+                            </span>
+                            {% if request.user == group.creator and member != group.creator %}
+                            <a href="{% url 'remove_group_member' group.id member.id %}" class="text-danger">
+                                <i class="fas fa-user-minus"></i>
+                            </a>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+
+                    <!-- Add Members (Only for Creator) -->
+                    {% if request.user == group.creator %}
+                    <hr>
+                    <div class="member-search">
+                        <input type="text" id="member-search-input" class="form-control"
+                            placeholder="Search for users to add">
+                    </div>
+                    <div id="search-results" class="search-results mt-2"></div>
+                    <button id="add-members-btn" class="btn btn-success w-100 mt-2">
+                        <i class="fas fa-user-plus"></i> Add Members
+                    </button>
+                    {% endif %}
+
+                    <hr>
+
+                    <!-- Group Actions -->
+                    <div class="d-flex justify-content-between">
+                        {% if request.user != group.creator %}
+                        <a href="{% url 'leave_group' group.id %}" class="btn btn-warning">
+                            <i class="fas fa-sign-out-alt"></i> Leave Group
+                        </a>
+                        {% else %}
+                        <a href="{% url 'delete_group' group.id %}" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i> Delete Group
+                        </a>
+                        {% endif %}
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Close
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Image Preview -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const editGroupPictureInput = document.getElementById("editGroupPicture");
+        const groupPicPreview = document.getElementById("groupPicPreview");
+
+        editGroupPictureInput.addEventListener("change", function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    groupPicPreview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+  const searchInput = document.getElementById("member-search-input");
+  const searchResults = document.getElementById("search-results");
+
+  // Initially hide the search results
+  searchResults.style.display = "none";
+
+  searchInput.addEventListener("input", function () {
+    const query = this.value.trim();
+
+    if (query.length > 0) {
+      // Show results only when there is a search query
+      searchResults.style.display = "block";
+
+      // Perform AJAX search here and update searchResults content
+      // Example: Fetch users dynamically
+    } else {
+      // Hide results when input is cleared
+      searchResults.style.display = "none";
+    }
+  });
+});
+
+</script>
+<!-- JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Open group details modal when header is clicked.
+        const header = document.getElementById("group-details-header");
+        header.addEventListener("click", function () {
+            var modal = new bootstrap.Modal(document.getElementById("groupDetailsModal"));
+            modal.show();
+        });
+
+        // WebSocket connection for group chat
+        const chatBox = document.getElementById("chat-box");
+        const messageInput = document.getElementById("message-content");
+        const groupName = "{{ group_name }}";
+        const socketUrl = (window.location.protocol === "https:" ? "wss://" : "ws://")
+            + window.location.host + "/ws/group/" + groupName + "/";
+        console.log("WebSocket URL:", socketUrl);
+        let socket = new WebSocket(socketUrl);
+
+        socket.onopen = function () {
+            console.log("✅ WebSocket connection established for group chat.");
+        };
+
+        socket.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            appendMessage(data);
+        };
+
+        socket.onerror = function (error) {
+            console.error("⚠️ WebSocket Error:", error);
+        };
+
+        socket.onclose = function () {
+            console.warn("🔌 WebSocket closed. Reconnecting...");
+            setTimeout(() => {
+                socket = new WebSocket(socketUrl);
+            }, 3000);
+        };
+
+        function appendMessage(data) {
+            if (!data || !data.message) return;
+            const newMessage = document.createElement("div");
+            const isSender = data.sender === "{{ request.user.username }}";
+            newMessage.classList.add("message", isSender ? "sent" : "received");
+            newMessage.innerHTML = `<strong>${data.sender_name || "Unknown"}</strong>: ${data.message}<br>
+                                    <small>${data.timestamp || new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })}</small>`;
+            chatBox.appendChild(newMessage);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function sendMessage() {
+            const content = messageInput.value.trim();
+            if (!content) {
+                console.warn("⚠️ Cannot send an empty message.");
+                return;
+            }
+            const messageData = {
+                sender: "{{ request.user.username }}",
+                message: content,
+                timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })
+            };
+            socket.send(JSON.stringify(messageData));
+            messageInput.value = "";
+        }
+
+        document.getElementById("send-button").addEventListener("click", sendMessage);
+        messageInput.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+    });
+</script>
+
+<!-- JavaScript for adding group members (admin only) -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        {% if request.user == group.creator %}
+        const searchInput = document.getElementById("member-search-input");
+        const resultsContainer = document.getElementById("search-results");
+        const addMembersBtn = document.getElementById("add-members-btn");
+        let selectedMembers = [];
+
+        // Listen for keyup events on the search input
+        searchInput.addEventListener("keyup", function () {
+            const query = searchInput.value.trim();
+            if (query.length < 2) {
+                resultsContainer.innerHTML = "";
+                return;
+            }
+            // Perform an AJAX call to search users (update URL accordingly)
+            fetch("{% url 'search_users' %}?q=" + encodeURIComponent(query))
+                .then(response => response.json())
+                .then(data => {
+                    resultsContainer.innerHTML = "";
+                    data.users.forEach(function (user) {
+                        // Create a result item element
+                        const item = document.createElement("div");
+                        item.classList.add("search-result-item");
+                        item.textContent = user.full_name || user.username;
+                        item.dataset.userid = user.id;
+                        item.addEventListener("click", function () {
+                            // Toggle selection
+                            const userId = item.dataset.userid;
+                            if (selectedMembers.includes(userId)) {
+                                selectedMembers = selectedMembers.filter(id => id !== userId);
+                                item.style.backgroundColor = "";
+                            } else {
+                                selectedMembers.push(userId);
+                                item.style.backgroundColor = "#d3d3d3";
+                            }
+                        });
+                        resultsContainer.appendChild(item);
+                    });
+                })
+                .catch(error => console.error("Error searching users:", error));
+        });
+
+        // When admin clicks "Add Selected Members", send AJAX POST request
+        addMembersBtn.addEventListener("click", function () {
+            if (selectedMembers.length === 0) {
+                alert("Please select at least one user to add.");
+                return;
+            }
+            const formData = new FormData();
+            formData.append("members", selectedMembers.join(","));
+            fetch("{% url 'add_group_members' group.id %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    // Optionally, refresh the page or update the member list in the modal
+                    location.reload();
+                })
+                .catch(error => console.error("Error adding members:", error));
+        });
+        {% endif %}
+    });
+</script>
+
+
+{% endblock %}

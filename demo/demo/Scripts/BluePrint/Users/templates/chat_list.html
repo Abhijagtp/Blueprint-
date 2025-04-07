@@ -1,0 +1,344 @@
+{% extends 'timeline.html' %}
+{% load static %}
+{% block main_content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message List</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f5f7fa;
+            
+        }
+
+        .messages-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .message-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-item {
+            padding: 16px;
+            border-bottom: 1px solid #f0f2f5;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .message-item:last-child {
+            border-bottom: none;
+        }
+
+        .message-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .message-content {
+            display: flex;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .message-details {
+            flex: 1;
+            min-width: 0;
+            /* Helps with text truncation */
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2px;
+        }
+
+        .message-header h6 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .message-time {
+            color: #6c757d;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .user-title {
+            margin: 0 0 4px;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        .message-preview {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #495057;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+       
+        @media (max-width: 576px) {
+            body {
+                padding: 0;
+            }
+
+            .messages-container {
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .message-item {
+                padding: 12px;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+            }
+
+            .message-header h6 {
+                font-size: 0.9rem;
+            }
+
+            .user-title {
+                font-size: 0.8rem;
+            }
+
+            .message-preview {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+    {% load custom_filters %}
+</head>
+
+<body>
+    <div class="col-12 col-lg-6 main-content">
+        <div class="messages-container">
+            <div class="d-flex justify-content-between align-items-center p-3">
+                <h5>Chats</h5>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createGroupModal">
+                    <i class="fas fa-users"></i> Create Group
+                </button>
+            </div>
+            
+            <!-- Message List -->
+            <div class="message-list" id="chat-list">
+                <!-- Show Individual Users -->
+                {% for user in users %}
+                {% with last_messages|get_item:user.id as last_message %}
+                <a href="{% url 'chat_room' username=user.username %}" class="text-decoration-none">
+                    <div class="message-item {% if last_message and not last_message.is_read and last_message.sender != request.user %}bg-light font-weight-bold{% endif %}">
+                        <div class="message-content">
+                            <img src="{% if user.userprofile.profile_image %}{{ user.userprofile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}"
+                                alt="{{ user.username }}" class="user-avatar">
+                            <div class="message-details">
+                                <div class="message-header">
+                                    <h6 class="text-black">{{ user.get_full_name }}</h6>
+                                    <span class="message-time">
+                                        {% if last_message %}{{ last_message.timestamp|date:"H:i" }}{% else %}No messages{% endif %}
+                                    </span>
+                                </div>
+                                <p class="message-preview">
+                                    {% if last_message %}
+                                    {% if not last_message.is_read and last_message.sender != request.user %}
+                                    <strong>{{ last_message.content|truncatewords:10 }}</strong>
+                                    {% else %}
+                                    {{ last_message.content|truncatewords:10 }}
+                                    {% endif %}
+                                    {% else %}
+                                    No messages yet
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {% endwith %}
+                {% endfor %}
+            
+                <!-- Show Groups -->
+                {% for group in groups %}
+                <a href="{% url 'chat_group_room' group_name=group.name %}" class="text-decoration-none">
+                    <div class="message-item  group-messages text-black">
+                        <div class="message-content">
+                            <img src="{% if group.group_picture %}{{ group.group_picture.url }}{% else %}{% static 'images/group-default.png' %}{% endif %}"
+                                alt="{{ group.name }}" class="user-avatar">
+                            <div class="message-details">
+                                <div class="message-header">
+                                    <h6>{{ group.name }} (Group)</h6>
+                                </div>
+                                <p class="message-preview">Click to open group chat</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            
+            
+
+        </div>
+    </div>
+    <script>
+        function fetchUpdatedChatList() {
+            fetch("{% url 'chat_list' %}")  // Update the URL as per your Django URL pattern
+            .then(response => response.text())
+            .then(data => {
+                let parser = new DOMParser();
+                let newDoc = parser.parseFromString(data, "text/html");
+                let newChatList = newDoc.getElementById("chat-list").innerHTML;
+                document.getElementById("chat-list").innerHTML = newChatList;
+            })
+            .catch(error => console.error("Error fetching chat list:", error));
+        }
+    
+        // Fetch new messages every 10 seconds
+        setInterval(fetchUpdatedChatList, 3000);
+    </script>
+   <!-- jQuery Script for Search Filter -->
+<script>
+    $(document).ready(function () {
+        $("#userSearch").on("keyup", function () {
+            var searchText = $(this).val().toLowerCase();
+            $("#groupMembers option").each(function () {
+                var optionText = $(this).text().toLowerCase();
+                if (optionText.includes(searchText)) {
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+        });
+    });
+</script>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+<!-- Create Group Modal -->
+<div class="modal fade" id="createGroupModal" tabindex="-1" aria-labelledby="createGroupModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createGroupModalLabel">
+                    <i class="fas fa-users"></i> Create Group
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createGroupForm" method="POST" action="{% url 'create_group' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Group Picture Upload (Styled like WhatsApp) -->
+                    <div class="text-center mb-3">
+                        <label for="groupPicture" class="d-block position-relative">
+                            <img id="groupPicPreview" src="https://via.placeholder.com/100" class="rounded-circle border" 
+                                 width="100" height="100" alt="Group Picture">
+                            <i class="fas fa-camera position-absolute bottom-0 end-0 p-2 bg-light rounded-circle"></i>
+                        </label>
+                        <input type="file" class="form-control d-none" id="groupPicture" name="group_picture" accept="image/*">
+                    </div>
+
+                    <!-- Group Name -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fas fa-edit"></i></span>
+                        <input type="text" class="form-control" id="groupName" name="group_name" placeholder="Group Name" required>
+                    </div>
+
+                    <!-- Search Users -->
+                    <div class="input-group mb-3">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" id="userSearch" placeholder="Search for members...">
+                    </div>
+
+                    <!-- User Selection (Filtered via Search) -->
+                    <div class="mb-3">
+                        <label for="groupMembers" class="form-label"><i class="fas fa-user-plus"></i> Add Members</label>
+                        <div id="userList" class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+                            {% for user in users %}
+                                <div class="form-check user-item">
+                                    <input class="form-check-input" type="checkbox" name="members" value="{{ user.id }}" id="user{{ user.id }}">
+                                    <label class="form-check-label" for="user{{ user.id }}">
+                                        {{ user.get_full_name }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100"><i class="fas fa-check"></i> Create Group</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const groupPicInput = document.getElementById("groupPicture");
+    const groupPicPreview = document.getElementById("groupPicPreview");
+    const userSearch = document.getElementById("userSearch");
+    const userList = document.getElementById("userList");
+
+    // Update Group Picture Preview
+    groupPicInput.addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                groupPicPreview.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Live Search Filtering for Users
+    userSearch.addEventListener("input", function () {
+        const query = this.value.toLowerCase();
+        const users = userList.querySelectorAll(".user-item");
+
+        users.forEach(user => {
+            const name = user.innerText.toLowerCase();
+            if (name.includes(query)) {
+                user.style.display = "block";
+            } else {
+                user.style.display = "none";
+            }
+        });
+    });
+});
+
+</script>
+
+
+
+
+</html>
+
+
+
+
+
+{% endblock %}

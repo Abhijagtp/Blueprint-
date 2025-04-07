@@ -1,0 +1,49 @@
+<div class="container-fluid">
+    <div class="sectional-nav">
+        <div class="d-flex justify-content-between p-2">
+            {% if request.user.user_type == 'organizational' %}
+            <a href="{% url 'search_talent' %}" class="text-decoration-none">
+                <div class="nav-content p-2" onclick="window.location.href = 'worklisting.html';">
+                    Search Talent
+                </div>
+            </a>
+            <a href="{% url 'post_project' %}" class="text-decoration-none">
+                <div class="nav-content p-2">
+                    Post Project
+                </div>
+            </a>
+            <a href="{% url 'project_approval' %}" class="text-decoration-none">
+                <div class="nav-content p-2" onclick="window.location.href = 'worklisting4.html';">
+                    Project Approval
+                </div>
+            </a>
+            <a href="" class="text-decoration-none">
+                <div class="nav-content p-2" onclick="window.location.href = 'worklisting5.html';">
+                    Invoice
+                </div>
+            </a>
+            {% else %}
+            <a href="{% url 'work_listing' %}" class="text-decoration-none">
+                <div class="nav-content p-2" onclick="window.location.href = 'worklisting.html';">
+                    Project
+                </div>
+            </a>
+            <a href="{% url 'application_status' %}" class="text-decoration-none">
+                <div class="nav-content p-2">
+                    Application Status
+                </div>
+            </a>
+            <a href="{% url 'project_status' %}" class="text-decoration-none">
+                <div class="nav-content p-2" onclick="window.location.href = 'worklisting4.html';">
+                    Project Status 
+                </div>
+            </a>
+            <a href="{% url 'invoice' %}" class="text-decoration-none">
+                <div class="nav-content p-2" onclick="window.location.href = 'worklisting5.html';">
+                    Invoice
+                </div>
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,310 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+{% load static %}
+{% include 'worklisting_nav.html' %}
+{% block main_content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+<link rel="stylesheet" href="style.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,700&display=swap"
+    rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+
+<!-- Hero Section -->
+<section class="hero text-white">
+    <div class="d-flex flex-row p-3 mb-2 px-5">
+        <div class="search-bar me-3 w-50">
+            <input type="text" class="form-control" placeholder="Search..." />
+        </div>
+        <div class="me-4">
+            <button class="search-button btn btn-primary btn-sm px-2 py-1">
+                <i class="bi bi-search me-1 white-icon"></i>Search
+            </button>
+        </div>
+    </div>
+</section>
+
+<div class="d-flex p-3 px-5">
+    <div>
+        <button onclick="changeStage(1)" class="btn btn-primary app-button2">
+            Total Applications (02)
+        </button>
+    </div>
+    <div class="ms-5">
+        <button onclick="changeStage(2)" class="btn btn-outline-primary app-button1">
+            Application Updates (01)
+        </button>
+    </div>
+</div>
+
+<!--Stage-1: Application Status-->
+<div id="stage1" class="stage active p-3 px-5">
+    {% for application in applications %}
+    <div class="d-flex mb-2 justify-content-between" data-bs-toggle="modal" data-bs-target="#myModal1">
+        <div class="d-flex flex-column">
+            <div class="d-flex">
+                <img src="{{ project_request.project.org.userprofile.profile_image.url }}"  alt="" class="application-logo" />
+                <div class="flex-column d-flex">
+                    <div class="name ms-4 pt-1">{{ application.project.org.get_full_name }}</div>
+                    <div class="apply-date-1 ms-4 mt-2">
+                        Applied on {{ application.requested_at|date:"d M, Y" }}
+                    </div>
+                </div>
+            </div>
+            <div class="company-description px-4 ms-5 pt-4">
+                {{ application.project.description }}
+            </div>
+        </div>
+        <div class="d-flex flex-column align-items-end">
+            <button class="btn btn-secondary disabled px-2">Applied</button>
+            <div class="apply-date mt-2">Applied on {{ application.requested_at|date:"d M, Y" }}</div>
+        </div>
+    </div>
+
+    {% empty %}
+    <p>No applications found.</p>
+    {% endfor %}
+
+
+
+    <hr class="px-5" />
+</div>
+
+<!--Stage-2: Application Updates-->
+<div id="stage2" class="stage p-3 px-5">
+    {% for application in applications %}
+    <div class="d-flex justify-content-between">
+        <div class="d-flex flex-column mb-3">
+            <div class="d-flex">
+                <img src="{{ project_request.project.org.userprofile.profile_image.url }}"  alt="" class="application-logo" />
+                <div class="d-flex flex-column">
+                    <div class="name ms-4 pt-2">{{ application.project.org.get_full_name }}</div>
+                    <div class="ms-4 d-flex justify-content-center">
+                        <div class="not-1">Applied on {{ application.requested_at|date:"d M, Y" }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="company-description px-4 ms-5 pt-4">
+                {{ application.project.description }}
+            </div>
+        </div>
+        <div class="pt-4 d-flex flex-column align-items-end">
+            {% if application.status == "accepted" %}
+            <button class="btn btn-success px-3">Accepted</button>
+            {% elif application.status == "pending" %}
+            <button class="btn btn-warning px-3">Pending</button>
+            {% elif application.status == "rejected" %}
+            <button class="btn btn-danger px-3">Rejected</button>
+            {% else %}
+            <button class="btn btn-secondary disabled px-3">Applied</button>
+            {% endif %}
+        </div>
+    </div>
+    {% empty %}
+    <p class="text-center text-muted">No applications found.</p>
+    {% endfor %}
+
+    <hr class="px-5" />
+</div>
+
+<!--Modals-->
+<div class="modal fade" id="myModal1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Project Overview</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <div class="d-flex mb-3">
+                    <div>
+                        <img src="images/finster.png" alt="" class="company-logo" />
+                    </div>
+                    <div class="ms-3 mt-3 company-name">Finster</div>
+                </div>
+                <div class="post-title d-flex justify-content-between my-2">
+                    <div class="subtitle">Frontend Developer</div>
+                    <div class="posted pt-2">Posted 1 week ago</div>
+                </div>
+                <div class="project-desc my-3">
+                    We are looking for a talented and detail-oriented Frontend
+                    Developer to join our team! The ideal candidate will be
+                    responsible for creating seamless user interfaces, ensuring
+                    optimal performance, and collaborating with backend developers.
+                </div>
+                <div class="deadline d-flex">
+                    <div class="date d-flex">
+                        <div>
+                            <img src="images/date.png" alt="" class="image-date" />
+                        </div>
+                        <div class="date-text ms-2 pt-1">12 Feb, 2005</div>
+                    </div>
+                    <div class="date d-flex ms-5 mt-1">
+                        <div class="exp">Deadline:</div>
+                        <div class="date-text ms-2">15 Apr, 2025</div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="text-t">About Company:</div>
+                    <div class="text-d ms-3">
+                        Lorem ipsum dolor sit amet consectetur. Elementum eu enim
+                        porttitor elit viverra. Diam quam dignissim quam volutpat eget
+                        augue. Facilisis ornare pellentesque dui sollicitudin donec
+                        vestibulum maecenas potenti blandit. Eget sit tincidunt magnis
+                        quam risus tortor enim libero. Mauris consectetur eget amet
+                        pellentesque.
+                    </div>
+                </div>
+                <div class="mt-4 d-flex flex-row">
+                    <div class="text-t">Skills:</div>
+                    <div class="text-d ms-3">
+                        <div class="skill d-flex justify-content-between flex-wrap px-2">
+                            <div class="skill-box px-3 py-1">Word Press</div>
+                            <div class="skill-box px-3 py-1">Tailwind CSS</div>
+                            <div class="skill-box px-3 py-1">Android Studio</div>
+                            <div class="skill-box px-3 py-1">HTML</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 d-flex flex-row">
+                    <div class="text-t">Skills Matched:</div>
+                    <div class="text-d ms-3 flex-wrap">2 out of 4</div>
+                </div>
+                <div class="mt-4 d-flex flex-row">
+                    <div class="text-t">Experience:</div>
+                    <div class="text-d ms-2 flex-wrap">0-1 Years</div>
+                </div>
+                <div class="mt-4 d-flex flex-row">
+                    <div class="text-t">Difficulty:</div>
+                    <div class="text-d ms-2">Intermediate</div>
+                </div>
+                <div class="mt-4 d-flex flex-row">
+                    <div class="text-t">Group members:</div>
+                    <div class="text-d ms-2">1</div>
+                </div>
+                <div class="mt-4 d-flex flex-row">
+                    <div class="text-t">Payment:</div>
+                    <div class="price-d ms-2">Rs. 2800</div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="modal-btn btn btn-secondary px-3" data-bs-dismiss="modal" disabled>
+                    Applied on 22nd Jan 2025
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Project Overview</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <div class="d-flex mb-3">
+                    <div>
+                        <img src="images/lucid.png" alt="" class="company-logo" />
+                    </div>
+                    <div class="ms-3 mt-3 company-name">Lucid Flow</div>
+                </div>
+                <div class="post-title d-flex justify-content-between my-2">
+                    <div class="subtitle">Frontend Developer</div>
+                    <div class="posted pt-2">Posted 1 week ago</div>
+                </div>
+                <div class="project-desc my-3">
+                    We are looking for a talented and detail-oriented Frontend
+                    Developer to join our team! The ideal candidate will be
+                    responsible for creating seamless user interfaces, ensuring
+                    optimal performance, and collaborating with backend developers.
+                </div>
+                <div class="deadline d-flex">
+                    <div class="date d-flex">
+                        <div>
+                            <img src="images/date.png" alt="" class="image-date" />
+                        </div>
+                        <div class="date-text ms-2 pt-1">2 Feb, 2005</div>
+                    </div>
+                    <div class="date d-flex ms-5 mt-1">
+                        <div class="exp">Deadline:</div>
+                        <div class="date-text ms-2">12 Apr, 2025</div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-t">About Company:</div>
+                    <div class="text-d ms-3">
+                        Lorem ipsum dolor sit amet consectetur. Elementum eu enim
+                        porttitor elit viverra. Diam quam dignissim quam volutpat eget
+                        augue. Facilisis ornare pellentesque dui sollicitudin donec
+                        vestibulum maecenas potenti blandit. Eget sit tincidunt magnis
+                        quam risus tortor enim libero. Mauris consectetur eget amet
+                        pellentesque.
+                    </div>
+                </div>
+                <div class="mt-4 d-flex flex-row">
+                    <div class="text-t">Skills:</div>
+                    <div class="text-d ms-3">
+                        <div class="skill d-flex justify-content-between flex-wrap px-2">
+                            <div class="skill-box px-3 py-1">Word Press</div>
+                            <div class="skill-box px-3 py-1">CSS</div>
+                            <div class="skill-box px-3 py-1">JavaScript</div>
+                            <div class="skill-box px-3 py-1">HTML</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 d-flex flex-row">
+                    <div class="text-t">Skills Matched :</div>
+                    <div class="text-d ms-3">2 out of 4</div>
+                </div>
+                <div class="mt-4 d-flex flex-row">
+                    <div class="text-t">Experience:</div>
+                    <div class="text-d ms-2">0-1 Years</div>
+                </div>
+                <div class="mt-4 d-flex flex-row">
+                    <div class="text-t">Difficulty:</div>
+                    <div class="text-d ms-2">Intermediate</div>
+                </div>
+                <div class="mt-4 d-flex flex-row">
+                    <div class="text-t">Group members:</div>
+                    <div class="text-d ms-2">3</div>
+                </div>
+                <div class="mt-4 d-flex flex-row">
+                    <div class="text-t">Payment:</div>
+                    <div class="price-d ms-2">Rs. 2800</div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="modal-btn btn btn-secondary px-3" data-bs-dismiss="modal" disabled>
+                    Applied on 22nd Jan 2025
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function changeStage(stageNumber) {
+        // Hide all stages
+        const stages = document.querySelectorAll(".stage");
+        stages.forEach((stage) => stage.classList.remove("active"));
+
+        // Show the selected stage
+        const selectedStage = document.getElementById(`stage${stageNumber}`);
+        selectedStage.classList.add("active");
+    }
+</script>
+{% endblock %}
+{% endblock %}

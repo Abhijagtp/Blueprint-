@@ -1,0 +1,35 @@
+{% extends 'base_detail.html' %}
+
+{% block title %}{{ insight.title }}{% endblock %}
+
+{% block content_title %}{{ insight.title }}{% endblock %}
+
+{% block content_body %}
+<div class="insight-content">
+    <h2>Summary</h2>
+    <p>{{ insight.summary|linebreaks }}</p>
+    <h2>Full Insight</h2>
+    <div>{{ insight.content|safe }}</div>
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<h5>Categories</h5>
+<ul class="category-list">
+    {% for category in insight.categories %}
+    <li><span>{{ category }}</span></li>
+    {% empty %}
+    <li>No categories available.</li>
+    {% endfor %}
+</ul>
+<h5>Sources</h5>
+<ul class="source-list">
+    {% for source in insight.sources %}
+    <li><a href="{{ source }}" target="_blank">{{ source|truncatechars:50 }}</a></li>
+    {% empty %}
+    <li>No sources available.</li>
+    {% endfor %}
+</ul>
+<h5>Language</h5>
+<p>{{ insight.language|upper }}</p>
+{% endblock %}

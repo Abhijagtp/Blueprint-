@@ -1,0 +1,27 @@
+{% extends 'base_detail.html' %}
+
+{% block title %}{{ blog.title }}{% endblock %}
+
+{% block content_title %}{{ blog.title }}{% endblock %}
+
+{% block content_body %}
+{% if blog.thumbnail %}
+<img src="{{ blog.thumbnail.url }}" alt="{{ blog.title }}" class="img-fluid mb-4">
+{% endif %}
+<div class="blog-content">
+    {{ blog.content|safe }}
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<h5>Categories</h5>
+<ul class="category-list">
+    {% for category in blog.categories %}
+    <li><span>{{ category }}</span></li>
+    {% empty %}
+    <li>No categories available.</li>
+    {% endfor %}
+</ul>
+<h5>Language</h5>
+<p>{{ blog.language|upper }}</p>
+{% endblock %}

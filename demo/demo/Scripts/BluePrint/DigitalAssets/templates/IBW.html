@@ -1,0 +1,1041 @@
+{% extends 'dashboard.html' %}
+
+{% block content %}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.6/quill.snow.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css" />
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  <style>
+    body { 
+      font-family: Inter; 
+      background: #f8fafc; 
+      color: #1e293b; 
+    }
+    h5 { 
+      font-weight: 500; 
+      font-size: 16px; 
+      color: #1e293b; 
+      padding-bottom: 16px; 
+    }
+    .card-custom { 
+      border-radius: 12px; 
+      padding: 20px; 
+      border: none; 
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); 
+      transition: 0.3s; 
+    }
+    .card-custom:hover { 
+      transform: translateY(-3px); 
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08); 
+    }
+    .feature-card h6 { 
+      font-weight: 600; 
+      font-size: 15px; 
+      color: #1e293b; 
+    }
+    .feature-card { 
+      background: #f1f5f9; 
+      border-radius: 12px; 
+      padding: 16px; 
+      text-align: left; 
+    }
+    .img-1 { 
+      width: 76px; 
+      height: 72px; 
+    }
+    .img-2 { 
+      width: 175px; 
+      height: 58px; 
+    }
+    .feature-card h6 { 
+      margin-top: 8px; 
+      font-weight: bold; 
+    }
+    .feature-card p { 
+      font-weight: 400; 
+      font-size: 13px; 
+      color: #64748b; 
+    }
+    .feature-card a { 
+      font-weight: 500; 
+      font-size: 14px; 
+      color: #3b82f6; 
+      text-decoration: none; 
+    }
+    .feature-card a:hover { 
+      cursor: pointer; 
+      text-decoration: underline; 
+    }
+    .card { 
+      border-radius: 12px; 
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); 
+    }
+    .banner-card { 
+      position: relative; 
+      border-radius: 12px; 
+      overflow: hidden; 
+      background: url("images/banner-card.png") no-repeat center; 
+      background-size: cover; 
+      color: white; 
+      padding: 24px; 
+    }
+    .banner-card .overlay { 
+      background: rgba(0, 0, 0, 0.5); 
+      position: absolute; 
+      top: 0; 
+      left: 0; 
+      right: 0; 
+      bottom: 0; 
+      border-radius: 12px; 
+    }
+    .banner-card .content { 
+      position: relative; 
+      z-index: 2; 
+    }
+    .banner-card h5 { 
+      color: #ffffff; 
+      font-weight: 600; 
+      font-size: 15px; 
+    }
+    .banner-card p { 
+      font-size: 13px; 
+      font-weight: 300; 
+      padding-bottom: 8px; 
+    }
+    .read { 
+      cursor: pointer; 
+      color: #ffffff; 
+      text-decoration: none; 
+    }
+    i { 
+      width: 20px; 
+      height: 20px; 
+      cursor: pointer; 
+    }
+    .editor-container { 
+      padding: 0; 
+      border-radius: 12px; 
+      background: #ffffff; 
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); 
+      border: 1px solid #e2e8f0; 
+      transition: all 0.3s ease; 
+      display: flex; 
+      flex-direction: column; 
+    }
+    .editor-container:hover { 
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08); 
+      transform: translateY(-2px); 
+    }
+    #editor { 
+      height: 600px; 
+      border: none; 
+      background: #ffffff; 
+      border-radius: 0 0 12px 12px; 
+      font-size: 15px; 
+      color: #1e293b; 
+      padding: 20px; 
+      line-height: 1.6; 
+      overflow-y: auto; 
+    }
+    .ql-toolbar.ql-snow { 
+      background: #f8fafc; 
+      border-radius: 12px 12px 0 0; 
+      padding: 12px 16px; 
+      display: flex; 
+      flex-wrap: nowrap; 
+      overflow-x: auto; 
+      white-space: nowrap; 
+      border-bottom: 1px solid #e2e8f0; 
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03); 
+      scrollbar-width: thin; 
+      scrollbar-color: #e2e8f0 #f8fafc; 
+      position: sticky; 
+      top: 0; 
+      z-index: 10; 
+    }
+    .ql-toolbar.ql-snow::-webkit-scrollbar { 
+      height: 6px; 
+    }
+    .ql-toolbar.ql-snow::-webkit-scrollbar-thumb { 
+      background: #e2e8f0; 
+      border-radius: 6px; 
+    }
+    .ql-toolbar.ql-snow::-webkit-scrollbar-track { 
+      background: #f8fafc; 
+    }
+    .ql-toolbar.ql-snow .ql-formats { 
+      margin-right: 8px; 
+      display: inline-flex; 
+      align-items: center; 
+      padding-right: 8px; 
+      border-right: 1px solid #e2e8f0; 
+      transition: all 0.2s ease; 
+    }
+    .ql-toolbar.ql-snow .ql-formats:last-child { 
+      border-right: none; 
+      margin-right: 0; 
+    }
+    .ql-toolbar.ql-snow button, 
+    .ql-toolbar.ql-snow .ql-picker { 
+      background: #ffffff; 
+      border: 1px solid #e2e8f0; 
+      border-radius: 6px; 
+      padding: 6px 8px; 
+      cursor: pointer; 
+      flex-shrink: 0; 
+      transition: all 0.2s ease-in-out; 
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02); 
+      font-size: 13px; 
+      color: #1e293b; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-width: 32px; 
+      height: 32px; 
+    }
+    .ql-toolbar.ql-snow button:hover, 
+    .ql-toolbar.ql-snow .ql-picker:hover { 
+      background: #f1f5f9; 
+      border-color: #d1d9e6; 
+      transform: translateY(-1px); 
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); 
+    }
+    .ql-toolbar.ql-snow button:active, 
+    .ql-toolbar.ql-snow .ql-picker:active { 
+      transform: translateY(0); 
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02); 
+    }
+    .ql-toolbar.ql-snow .ql-picker-label { 
+      padding: 0 8px; 
+      font-size: 13px; 
+      color: #1e293b; 
+      font-weight: 500; 
+      text-transform: capitalize; 
+    }
+    .ql-toolbar.ql-snow .ql-picker-options { 
+      border-radius: 6px; 
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+      border: 1px solid #e2e8f0; 
+      background: #ffffff; 
+      padding: 4px 0; 
+    }
+    .ql-toolbar.ql-snow .ql-picker-item { 
+      padding: 6px 12px; 
+      font-size: 13px; 
+      color: #1e293b; 
+      transition: background 0.2s ease; 
+      text-align: left; 
+    }
+    .ql-toolbar.ql-snow .ql-picker-item:hover { 
+      background: #f1f5f9; 
+    }
+    .ql-container.ql-snow { 
+      border: none; 
+      border-radius: 0 0 12px 12px; 
+      background: #ffffff; 
+    }
+    #insert-table, 
+    #line-spacing { 
+      padding: 6px 8px; 
+      font-size: 13px; 
+      border: 1px solid #e2e8f0; 
+      border-radius: 6px; 
+      background: #ffffff; 
+      cursor: pointer; 
+      transition: all 0.2s ease-in-out; 
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02); 
+      font-weight: 500; 
+      color: #1e293b; 
+      text-transform: uppercase; 
+      letter-spacing: 0.5px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-width: 32px; 
+      height: 32px; 
+    }
+    #insert-table:hover, 
+    #line-spacing:hover { 
+      background: #f1f5f9; 
+      transform: translateY(-1px); 
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); 
+    }
+    .post-section { 
+      text-align: right; 
+      margin-top: 0; 
+      padding: 12px 16px; 
+      background: #f8fafc; 
+      border-radius: 0 0 12px 12px; 
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03); 
+      border-top: 1px solid #e2e8f0; 
+    }
+    .btn-primary { 
+      background-color: #064C89; 
+      border-color: #064C89; 
+      border-radius: 8px; 
+      padding: 8px 16px; 
+      font-size: 14px; 
+      font-weight: 500; 
+      transition: all 0.2s ease-in-out; 
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); 
+    }
+    .btn-outline-secondary { 
+      border-color: #064C89; 
+      color:#064C89 ; 
+      border-radius: 8px; 
+      padding: 8px 16px; 
+      font-size: 14px; 
+      font-weight: 500; 
+      transition: all 0.2s ease-in-out; 
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); 
+    }
+    .btn-primary:hover, 
+    .btn-outline-secondary:hover { 
+      transform: translateY(-1px); 
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
+    }
+    .btn-primary:active, 
+    .btn-outline-secondary:active { 
+      transform: translateY(0); 
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05); 
+    }
+    .fixed-top-menu { 
+      background: white; 
+      padding: 12px; 
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); 
+    }
+    .scrollable-content { 
+      height: calc(100vh - 60px); 
+      overflow-y: auto; 
+      padding: 16px; 
+    }
+    .elevated-div { 
+      background: white; 
+      padding: 20px; 
+      border-radius: 12px; 
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); 
+      border: 1px solid #e2e8f0; 
+      transition: box-shadow 0.3s ease; 
+    }
+    .elevated-div:hover { 
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08); 
+    }
+    .input-group-text { 
+      cursor: pointer; 
+      background: #f1f5f9; 
+      border: 1px solid #e2e8f0; 
+      border-radius: 8px 0 0 8px; 
+      transition: background 0.2s ease; 
+    }
+    .input-group-text:hover { 
+      background: #e2e8f0; 
+    }
+    .input-group .form-control { 
+      border-left: none; 
+      border-radius: 0 8px 8px 0; 
+    }
+    .summary textarea { 
+      height: 120px; 
+      resize: none; 
+    }
+    label { 
+      font-family: Inter; 
+      font-weight: 500; 
+      font-size: 14px; 
+      color: #1e293b; 
+      margin-bottom: 8px; 
+    }
+    .form-control, 
+    .form-select { 
+      border: 1px solid #e2e8f0; 
+      border-radius: 8px; 
+      padding: 10px 12px; 
+      font-size: 14px; 
+      color: #1e293b; 
+      transition: border-color 0.2s ease, box-shadow 0.2s ease; 
+    }
+    .form-control:focus, 
+    .form-select:focus { 
+      border-color: #3b82f6; 
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); 
+      outline: none; 
+    }
+    .form-control::placeholder { 
+      color: #94a3b8; 
+    }
+    .badge-category { 
+      font-family: Inter; 
+      border-radius: 20px; 
+      border: 1px solid #e2e8f0; 
+      background-color: #f1f5f9; 
+      color: #1e293b; 
+      padding: 6px 12px; 
+      font-size: 13px; 
+      margin: 4px; 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 6px; 
+    }
+    .badge-category .btn-close { 
+      font-size: 10px; 
+      opacity: 0.6; 
+    }
+    .badge-posted { 
+      background-color: #22c55e; 
+      color: white; 
+      font-size: 12px; 
+      padding: 4px 8px; 
+      border-radius: 4px; 
+      margin-left: 8px; 
+    }
+    .preview-slide { 
+      position: fixed; 
+      bottom: -100%; 
+      left: 0; 
+      width: 100%; 
+      height: 50vh; 
+      background: #ffffff; 
+      box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1); 
+      z-index: 1000; 
+      transition: bottom 0.5s ease-in-out; 
+      padding: 20px; 
+      overflow-y: auto; 
+      border-top-left-radius: 12px; 
+      border-top-right-radius: 12px; 
+    }
+    .preview-slide.active { 
+      bottom: 0; 
+    }
+    .preview-slide h5 { 
+      margin-bottom: 12px; 
+      font-weight: 500; 
+      font-size: 16px; 
+      color: #1e293b; 
+    }
+    .preview-slide .close-preview { 
+      position: absolute; 
+      top: 16px; 
+      right: 16px; 
+      font-size: 24px; 
+      cursor: pointer; 
+      color: #64748b; 
+      transition: color 0.2s ease; 
+    }
+    .preview-slide .close-preview:hover { 
+      color: #1e293b; 
+    }
+    .preview-slide #preview { 
+      padding: 16px; 
+      background: #f8fafc; 
+      border-radius: 8px; 
+      min-height: 200px; 
+      border: 1px solid #e2e8f0; 
+    }
+    .modal-content { 
+      border-radius: 12px; 
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1); 
+      border: none; 
+    }
+    .modal-header { 
+      background: #f8fafc; 
+      border-bottom: 1px solid #e2e8f0; 
+      border-radius: 12px 12px 0 0; 
+      padding: 16px 20px; 
+    }
+    .modal-title { 
+      font-family: Inter; 
+      font-weight: 600; 
+      font-size: 16px; 
+      color: #1e293b; 
+    }
+    .modal-body { 
+      padding: 20px; 
+      background: #ffffff; 
+    }
+    .modal-body input { 
+      border-radius: 8px; 
+      border: 1px solid #e2e8f0; 
+      padding: 10px; 
+      font-size: 14px; 
+      color: #1e293b; 
+      transition: border-color 0.3s ease; 
+    }
+    .modal-body input:focus { 
+      border-color: #3b82f6; 
+      outline: none; 
+      box-shadow: 0 0 5px rgba(59, 130, 246, 0.1); 
+    }
+    .modal-footer { 
+      background: #f8fafc; 
+      border-top: 1px solid #e2e8f0; 
+      border-radius: 0 0 12px 12px; 
+      padding: 12px 20px; 
+      justify-content: flex-end; 
+    }
+    .modal-footer .btn { 
+      border-radius: 8px; 
+      padding: 8px 16px; 
+      font-size: 14px; 
+      font-weight: 500; 
+      transition: all 0.2s ease; 
+    }
+    .modal-footer .btn-secondary { 
+      background: #ffffff; 
+      color: #64748b; 
+      border: 1px solid #e2e8f0; 
+    }
+    .modal-footer .btn-secondary:hover { 
+      background: #f1f5f9; 
+      color: #1e293b; 
+    }
+    .modal-footer .btn-primary { 
+      background: #3b82f6; 
+      border-color: #3b82f6; 
+      color: #ffffff; 
+    }
+    .modal-footer .btn-primary:hover { 
+      background: #2563eb; 
+      border-color: #2563eb; 
+    }
+    @media (max-width: 768px) {
+      .main { 
+        display: flex; 
+        flex-direction: column; 
+      }
+      .left, 
+      .right { 
+        width: 100%; 
+      }
+      .preview-slide { 
+        height: 70vh; 
+      }
+      .ql-toolbar.ql-snow { 
+        flex-wrap: nowrap; 
+        padding: 10px 12px; 
+      }
+      .ql-toolbar.ql-snow .ql-formats { 
+        margin-right: 6px; 
+        padding-right: 6px; 
+      }
+    }
+  </style>
+
+  <div class="container">
+    <div class="row">
+      {% block ibw_content %}
+      <div class="left col-6">
+        {% include 'ibw_navbar.html' %}
+        <div class="scrollable-content">
+          <div class="elevated-div">
+            <label>Insight Title *</label>
+            <input type="text" class="form-control" placeholder="Enter title..." id="insight-title" />
+
+            <label class="mt-3">Summary</label>
+            <div class="summary">
+              <textarea class="form-control" rows="4" placeholder="Enter summary..." id="insight-summary"></textarea>
+            </div>
+
+            <label class="mt-3">Sources</label>
+            <div id="sources-container">
+              <div class="input-group mb-2">
+                <span class="input-group-text" onclick="addSource()"><i class="bi bi-plus"></i></span>
+                <input type="text" class="form-control" placeholder="Enter source" />
+              </div>
+            </div>
+            <label for="languageSelect" class="form-label mt-3">Select Language</label>
+            <select id="languageSelect" class="form-select mb-2">
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="zh">Chinese</option>
+            </select>
+
+            <div class="d-flex flex-column">
+              <label class="my-3">Categories</label>
+              <button class="btn btn-primary" id="openCategoryModalBtn">
+                <i class="bi bi-plus"></i>Add Category
+              </button>
+              <div id="categoryContainer" class="mt-3"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right col-6 p-3">
+        <div class="editor-container">
+          <div id="toolbar">
+            <span class="ql-formats ql-group">
+              <button class="ql-bold" title="Bold"><i class="bi bi-type-bold"></i></button>
+              <button class="ql-italic" title="Italic"><i class="bi bi-type-italic"></i></button>
+              <button class="ql-underline" title="Underline"><i class="bi bi-type-underline"></i></button>
+              <button class="ql-strike" title="Strikethrough"><i class="bi bi-type-strikethrough"></i></button>
+            </span>
+            <span class="ql-formats ql-group">
+              <select class="ql-header" title="Heading Level">
+                <option value="1">H1</option>
+                <option value="2">H2</option>
+                <option value="3">H3</option>
+                <option selected>Normal</option>
+              </select>
+            </span>
+            <span class="ql-formats ql-group">
+              <button class="ql-list" value="ordered" title="Ordered List"><i class="bi bi-list-ol"></i></button>
+              <button class="ql-list" value="bullet" title="Bullet List"><i class="bi bi-list-ul"></i></button>
+              <button class="ql-indent" value="-1" title="Decrease Indent"><i class="bi bi-indent"></i></button>
+              <button class="ql-indent" value="+1" title="Increase Indent"><i class="bi bi-outdent"></i></button>
+            </span>
+            <span class="ql-formats ql-group">
+              <select class="ql-align" title="Text Alignment">
+                <option selected value=""><i class="bi bi-text-left"></i></option>
+                <option value="center"><i class="bi bi-text-center"></i></option>
+                <option value="right"><i class="bi bi-text-right"></i></option>
+                <option value="justify"><i class="bi bi-justify"></i></option>
+              </select>
+            </span>
+            <span class="ql-formats ql-group">
+              <button class="ql-undo" title="Undo"><i class="bi bi-arrow-counterclockwise"></i></button>
+              <button class="ql-redo" title="Redo"><i class="bi bi-arrow-clockwise"></i></button>
+            </span>
+            <span class="ql-formats ql-group">
+              <select class="ql-font" title="Font Family">
+                <option selected>Inter</option>
+                <option value="arial">Arial</option>
+                <option value="times">Times New Roman</option>
+                <option value="courier">Courier New</option>
+                <option value="calibri">Calibri</option>
+              </select>
+              <select class="ql-size" title="Font Size">
+                <option value="small">Small</option>
+                <option selected>Normal</option>
+                <option value="large">Large</option>
+                <option value="huge">Huge</option>
+              </select>
+            </span>
+            <span class="ql-formats ql-group">
+              <button class="ql-subscript" title="Subscript"><i class="bi bi-subscript"></i></button>
+              <button class="ql-superscript" title="Superscript"><i class="bi bi-superscript"></i></button>
+            </span>
+            <span class="ql-formats ql-group">
+              <button class="ql-link" title="Insert Link"><i class="bi bi-link-45deg"></i></button>
+              <button class="ql-image" title="Insert Image"><i class="bi bi-image"></i></button>
+              <button class="ql-video" title="Insert Video"><i class="bi bi-camera-video"></i></button>
+              <button class="ql-code-block" title="Code Block"><i class="bi bi-code-slash"></i></button>
+            </span>
+            <span class="ql-formats ql-group">
+              <select class="ql-color" title="Text Color">
+                <option selected></option>
+                <option value="#000000"></option>
+                <option value="#e60000"></option>
+                <option value="#ff9900"></option>
+                <option value="#ffff00"></option>
+                <option value="008a00"></option>
+                <option value="#0066cc"></option>
+                <option value="#9933ff"></option>
+              </select>
+              <select class="ql-background" title="Background Color">
+                <option selected></option>
+                <option value="#000000"></option>
+                <option value="#e60000"></option>
+                <option value="#ff9900"></option>
+                <option value="#ffff00"></option>
+                <option value="#008a00"></option>
+                <option value="#0066cc"></option>
+                <option value="#9933ff"></option>
+              </select>
+            </span>
+            <span class="ql-formats ql-group">
+              <button id="insert-table" title="Insert Table"><i class="bi bi-table"></i> Table</button>
+            </span>
+            <span class="ql-formats ql-group">
+              <select id="line-spacing" class="ql-line-spacing" title="Line Spacing">
+                <option value="1">1.0</option>
+                <option selected value="1.15">1.15</option>
+                <option value="1.5">1.5</option>
+                <option value="2">2.0</option>
+              </select>
+            </span>
+            <span class="ql-formats ql-group">
+              <button class="ql-direction" value="rtl" title="Right-to-Left"><i class="bi bi-text-right"></i></button>
+            </span>
+            <span class="ql-formats ql-group">
+              <button class="ql-clean" title="Clear Formatting"><i class="bi bi-eraser"></i></button>
+            </span>
+          </div>
+          <div id="editor"></div>
+          <div class="post-section d-flex justify-content-end gap-2 mt-3">
+            <button class="btn btn-outline-secondary" onclick="saveDraft()">Save as Draft</button>
+            <span id="post-status"></span>
+            <button class="btn btn-primary" id="post-button" onclick="saveInsight(false)">Post</button>
+            <button class="btn btn-primary" onclick="viewPreview()">View Preview</button>
+          </div>
+        </div>
+      </div>
+      {% endblock %}
+    </div>
+  </div>
+
+  <!-- Preview Slide-Up -->
+  <div class="preview-slide" id="previewSlide">
+    <h5>Preview</h5>
+    <span class="close-preview" onclick="closePreview()">×</span>
+    <div id="preview"></div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="categoryModalLabel">Add Category</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" id="categoryInput" class="form-control" placeholder="Enter category" />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="cancelCategoryBtn" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="addCategoryBtn">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>
+    // Quill Setup
+    const Parchment = Quill.import('parchment');
+    const Subscript = new Parchment.Attributor.Class('subscript', 'ql-subscript', { scope: Parchment.Scope.INLINE });
+    const Superscript = new Parchment.Attributor.Class('superscript', 'ql-superscript', { scope: Parchment.Scope.INLINE });
+    Quill.register(Subscript);
+    Quill.register(Superscript);
+
+    const LineHeightAttributor = new Parchment.Attributor.Style('lineheight', 'line-height', {
+      scope: Parchment.Scope.BLOCK,
+      whitelist: ['1', '1.15', '1.5', '2']
+    });
+    Quill.register(LineHeightAttributor);
+
+    const icons = Quill.import('ui/icons');
+    icons['undo'] = '<i class="bi bi-arrow-counterclockwise"></i>';
+    icons['redo'] = '<i class="bi bi-arrow-clockwise"></i>';
+
+    const quill = new Quill('#editor', {
+      theme: 'snow',
+      placeholder: 'Start writing...',
+      modules: {
+        toolbar: {
+          container: '#toolbar',
+          handlers: {
+            'insert-table': function() {
+              const range = quill.getSelection();
+              if (range) {
+                quill.insertText(range.index, '\n');
+                const tableHTML = '<table border="1"><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>';
+                quill.clipboard.dangerouslyPasteHTML(range.index + 1, tableHTML);
+              }
+            },
+            'line-spacing': function(value) {
+              quill.format('lineheight', value);
+            },
+            'undo': function() {
+              quill.history.undo();
+            },
+            'redo': function() {
+              quill.history.redo();
+            }
+          }
+        },
+        history: {
+          delay: 1000,
+          maxStack: 500,
+          userOnly: true
+        },
+        clipboard: {
+          matchVisual: false
+        },
+        syntax: {
+          highlight: text => hljs.highlightAuto(text).value
+        }
+      }
+    });
+
+    // Helper function to get CSRF token
+    const getCsrfToken = () => {
+      const cookie = document.cookie.split('; ').find(row => row.startsWith('csrftoken='));
+      return cookie ? cookie.split('=')[1] : '';
+    };
+
+    // Store the current insight ID globally
+    let currentInsightId = null;
+
+    // Load Asset on Page Load
+    window.onload = () => {
+      const currentAsset = localStorage.getItem('currentAsset');
+      if (currentAsset) {
+        try {
+          const assetData = JSON.parse(currentAsset);
+          currentInsightId = assetData.id || null; // Store the ID for updates
+          document.getElementById('insight-title').value = assetData.title || '';
+          document.getElementById('insight-summary').value = assetData.summary || '';
+
+          const sourcesContainer = document.getElementById('sources-container');
+          sourcesContainer.innerHTML = '';
+          if (assetData.sources && assetData.sources.length > 0) {
+            assetData.sources.forEach(source => {
+              if (source && source.trim() !== '') {
+                const div = document.createElement('div');
+                div.classList.add('input-group', 'mb-2');
+                div.innerHTML = `
+                  <input type="text" class="form-control" placeholder="Enter source" value="${source}">
+                  <span class="input-group-text text-danger" onclick="this.parentElement.remove()"><i class="bi bi-trash"></i></span>
+                `;
+                sourcesContainer.appendChild(div);
+              }
+            });
+          }
+          if (!sourcesContainer.querySelector('input')) addSource();
+
+          document.getElementById('languageSelect').value = assetData.language || 'en';
+
+          const categoryContainer = document.getElementById('categoryContainer');
+          categoryContainer.innerHTML = '';
+          if (assetData.categories && assetData.categories.length > 0) {
+            assetData.categories.forEach(category => {
+              if (category && category.trim() !== '') {
+                const badge = document.createElement('span');
+                badge.className = 'badge badge-category p-1 ms-2 mt-2';
+                badge.innerHTML = `${category} 
+                  <button type="button" class="btn-close btn-close-black ms-2" aria-label="Close" onclick="this.parentElement.remove()"></button>`;
+                categoryContainer.appendChild(badge);
+              }
+            });
+          }
+
+          if (assetData.content) quill.root.innerHTML = assetData.content;
+
+          const postButton = document.getElementById('post-button');
+          const postStatus = document.getElementById('post-status');
+          if (assetData.is_draft === false) {
+            postButton.textContent = 'Update';
+            postStatus.innerHTML = '<span class="badge badge-posted">Posted</span>';
+          } else {
+            postButton.textContent = 'Post';
+            postStatus.innerHTML = '';
+          }
+
+          localStorage.removeItem('currentAsset');
+        } catch (e) {
+          console.error('Error parsing currentAsset:', e);
+        }
+      }
+    };
+
+    // Collect Insight Data
+    const collectInsightData = () => {
+      return {
+        id: currentInsightId, // Include ID for updates
+        title: document.getElementById('insight-title').value || 'Untitled',
+        summary: document.getElementById('insight-summary').value,
+        sources: Array.from(document.querySelectorAll('#sources-container input')).map(input => input.value).filter(source => source.trim() !== ''),
+        language: document.getElementById('languageSelect').value,
+        categories: Array.from(document.querySelectorAll('#categoryContainer .badge-category')).map(badge => badge.textContent.trim().replace(/\s*×$/, '')).filter(category => category.trim() !== ''),
+        content: quill.root.innerHTML
+      };
+    };
+
+    // Save Draft
+    const saveDraft = () => {
+      const data = collectInsightData();
+      data.is_draft = true;
+
+      fetch('/save-insight/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCsrfToken()
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        return response.json();
+      })
+      .then(data => {
+        if (data.success) {
+          currentInsightId = data.id; // Update the ID after saving
+          alert('Draft saved successfully!');
+          document.getElementById('post-button').textContent = 'Post';
+          document.getElementById('post-status').innerHTML = '';
+        } else {
+          alert('Error saving draft: ' + (data.error || 'Unknown error'));
+        }
+      })
+      .catch(error => {
+        console.error('Error in saveDraft:', error);
+        alert('An error occurred while saving the draft.');
+      });
+    };
+
+    // Save Insight (Post or Update)
+    const saveInsight = (is_draft = false) => {
+      const data = collectInsightData();
+      data.is_draft = is_draft;
+
+      fetch('/save-insight/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCsrfToken()
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        return response.json();
+      })
+      .then(result => {
+        if (result.success) {
+          currentInsightId = result.id; // Update the ID after saving
+          alert(result.message || 'Insight saved successfully!');
+          if (!is_draft) { // Posted state
+            document.getElementById('post-button').textContent = 'Update';
+            document.getElementById('post-status').innerHTML = '<span class="badge badge-posted">Posted</span>';
+          } else { // Draft state
+            document.getElementById('post-button').textContent = 'Post';
+            document.getElementById('post-status').innerHTML = '';
+          }
+        } else {
+          alert('Error saving insight: ' + (result.error || 'Unknown error'));
+        }
+      })
+      .catch(error => {
+        console.error('Error in saveInsight:', error);
+        alert('An error occurred while saving the insight.');
+      });
+    };
+
+    // View Preview
+    const viewPreview = () => {
+      const content = quill.root.innerHTML;
+      document.getElementById('preview').innerHTML = content;
+      document.getElementById('previewSlide').classList.add('active');
+    };
+
+    // Close Preview
+    const closePreview = () => {
+      document.getElementById('previewSlide').classList.remove('active');
+    };
+
+    // Add Source
+    const addSource = () => {
+      const container = document.getElementById('sources-container');
+      const div = document.createElement('div');
+      div.classList.add('input-group', 'mb-2');
+      div.innerHTML = `
+        <input type="text" class="form-control" placeholder="Enter source">
+        <span class="input-group-text text-danger" onclick="this.parentElement.remove()"><i class="bi bi-trash"></i></span>
+      `;
+      container.appendChild(div);
+    };
+
+    // Initialize Modal and Store Instance
+    let categoryModalInstance = null;
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrap JavaScript is not loaded.');
+        return;
+      }
+
+      const modalElement = document.getElementById('categoryModal');
+      if (modalElement) {
+        categoryModalInstance = new bootstrap.Modal(modalElement, {
+          backdrop: 'static', // Prevent closing on backdrop click
+          keyboard: false // Prevent closing with ESC key
+        });
+      } else {
+        console.error('Category modal element not found');
+      }
+
+      // Open modal programmatically
+      document.getElementById('openCategoryModalBtn').addEventListener('click', () => {
+        if (categoryModalInstance) {
+          categoryModalInstance.show();
+        }
+      });
+    });
+
+    // Function to manually clean up modal state
+    const cleanupModal = () => {
+      const modalElement = document.getElementById('categoryModal');
+      if (modalElement) {
+        // Remove modal-open class from body
+        document.body.classList.remove('modal-open');
+        // Remove any leftover backdrop
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(backdrop => backdrop.remove());
+        // Reset modal styles
+        modalElement.classList.remove('show');
+        modalElement.style.display = 'none';
+        // Remove aria-hidden attribute from body
+        document.body.removeAttribute('aria-hidden');
+        // Reset body padding (Bootstrap adds padding to account for scrollbar)
+        document.body.style.paddingRight = '';
+        // Ensure modal is not in an active state
+        modalElement.setAttribute('aria-hidden', 'true');
+      }
+    };
+
+    // Add Category
+    document.getElementById('addCategoryBtn').addEventListener('click', (event) => {
+      event.preventDefault();
+      const categoryInput = document.getElementById('categoryInput');
+      const categoryValue = categoryInput.value.trim();
+
+      if (categoryValue !== '') {
+        const categoryContainer = document.getElementById('categoryContainer');
+        const badge = document.createElement('span');
+        badge.className = 'badge badge-category p-1 ms-2 mt-2';
+        badge.innerHTML = `${categoryValue} 
+          <button type="button" class="btn-close btn-close-black ms-2" aria-label="Close" onclick="this.parentElement.remove()"></button>`;
+        categoryContainer.appendChild(badge);
+        categoryInput.value = ''; // Clear the input
+
+        // Attempt to close the modal
+        if (categoryModalInstance) {
+          console.log('Attempting to close modal...');
+          categoryModalInstance.hide();
+          // Fallback: Simulate click on Cancel button if modal doesn't close
+          setTimeout(() => {
+            if (document.getElementById('categoryModal').classList.contains('show')) {
+              console.log('Modal did not close, using fallback...');
+              document.getElementById('cancelCategoryBtn').click();
+            } else {
+              console.log('Modal closed successfully.');
+            }
+          }, 300); // Wait for the modal's hide animation to complete
+        } else {
+          console.error('categoryModalInstance is not initialized.');
+          cleanupModal(); // Fallback to manual cleanup
+        }
+      } else {
+        alert('Please enter a category.');
+      }
+    });
+
+    // Ensure modal cleanup on hidden event (for Cancel button and close icon)
+    document.getElementById('categoryModal').addEventListener('hidden.bs.modal', () => {
+      cleanupModal();
+    });
+  </script>
+{% endblock %}

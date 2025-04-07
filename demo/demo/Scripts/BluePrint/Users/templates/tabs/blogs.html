@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Listing</title>
+    <style>
+        /* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    color: #333;
+    line-height: 1.5;
+  
+}
+
+
+
+/* Navigation styles */
+.sub-nav {
+        margin-bottom: 2rem;
+    }
+    
+    .sub-nav ul {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+    }
+    
+    .sub-nav a {
+        text-decoration: none;
+        color: #666;
+        font-size: 1rem;
+        padding-bottom: 0.5rem;
+    }
+    
+    .sub-nav .active a {
+        color: #000;
+        border-bottom: 2px solid #000;
+    }
+
+/* Write button styles */
+.write-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    margin-bottom: 2rem;
+}
+
+.plus-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/* Blog grid styles */
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Blog card styles */
+.blog-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.blog-card:hover {
+    transform: translateY(-2px);
+}
+
+.blog-content {
+    padding: 1.5rem;
+}
+
+/* Technical points styles */
+.technical-points {
+    list-style: none;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.technical-points li {
+    margin-bottom: 0.5rem;
+}
+
+.technical-points strong {
+    color: #000;
+    font-weight: 500;
+}
+
+/* Blog title styles */
+.blog-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #000;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+/* Blog metrics styles */
+.blog-metrics {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.metric {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .blog-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav ul {
+        gap: 1rem;
+    }
+
+    .write-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container ">
+        <!-- Navigation -->
+        <nav class="sub-nav">
+            <ul>
+              <li class="active"><a href="#blogs" data-target="blogs">Blogs</a></li>
+              <li><a href="#whitepapers" data-target="whitepapers">Whitepapers</a></li>
+            </ul>
+          </nav>
+
+        <!-- Write Blog Button -->
+        <button class="write-button">
+            <span class="plus-icon">+</span>
+            Write a Blog
+        </button>
+
+        <!-- Blog Grid -->
+        <div class="blog-grid">
+            <!-- Blog Card 1 -->
+            <article class="blog-card">
+                <div class="blog-content">
+                    <ul class="technical-points">
+                        <li>
+                            <strong>electricity consumption</strong> in IoT systems, consider these strategies:
+                        </li>
+                        <li>
+                            <strong>use IoT Devices</strong> Choose IoT devices designed to be energy efficient - for example, low power sensors.
+                        </li>
+                        <li>
+                            <strong>Harvesting</strong> Implement energy harvesting techniques (e.g., solar, kinetic) to reduce dependency on external power sources.
+                        </li>
+                        <li>
+                            <strong>Communication Protocols</strong> Use low-power communication protocols such as ZigBee or Bluetooth Low Energy (BLE) to minimize energy use during data transmission.
+                        </li>
+                        <li>
+                            <strong>compression</strong> Compress data before transmission to reduce the amount of time large packets of information.
+                        </li>
+                        <li>
+                            <strong>caching</strong> Process data locally at the edge instead of transmitting everything using network traffic and energy consumption.
+                        </li>
+                    </ul>
+                    <h2 class="blog-title">Optimizing Power Consumption in IoT Systems: Effective Solutions fo...</h2>
+                    <div class="blog-metrics">
+                        <span class="metric">
+                            <span class="heart-icon">♥</span>
+                            12
+                        </span>
+                        <span class="metric">
+                            <span class="comment-icon">💬</span>
+                            1
+                        </span>
+                    </div>
+                </div>
+            </article>
+            <!-- Blog Card 2 -->
+            <article class="blog-card">
+                <div class="blog-content">
+                    <ul class="technical-points">
+                        <li>
+                            <strong>electricity consumption</strong> in IoT systems, consider these strategies:
+                        </li>
+                        <li>
+                            <strong>use IoT Devices</strong> Choose IoT devices designed to be energy efficient - for example, low power sensors.
+                        </li>
+                        <li>
+                            <strong>Harvesting</strong> Implement energy harvesting techniques (e.g., solar, kinetic) to reduce dependency on external power sources.
+                        </li>
+                        <li>
+                            <strong>Communication Protocols</strong> Use low-power communication protocols such as ZigBee or Bluetooth Low Energy (BLE) to minimize energy use during data transmission.
+                        </li>
+                        <li>
+                            <strong>compression</strong> Compress data before transmission to reduce the amount of time large packets of information.
+                        </li>
+                        <li>
+                            <strong>caching</strong> Process data locally at the edge instead of transmitting everything using network traffic and energy consumption.
+                        </li>
+                    </ul>
+                    <h2 class="blog-title">Reducing Carbon Emissions: Practical Solutions for a Greener F...</h2>
+                    <div class="blog-metrics">
+                        <span class="metric">
+                            <span class="heart-icon">♥</span>
+                            56
+                        </span>
+                        <span class="metric">
+                            <span class="comment-icon">💬</span>
+                            4
+                        </span>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+</body>
+</html>

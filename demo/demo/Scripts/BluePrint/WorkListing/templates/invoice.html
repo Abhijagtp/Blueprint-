@@ -1,0 +1,379 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+{% load static %}
+{% include 'worklisting_nav.html' %}
+{% block main_content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+
+    <!-- Hero Section -->
+  <section class="hero text-white">
+    <div class="d-flex flex-row p-3 mb-2 px-5">
+      <div class="search-bar me-3 w-50">
+        <input type="text" class="form-control" placeholder="Search..." />
+      </div>
+      <div class="me-4">
+        <button class="search-button btn btn-primary btn-sm px-3 py-1">
+          <i class="bi bi-search me-2 white-icon"></i>Search
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Project Status Section -->
+  <div class="row text-center px-5">
+    <div class="col-md-4 mb-3 mb-md-0">
+      <div class="status-card received active" onclick="toggleStage('received')">
+        <div class="d-flex">
+          <div class="mt-3">
+            <img src="images/recieved.png" alt="" />
+          </div>
+          <div class="d-flex flex-column ms-4">
+            <div class="title">2</div>
+            <div class="subtitle">Projects</div>
+          </div>
+        </div>
+        <hr />
+        <div class="d-flex justify-content-between">
+          <div>Recieved</div>
+          <div>
+            <div class="coloured-1"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-3 mb-md-0">
+      <div class="status-card pending" onclick="toggleStage('pending')">
+        <div class="d-flex">
+          <div class="mt-3">
+            <img src="images/pending.png" alt="" />
+          </div>
+          <div class="d-flex flex-column ms-4">
+            <div class="title">2</div>
+            <div class="subtitle">Projects</div>
+          </div>
+        </div>
+        <hr />
+        <div class="d-flex justify-content-between">
+          <div>Recieved</div>
+          <div>
+            <div class="coloured-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="status-card downloaded" onclick="toggleStage('downloaded')">
+        <div class="d-flex">
+          <div class="mt-3">
+            <img src="images/downloaded.png" alt="" />
+          </div>
+          <div class="d-flex flex-column ms-4">
+            <div class="title">2</div>
+            <div class="subtitle">Projects</div>
+          </div>
+        </div>
+        <hr />
+        <div class="d-flex justify-content-between">
+          <div>Recieved</div>
+          <div>
+            <div class="coloured-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Recieved Invoices-->
+  <div id="received-section" class="px-5">
+    <h5 class="my-4">Received Invoices</h5>
+    <div class="invoice-card mb-4">
+      <div class="d-flex justify-content-between">
+        <div>
+          <img src="images/code-snippet.png" />
+          <div class="invoice-title-1">
+            <h6 class="mt-2">Web Stack</h6>
+          </div>
+          <div class="pt-2 invoice-date-1">
+            <span class="sub-date me-2">Duration:</span>20 Oct 2024 - 30 Dec
+            2024
+          </div>
+          <div class="invoice-payment-1">
+            <span class="sub-date me-2">Payment Status:</span>Paid
+          </div>
+          <div class="money-1 pt-2">
+            <p class="text-success">Rs. 2000</p>
+          </div>
+          <div class="download-1">
+            <div class="mt-3">
+              <button class="btn btn-primary">Download Invoice</button>
+            </div>
+          </div>
+        </div>
+        <div class="ms-2">
+          <div class="invoice-title">
+            <h6>Web Stack</h6>
+          </div>
+          <div class="invoice-details">
+            Building the web page for Lucid flow which assists users to manage
+            their leaves and can let the hr know when they want leave.
+          </div>
+          <div class="pt-2 invoice-date">
+            <span class="sub-date me-2">Duration:</span>20 Oct 2024 - 30 Dec
+            2024
+          </div>
+          <div class="invoice-payment">
+            <span class="sub-date me-2">Payment Status:</span>Paid
+          </div>
+          <div class="money pt-2">
+            <p class="text-success">Rs. 2000</p>
+          </div>
+        </div>
+        <div class="download">
+          <div class="ms-5 mt-5">
+            <button class="btn btn-primary">Download Invoice</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="invoice-card mb-4">
+      <div class="d-flex justify-content-between">
+        <div>
+          <img src="images/code-snippet.png" />
+          <div class="invoice-title-1">
+            <h6 class="mt-2">Web Stack</h6>
+          </div>
+          <div class="pt-2 invoice-date-1">
+            <span class="sub-date me-2">Duration:</span>20 Oct 2024 - 30 Dec
+            2024
+          </div>
+          <div class="invoice-payment-1">
+            <span class="sub-date me-2">Payment Status:</span>Paid
+          </div>
+          <div class="money-1 pt-2">
+            <p class="text-success">Rs. 2000</p>
+          </div>
+          <div class="download-1">
+            <div class="mt-3">
+              <button class="btn btn-primary">Download Invoice</button>
+            </div>
+          </div>
+        </div>
+        <div class="ms-2">
+          <div class="invoice-title">
+            <h6 class="mt-2">Lucid Flow</h6>
+          </div>
+          <div class="invoice-details">
+            Building the web page for Lucid flow which assists users to manage
+            their leaves and can let the hr know when they want leave.
+          </div>
+          <div class="pt-2 invoice-date">
+            <span class="sub-date me-2">Duration:</span>20 Oct 2024 - 30 Dec
+            2024
+          </div>
+          <div class="invoice-payment">
+            <span class="sub-date me-2">Payment Status:</span>Paid
+          </div>
+          <div class="money pt-2">
+            <p class="text-success">Rs. 2000</p>
+          </div>
+        </div>
+        <div class="download">
+          <div class="ms-5 mt-5">
+            <button class="btn btn-primary">Download Invoice</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Pending Invoices-->
+  <div id="pending-section" class="hidden px-5">
+    <h5 class="my-4">Pending Invoices</h5>
+    <div class="invoice-card mb-4">
+      <div class="d-flex justify-between">
+        <div>
+          <img src="images/code-snippet.png" />
+          <div class="invoice-title-1">
+            <h6 class="mt-2">Eazy Bytz</h6>
+          </div>
+          <div class="pt-2 invoice-date-1">
+            <span class="sub-date me-2">Expected Date:</span>15 Jan 2025
+          </div>
+          <div class="invoice-payment-1">
+            <span class="sub-date me-2">Payment Status:</span>Paid
+          </div>
+          <div class="money-1 pt-2">
+            <p class="text-success">Rs. 4000</p>
+          </div>
+          <div class="download-1">
+            <div class="mt-3">
+              <button class="btn btn-secondary disabled">
+                Download Invoice
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="ms-2">
+          <div class="invoice-title">
+            <h6 class="mt-2">Eazy Bytz</h6>
+          </div>
+          <div class="invoice-details">
+            Building the web page for Lucid flow which assists users to manage
+            their leaves and can let the hr know when they want leave.
+          </div>
+          <div class="pt-2 invoice-date">
+            <span class="sub-date me-2">Expected Date:</span>15 Jan 2025
+          </div>
+          <div class="invoice-payment">
+            <span class="sub-date me-2">Payment Status:</span>Paid
+          </div>
+          <div class="money pt-2">
+            <p class="text-success">Rs. 4000</p>
+          </div>
+        </div>
+        <div class="download">
+          <div class="ms-5 mt-5">
+            <button class="btn btn-secondary disabled">
+              Download Invoice
+            </button>
+            <div class="text-center not">Project not submitted yet</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Downloaded Invoices-->
+  <div id="downloaded-section" class="hidden px-5">
+    <h5 class="my-4">Downloaded Invoices</h5>
+    <div class="invoice-card mb-4">
+      <div class="d-flex justify-content-between">
+        <div>
+          <img src="images/code-snippet.png" />
+          <div class="invoice-title-1">
+            <h6 class="mt-2">Eazy Bytz</h6>
+          </div>
+          <div class="pt-2 invoice-date-1">
+            <span class="sub-date me-2">Expected Date:</span>15 Jan 2025
+          </div>
+          <div class="invoice-payment-1">
+            <span class="sub-date me-2">Payment Status:</span>Paid
+          </div>
+          <div class="money-1 pt-2">
+            <p class="text-success">Rs. 4000</p>
+          </div>
+          <div class="download-1">
+            <div class="mt-3">
+              <button class="btn btn-primary">Download Again</button>
+            </div>
+          </div>
+        </div>
+        <div class="ms-2">
+          <div class="invoice-title">
+            <h6>Eazy Bytz</h6>
+          </div>
+          <div class="invoice-details">
+            Building the web page for Lucid flow which assists users to manage
+            their leaves and can let the hr know when they want leave.
+          </div>
+          <div class="pt-2 invoice-date">
+            <span class="sub-date me-2">Expected Date:</span>15 Jan 2025
+          </div>
+          <div class="invoice-payment">
+            <span class="sub-date me-2">Payment Status::</span>Paid
+          </div>
+          <div class="money pt-2">
+            <p class="text-success">Rs. 4000</p>
+          </div>
+        </div>
+        <div class="download">
+          <div class="ms-5 mt-5">
+            <button class="btn btn-primary">Download Again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="invoice-card mb-4">
+      <div class="d-flex justify-content-between">
+        <div>
+          <img src="images/code-snippet.png" />
+          <div class="invoice-title-1">
+            <h6 class="mt-2">WakeL</h6>
+          </div>
+          <div class="pt-2 invoice-date-1">
+            <span class="sub-date me-2">Expected Date:</span>15 Jan 2025
+          </div>
+          <div class="invoice-payment-1">
+            <span class="sub-date me-2">Payment Status:</span>Paid
+          </div>
+          <div class="money-1 pt-2">
+            <p class="text-success">Rs. 4000</p>
+          </div>
+          <div class="download-1">
+            <div class="mt-3">
+              <button class="btn btn-primary">Download Again</button>
+            </div>
+          </div>
+        </div>
+        <div class="ms-2">
+          <div class="invoice-title">
+            <h6>WakeL</h6>
+          </div>
+          <div class="invoice-details">
+            Building the web page for Lucid flow which assists users to manage
+            their leaves and can let the hr know when they want leave.
+          </div>
+          <div class="pt-2 invoice-date">
+            <span class="sub-date me-2">Expected Date:</span>15 Jan 2025
+          </div>
+          <div class="invoice-payment">
+            <span class="sub-date me-2">Payment Status::</span>Paid
+          </div>
+          <div class="pt-2">
+            <p class="text-success">Rs. 4000</p>
+          </div>
+        </div>
+        <div class="download">
+          <div class="ms-5 mt-5">
+            <button class="btn btn-primary">Download Again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    function toggleStage(stage) {
+      // Remove active class from all cards
+      document.querySelectorAll(".status-card").forEach((card) => {
+        card.classList.remove("active");
+      });
+
+      // Add active class to the selected card
+      document.querySelector(`.${stage}`).classList.add("active");
+
+      // Hide all sections
+      document.getElementById("received-section").classList.add("hidden");
+      document.getElementById("pending-section").classList.add("hidden");
+      document.getElementById("downloaded-section").classList.add("hidden");
+
+      // Show selected section
+      document.getElementById(`${stage}-section`).classList.remove("hidden");
+    }
+  </script>
+{% endblock %}
+{% endblock %}

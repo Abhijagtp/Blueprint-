@@ -1,0 +1,1593 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Network</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"
+/>
+    <style>
+        body{
+            background-color: #F5F6FA;
+        }
+        .card { border-radius: 8px; border: 1px solid rgba(0, 0, 0, 0.1); margin-bottom: 20px; }
+        .company-item { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .company-logo { width: 30px; height: 30px; border-radius: 4px; }
+        .blog-item { margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
+        .blog-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .blog-item h6 { margin-bottom: 5px; font-size: 14px; }
+        .post-actions { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 5px; }
+        .post-actions .btn { white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+        .post-interactions { display: flex; gap: 15px; }
+        .profile-actions a { color: inherit; text-decoration: none; }
+        .profile-actions a:hover { text-decoration: underline; }
+
+        /* Improved Comments Section Styling */
+        .comment-container { padding: 15px 0; }
+        .comment-item { padding: 10px; border-radius: 6px; margin-bottom: 10px; background: #f9f9f9; transition: background-color 0.2s ease; }
+        .comment-item:hover { background-color: #f1f3f5; }
+        .comment-content { padding: 0; }
+        .comment-input, .reply-input { border: 1px solid #ced4da; border-radius: 20px; padding: 8px 15px; font-size: 0.9rem; }
+        .comment-input:focus, .reply-input:focus { border-color: #0d6efd; box-shadow: 0 0 5px rgba(13, 110, 253, 0.2); }
+        .btn-primary, .btn-secondary { font-size: 0.9rem; padding: 6px 12px; border-radius: 20px; }
+        .comment-actions .btn { font-size: 0.85rem; color: #6c757d; }
+        .comment-actions .btn:hover { color: #0d6efd; }
+        .reply-container { margin-left: 50px; padding-left: 15px; border-left: 2px solid #e9ecef; margin-top: 10px; }
+        .view-replies { font-size: 0.85rem; color: #0d6efd; text-decoration: none; }
+        .view-replies:hover { text-decoration: underline; }
+
+        /* Improved Media Preview Styling */
+        /* Media Preview Styling */
+#mediaPreview {
+    border: 1px dashed #ced4da;
+    border-radius: 8px;
+    padding: 10px;
+    background: #f8f9fa;
+    overflow: hidden;
+}
+
+#imagePreview, #videoPreview {
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+#removeMedia.btn-remove-media {
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background 0.2s ease;
+}
+
+#removeMedia.btn-remove-media:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+#removeMedia.btn-remove-media i {
+    color: #fff;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/* Ensure the button is visible over the media */
+#mediaPreview .btn-remove-media {
+    z-index: 10;
+}
+
+        /* Other Styles */
+        .header { background: white; border-bottom: 1px solid #dee2e6; }
+        
+        .search-wrapper { max-width: 300px; width: 100%; }
+        .input-group-text { color: #6c757d; }
+        .form-control { box-shadow: none !important; }
+        .form-control:focus { border-color: #dee2e6; }
+        .refresh-btn { position: fixed; top: 70px; right: 50%; transform: translateX(50%); z-index: 1000; width: 50px; height: 50px; border-radius: 50%; background-color: #ffffff; border: 1px solid #dee2e6; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #0d6efd; cursor: pointer; transition: all 0.3s ease-in-out; opacity: 0; pointer-events: none; }
+        .refresh-btn:not(.d-none) { opacity: 1; pointer-events: auto; }
+        .refresh-btn:hover { background-color: #f8f9fa; transform: translateX(50%) scale(1.1); color: #0056b3; }
+        .refresh-btn:active { transform: translateX(50%) scale(0.95); }
+        .post-grid { position: relative; }
+        .loading-indicator { text-align: center; padding: 20px; display: none; }
+        /* share modal css  */
+        /* Share Modal Styling */
+#sharePostModal .modal-content {
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+#sharePostModal .modal-header {
+    padding: 20px 24px;
+}
+
+#sharePostModal .modal-body {
+    padding: 0 24px 24px;
+}
+
+#sharePostModal .modal-title {
+    font-size: 1.25rem;
+    color: #333;
+}
+
+#sharePostModal .btn-close {
+    background-size: 1.2rem;
+    opacity: 0.7;
+}
+
+#sharePostModal .btn-close:hover {
+    opacity: 1;
+}
+
+/* Post Preview */
+#sharePostModal #postPreview {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#sharePostModal #postPreview strong {
+    font-size: 1rem;
+    color: #333;
+}
+
+#sharePostModal #postPreview p {
+    font-size: 0.95rem;
+    color: #555;
+    margin: 8px 0;
+}
+
+#sharePostModal #postPreview img {
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+#sharePostModal #postPreview small {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Share Message Input */
+#sharePostModal .share-message-input {
+    border-radius: 12px;
+    border: 1px solid #ced4da;
+    padding: 12px;
+    font-size: 0.95rem;
+    resize: none;
+    transition: border-color 0.2s ease;
+}
+
+#sharePostModal .share-message-input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 5px rgba(13, 110, 253, 0.2);
+}
+
+/* Search Input */
+#sharePostModal .input-group {
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+#sharePostModal .input-group-text {
+    border-radius: 20px 0 0 20px;
+    background: #fff;
+    color: #6c757d;
+}
+
+#sharePostModal .form-control {
+    border-radius: 0 20px 20px 0;
+    font-size: 0.95rem;
+    padding: 10px 15px;
+}
+
+#sharePostModal .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: none;
+}
+
+/* Follower List */
+#sharePostModal .follower-list-container {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background: #fff;
+    padding: 5px;
+}
+
+#sharePostModal .list-group-item {
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+#sharePostModal .list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+#sharePostModal .list-group-item img {
+    border: 2px solid #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#sharePostModal .list-group-item .fw-bold {
+    font-size: 0.95rem;
+    color: #333;
+}
+
+#sharePostModal .form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+    cursor: pointer;
+    border: 2px solid #ced4da;
+    transition: all 0.2s ease;
+}
+
+#sharePostModal .form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Share Button */
+#sharePostModal .btn-primary {
+    border-radius: 20px;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: #0d6efd;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+#sharePostModal .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+#sharePostModal .btn-primary:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+/* assets css  */
+
+/* Blog Post Card */
+.blog-post-card {
+    border: 1px solid #e0e7ff;
+    background: #f9fafb;
+}
+
+.blog-post-card .blog-post-content {
+    padding: 15px;
+    border-left: 4px solid #0d6efd;
+    background: #fff;
+    border-radius: 6px;
+}
+
+.blog-post-card h5 {
+    font-size: 1.25rem;
+    color: #1e3a8a;
+}
+
+.blog-post-card .badge {
+    font-size: 0.85rem;
+}
+
+/* Whitepaper Post Card */
+.whitepaper-post-card {
+    border: 1px solid #d1fae5;
+    background: #f9fafb;
+}
+
+.whitepaper-post-card .whitepaper-post-content {
+    padding: 15px;
+    border-left: 4px solid #10b981;
+    background: #fff;
+    border-radius: 6px;
+}
+
+.whitepaper-post-card h5 {
+    font-size: 1.25rem;
+    color: #065f46;
+}
+
+.whitepaper-post-card .badge {
+    font-size: 0.85rem;
+}
+
+/* Insight Post Card */
+.insight-post-card {
+    border: 1px solid #cffafe;
+    background: #f9fafb;
+}
+
+.insight-post-card .insight-post-content {
+    padding: 15px;
+    border-left: 4px solid #06b6d4;
+    background: #fff;
+    border-radius: 6px;
+}
+
+.insight-post-card h5 {
+    font-size: 1.25rem;
+    color: #164e63;
+}
+
+.insight-post-card .badge {
+    font-size: 0.85rem;
+}
+/* Responsive Adjustments */
+@media (max-width: 767.98px) {
+    #sharePostModal .modal-dialog {
+        margin: 10px;
+    }
+
+    #sharePostModal .modal-content {
+        border-radius: 10px;
+    }
+
+    #sharePostModal .modal-header {
+        padding: 15px 20px;
+    }
+
+    #sharePostModal .modal-body {
+        padding: 0 20px 20px;
+    }
+
+    #sharePostModal .follower-list-container {
+        max-height: 150px;
+    }
+
+    #sharePostModal .list-group-item {
+        padding: 8px 10px;
+    }
+}
+
+        /* Responsive Adjustments */
+        @media (max-width: 991.98px) { .refresh-btn { right: 50%; transform: translateX(50%); } }
+        @media (max-width: 575.98px) { .refresh-btn { top: 60px; width: 40px; height: 40px; font-size: 1.2rem; } }
+        @media (max-width: 768px) { .search-wrapper { display: none; } .nav-tabs .nav-link { padding: 0.75rem 0.5rem; font-size: 0.9rem; } }
+        @media (max-width: 576px) { .back-button span { display: none; } .nav-tabs-wrapper { justify-content: flex-start; overflow-x: auto; -webkit-overflow-scrolling: touch; } .nav-tabs { flex-wrap: nowrap; } }
+        @media (max-width: 991.98px) { .main-content { max-width: 600px; margin: 0 auto; } }
+        @media (max-width: 575.98px) { body { padding: 10px; } .post-actions { flex-wrap: wrap; } .post-actions .btn { flex: 1; min-width: calc(50% - 5px); } .comment-item { padding: 8px; } }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        {% include 'timelinenavbar.html' %}
+        <div class="row">
+            <!-- Left Sidebar -->
+            <div class="col-lg-3 d-none d-lg-block left-sidebar">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-title">Top companies for you</h6>
+                        <div class="company-list">
+                            <div class="company-item"><img src="/placeholder.svg?height=30&width=30" alt="Dell" class="company-logo"><span>Dell Pvt. Ltd.</span></div>
+                            <div class="company-item"><img src="/placeholder.svg?height=30&width=30" alt="Amazon" class="company-logo"><span>Amazon</span></div>
+                            <div class="company-item"><img src="/placeholder.svg?height=30&width=30" alt="Netflix" class="company-logo"><span>Netflix</span></div>
+                            <div class="company-item"><img src="/placeholder.svg?height=30&width=30" alt="Microsoft" class="company-logo"><span>Microsoft</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">Trending Blogs</h6>
+                        <div class="trending-blogs">
+                            <div class="blog-item"><h6>Fastest-growing jobs in Indian cities</h6><small class="text-muted">2h ago · 12,000 views</small></div>
+                            <div class="blog-item"><h6>Solution to the large carbon emission</h6><small class="text-muted">15h ago · 26,344 views</small></div>
+                            <div class="blog-item"><h6>Improving the tool doesn't guarantee you the job</h6><small class="text-muted">1d ago · 52,000 views</small></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% block main_content %}
+            <!-- Main Content -->
+            <div class="col-12 col-lg-6 main-content">
+                <button id="refreshTimeline" class="btn refresh-btn d-none" title="Refresh timeline"><i class="bi bi-arrow-clockwise"></i></button>
+                <!-- Create Post Card -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <form id="createPostForm" action="{% url 'create_post' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="d-flex align-items-start gap-2 mb-3">
+                                <img src="{% if request.user.userprofile.profile_image %}{{ request.user.userprofile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" alt="Profile" class="rounded-circle" width="40" height="40">
+                                <textarea name="caption" id="captionInput" class="form-control border-0" placeholder="Put your thought" required rows="3" style="resize: none;"></textarea>
+                                <button type="submit" id="postButton" class="btn btn-primary d-none"><i class="bi bi-upload"></i> Post</button>
+                            </div>
+                            <input type="file" name="image" id="mediaInput" class="d-none" accept="image/*, video/*">
+                            <div id="mediaPreview" class="position-relative d-none mb-3">
+                                <img id="imagePreview" class="img-fluid rounded d-none" alt="Preview">
+                                <video id="videoPreview" class="w-100 rounded d-none" controls></video>
+                                <button type="button" id="removeMedia" class="btn btn-remove-media position-absolute top-0 end-0 m-2">
+                                    <i class="ri-close-line"></i>
+                                </button>
+                            </div>
+                            
+                        </form>
+                        <div class="post-actions">
+                            <button type="button" class="btn btn-light" id="mediaButton"><i class="bi bi-image"></i> Media</button>
+                            <a href="{% url 'ibw' %}" class=" text-decoration-none"><button class="btn btn-light"><i class="bi bi-graph-up"></i> Insights</button></a>
+                            <a href="{% url 'Blogs' %}"  class=" text-decoration-none"><button class="btn btn-light"><i class="bi bi-pencil"></i> Blog</button></a>
+                            <a href="{% url 'Whitepapers' %}"  class=" text-decoration-none"><button class="btn btn-light"><i class="bi bi-file-text"></i> Whitepaper</button></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-grid" id="postGrid">
+                    {% for item in post_data %}
+                    {% with post=item.post content=item.content %}
+                    {% if post.content_type == "normal" %}
+                    <!-- Normal Post Card -->
+                    <div class="card mb-3 normal-post-card" data-post-id="{{ post.id }}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex gap-2">
+                                    <img src="{% if post.user_profile.profile_image %}{{ post.user_profile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" alt="{{ post.user_profile.user.username }}" class="rounded-circle" width="40" height="40">
+                                    <div>
+                                        <h6 class="mb-0">{{ post.user_profile.user.get_full_name }}</h6>
+                                        <small class="text-muted">{{ post.created_at|timesince }} ago</small>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle"><i class="bi bi-three-dots"></i></button>
+                                    <ul class="dropdown-menu">
+                                        {% if post.user_profile.user == request.user %}
+                                        <li><button class="dropdown-item text-danger delete-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-trash"></i> Delete Post</button></li>
+                                        <li><button class="dropdown-item edit-post-btn" data-post-id="{{ post.id }}" data-post-content="{{ post.caption }}"><i class="bi bi-pencil"></i> Edit Post</button></li>
+                                        {% endif %}
+                                        <li><button class="dropdown-item save-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-bookmark"></i> Save Post</button></li>
+                                        <li><button class="dropdown-item report-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-flag"></i> Report Post</button></li>
+                                        <li><button class="dropdown-item hide-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-eye-slash"></i> Hide Post</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p>{{ post.caption }}</p>
+                            {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="Post image" class="img-fluid mb-3 w-100 d-block rounded">
+                            {% endif %}
+                            <div class="post-interactions d-flex justify-content-between align-items-center">
+                                <div>
+                                    <button class="btn btn-light like-btn" data-post-id="{{ post.id }}">
+                                        <i class="bi bi-heart"></i> <span class="like-count">{{ post.likes.count }}</span>
+                                    </button>
+                                    <button class="btn btn-light comment-toggle" type="button" data-bs-target="#comments-{{ post.id }}">
+                                        <i class="bi bi-chat"></i> {{ post.comments.count }}
+                                    </button>
+                                    <button class="btn btn-light share-btn" data-post-id="{{ post.id }}">
+                                        <i class="bi bi-share"></i> Share
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="collapse mt-2" id="comments-{{ post.id }}">
+                                <form class="comment-form" data-post-id="{{ post.id }}">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control comment-input" placeholder="Write a comment..." required name="comment">
+                                        <button class="btn btn-primary" type="submit">Comment</button>
+                                    </div>
+                                </form>
+                                <div class="comment-container" id="comment-container-{{ post.id }}">
+                                    {% for comment in post.comments.all %}
+                                    {% if not comment.parent %}
+                                    <div class="comment-item d-flex gap-2" id="comment-{{ comment.id }}">
+                                        <img src="{% if comment.user_profile.profile_image %}{{ comment.user_profile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" alt="{{ comment.user_profile.user.get_full_name }}" class="rounded-circle" width="36" height="36">
+                                        <div class="comment-content flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div class="d-flex flex-column">
+                                                    <div class="d-flex align-items-center gap-1">
+                                                        <strong class="fw-bold">{{ comment.user_profile.user.get_full_name }}</strong>
+                                                        <small class="text-muted ms-2">{{ comment.created_at|timesince }} ago</small>
+                                                    </div>
+                                                    <p class="mb-1 text-dark">{{ comment.text }}</p>
+                                                </div>
+                                                <button class="btn btn-link btn-sm p-0 reply-toggle text-muted" type="button" data-reply-id="reply-{{ comment.id }}">
+                                                    <i class="bi bi-reply"></i>
+                                                </button>
+                                            </div>
+                                            <div class="collapse mt-2" id="reply-{{ comment.id }}">
+                                                <form class="reply-form" data-post-id="{{ post.id }}" data-parent-id="{{ comment.id }}">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control reply-input" placeholder="Write a reply..." required name="comment">
+                                                        <button class="btn btn-secondary" type="submit">Reply</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="reply-container" id="replies-{{ comment.id }}" style="display: none;"></div>
+                                            <button class="btn view-replies" data-comment-id="{{ comment.id }}">View Replies</button>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% empty %}
+                                    <p class="text-muted mt-2">No comments yet.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% elif post.content_type == "blog" and content %}
+                    <!-- Blog Post Card -->
+                    <div class="card mb-3 blog-post-card" data-post-id="{{ post.id }}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex gap-2">
+                                    <img src="{% if post.user_profile.profile_image %}{{ post.user_profile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" alt="{{ post.user_profile.user.username }}" class="rounded-circle" width="40" height="40">
+                                    <div>
+                                        <h6 class="mb-0">{{ post.user_profile.user.get_full_name }}</h6>
+                                        <small class="text-muted">{{ post.created_at|timesince }} ago</small>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle"><i class="bi bi-three-dots"></i></button>
+                                    <ul class="dropdown-menu">
+                                        {% if post.user_profile.user == request.user %}
+                                        <li><button class="dropdown-item text-danger delete-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-trash"></i> Delete Post</button></li>
+                                        {% endif %}
+                                        <li><button class="dropdown-item save-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-bookmark"></i> Save Post</button></li>
+                                        <li><button class="dropdown-item report-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-flag"></i> Report Post</button></li>
+                                        <li><button class="dropdown-item hide-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-eye-slash"></i> Hide Post</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="blog-post-content">
+                                <span class="badge bg-primary mb-2">Blog</span>
+                                <h5 class="mb-2">{{ content.title }}</h5>
+                                <p class="text-muted mb-3">{{ content.content|truncatewords:30|safe }}</p>
+                                {% if content.thumbnail %}
+                                <img src="{{ content.thumbnail.url }}" alt="Blog thumbnail" class="img-fluid mb-3 rounded">
+                                {% endif %}
+                                <a href="{% url 'blog_detail' content.id %}" class="btn btn-outline-primary btn-sm">Read More</a>
+                            </div>
+                            <div class="post-interactions d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <button class="btn btn-light like-btn" data-post-id="{{ post.id }}">
+                                        <i class="bi bi-heart"></i> <span class="like-count">{{ post.likes.count }}</span>
+                                    </button>
+                                    <button class="btn btn-light comment-toggle" type="button" data-bs-target="#comments-{{ post.id }}">
+                                        <i class="bi bi-chat"></i> {{ post.comments.count }}
+                                    </button>
+                                    <button class="btn btn-light share-btn" data-post-id="{{ post.id }}">
+                                        <i class="bi bi-share"></i> Share
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="collapse mt-2" id="comments-{{ post.id }}">
+                                <form class="comment-form" data-post-id="{{ post.id }}">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control comment-input" placeholder="Write a comment..." required name="comment">
+                                        <button class="btn btn-primary" type="submit">Comment</button>
+                                    </div>
+                                </form>
+                                <div class="comment-container" id="comment-container-{{ post.id }}">
+                                    {% for comment in post.comments.all %}
+                                    {% if not comment.parent %}
+                                    <div class="comment-item d-flex gap-2" id="comment-{{ comment.id }}">
+                                        <img src="{% if comment.user_profile.profile_image %}{{ comment.user_profile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" alt="{{ comment.user_profile.user.get_full_name }}" class="rounded-circle" width="36" height="36">
+                                        <div class="comment-content flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div class="d-flex flex-column">
+                                                    <div class="d-flex align-items-center gap-1">
+                                                        <strong class="fw-bold">{{ comment.user_profile.user.get_full_name }}</strong>
+                                                        <small class="text-muted ms-2">{{ comment.created_at|timesince }} ago</small>
+                                                    </div>
+                                                    <p class="mb-1 text-dark">{{ comment.text }}</p>
+                                                </div>
+                                                <button class="btn btn-link btn-sm p-0 reply-toggle text-muted" type="button" data-reply-id="reply-{{ comment.id }}">
+                                                    <i class="bi bi-reply"></i>
+                                                </button>
+                                            </div>
+                                            <div class="collapse mt-2" id="reply-{{ comment.id }}">
+                                                <form class="reply-form" data-post-id="{{ post.id }}" data-parent-id="{{ comment.id }}">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control reply-input" placeholder="Write a reply..." required name="comment">
+                                                        <button class="btn btn-secondary" type="submit">Reply</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="reply-container" id="replies-{{ comment.id }}" style="display: none;"></div>
+                                            <button class="btn view-replies" data-comment-id="{{ comment.id }}">View Replies</button>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% empty %}
+                                    <p class="text-muted mt-2">No comments yet.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% elif post.content_type == "whitepaper" and content %}
+                    <!-- Whitepaper Post Card -->
+                    <div class="card mb-3 whitepaper-post-card" data-post-id="{{ post.id }}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex gap-2">
+                                    <img src="{% if post.user_profile.profile_image %}{{ post.user_profile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" alt="{{ post.user_profile.user.username }}" class="rounded-circle" width="40" height="40">
+                                    <div>
+                                        <h6 class="mb-0">{{ post.user_profile.user.get_full_name }}</h6>
+                                        <small class="text-muted">{{ post.created_at|timesince }} ago</small>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle"><i class="bi bi-three-dots"></i></button>
+                                    <ul class="dropdown-menu">
+                                        {% if post.user_profile.user == request.user %}
+                                        <li><button class="dropdown-item text-danger delete-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-trash"></i> Delete Post</button></li>
+                                        {% endif %}
+                                        <li><button class="dropdown-item save-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-bookmark"></i> Save Post</button></li>
+                                        <li><button class="dropdown-item report-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-flag"></i> Report Post</button></li>
+                                        <li><button class="dropdown-item hide-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-eye-slash"></i> Hide Post</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="whitepaper-post-content">
+                                <span class="badge bg-success mb-2">Whitepaper</span>
+                                <h5 class="mb-2">{{ content.title }}</h5>
+                                <p class="text-muted mb-3">{{ content.summary|truncatewords:30 }}</p>
+                                <a href="{% url 'whitepaper_detail' content.id %}" class="btn btn-outline-success btn-sm">View Whitepaper</a>
+                            </div>
+                            <div class="post-interactions d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <button class="btn btn-light like-btn" data-post-id="{{ post.id }}">
+                                        <i class="bi bi-heart"></i> <span class="like-count">{{ post.likes.count }}</span>
+                                    </button>
+                                    <button class="btn btn-light comment-toggle" type="button" data-bs-target="#comments-{{ post.id }}">
+                                        <i class="bi bi-chat"></i> {{ post.comments.count }}
+                                    </button>
+                                    <button class="btn btn-light share-btn" data-post-id="{{ post.id }}">
+                                        <i class="bi bi-share"></i> Share
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="collapse mt-2" id="comments-{{ post.id }}">
+                                <form class="comment-form" data-post-id="{{ post.id }}">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control comment-input" placeholder="Write a comment..." required name="comment">
+                                        <button class="btn btn-primary" type="submit">Comment</button>
+                                    </div>
+                                </form>
+                                <div class="comment-container" id="comment-container-{{ post.id }}">
+                                    {% for comment in post.comments.all %}
+                                    {% if not comment.parent %}
+                                    <div class="comment-item d-flex gap-2" id="comment-{{ comment.id }}">
+                                        <img src="{% if comment.user_profile.profile_image %}{{ comment.user_profile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" alt="{{ comment.user_profile.user.get_full_name }}" class="rounded-circle" width="36" height="36">
+                                        <div class="comment-content flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div class="d-flex flex-column">
+                                                    <div class="d-flex align-items-center gap-1">
+                                                        <strong class="fw-bold">{{ comment.user_profile.user.get_full_name }}</strong>
+                                                        <small class="text-muted ms-2">{{ comment.created_at|timesince }} ago</small>
+                                                    </div>
+                                                    <p class="mb-1 text-dark">{{ comment.text }}</p>
+                                                </div>
+                                                <button class="btn btn-link btn-sm p-0 reply-toggle text-muted" type="button" data-reply-id="reply-{{ comment.id }}">
+                                                    <i class="bi bi-reply"></i>
+                                                </button>
+                                            </div>
+                                            <div class="collapse mt-2" id="reply-{{ comment.id }}">
+                                                <form class="reply-form" data-post-id="{{ post.id }}" data-parent-id="{{ comment.id }}">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control reply-input" placeholder="Write a reply..." required name="comment">
+                                                        <button class="btn btn-secondary" type="submit">Reply</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="reply-container" id="replies-{{ comment.id }}" style="display: none;"></div>
+                                            <button class="btn view-replies" data-comment-id="{{ comment.id }}">View Replies</button>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% empty %}
+                                    <p class="text-muted mt-2">No comments yet.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% elif post.content_type == "insight" and content %}
+                    <!-- Insight Post Card -->
+                    <div class="card mb-3 insight-post-card" data-post-id="{{ post.id }}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex gap-2">
+                                    <img src="{% if post.user_profile.profile_image %}{{ post.user_profile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" alt="{{ post.user_profile.user.username }}" class="rounded-circle" width="40" height="40">
+                                    <div>
+                                        <h6 class="mb-0">{{ post.user_profile.user.get_full_name }}</h6>
+                                        <small class="text-muted">{{ post.created_at|timesince }} ago</small>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle"><i class="bi bi-three-dots"></i></button>
+                                    <ul class="dropdown-menu">
+                                        {% if post.user_profile.user == request.user %}
+                                        <li><button class="dropdown-item text-danger delete-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-trash"></i> Delete Post</button></li>
+                                        {% endif %}
+                                        <li><button class="dropdown-item save-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-bookmark"></i> Save Post</button></li>
+                                        <li><button class="dropdown-item report-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-flag"></i> Report Post</button></li>
+                                        <li><button class="dropdown-item hide-post-btn" data-post-id="{{ post.id }}"><i class="bi bi-eye-slash"></i> Hide Post</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="insight-post-content">
+                                <span class="badge bg-info mb-2">Insight</span>
+                                <h5 class="mb-2">{{ content.title }}</h5>
+                                <p class="text-muted mb-3">{{ content.summary|truncatewords:30 }}</p>
+                                <a href="{% url 'insight_detail' content.id %}" class="btn btn-outline-info btn-sm">View Insight</a>
+                            </div>
+                            <div class="post-interactions d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <button class="btn btn-light like-btn" data-post-id="{{ post.id }}">
+                                        <i class="bi bi-heart"></i> <span class="like-count">{{ post.likes.count }}</span>
+                                    </button>
+                                    <button class="btn btn-light comment-toggle" type="button" data-bs-target="#comments-{{ post.id }}">
+                                        <i class="bi bi-chat"></i> {{ post.comments.count }}
+                                    </button>
+                                    <button class="btn btn-light share-btn" data-post-id="{{ post.id }}">
+                                        <i class="bi bi-share"></i> Share
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="collapse mt-2" id="comments-{{ post.id }}">
+                                <form class="comment-form" data-post-id="{{ post.id }}">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control comment-input" placeholder="Write a comment..." required name="comment">
+                                        <button class="btn btn-primary" type="submit">Comment</button>
+                                    </div>
+                                </form>
+                                <div class="comment-container" id="comment-container-{{ post.id }}">
+                                    {% for comment in post.comments.all %}
+                                    {% if not comment.parent %}
+                                    <div class="comment-item d-flex gap-2" id="comment-{{ comment.id }}">
+                                        <img src="{% if comment.user_profile.profile_image %}{{ comment.user_profile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" alt="{{ comment.user_profile.user.get_full_name }}" class="rounded-circle" width="36" height="36">
+                                        <div class="comment-content flex-grow-1">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div class="d-flex flex-column">
+                                                    <div class="d-flex align-items-center gap-1">
+                                                        <strong class="fw-bold">{{ comment.user_profile.user.get_full_name }}</strong>
+                                                        <small class="text-muted ms-2">{{ comment.created_at|timesince }} ago</small>
+                                                    </div>
+                                                    <p class="mb-1 text-dark">{{ comment.text }}</p>
+                                                </div>
+                                                <button class="btn btn-link btn-sm p-0 reply-toggle text-muted" type="button" data-reply-id="reply-{{ comment.id }}">
+                                                    <i class="bi bi-reply"></i>
+                                                </button>
+                                            </div>
+                                            <div class="collapse mt-2" id="reply-{{ comment.id }}">
+                                                <form class="reply-form" data-post-id="{{ post.id }}" data-parent-id="{{ comment.id }}">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control reply-input" placeholder="Write a reply..." required name="comment">
+                                                        <button class="btn btn-secondary" type="submit">Reply</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="reply-container" id="replies-{{ comment.id }}" style="display: none;"></div>
+                                            <button class="btn view-replies" data-comment-id="{{ comment.id }}">View Replies</button>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% empty %}
+                                    <p class="text-muted mt-2">No comments yet.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                    {% empty %}
+                    <p class="text-center text-muted">No posts available.</p>
+                    {% endfor %}
+                    <div class="loading-indicator" id="loadingIndicator"><span>Loading more posts...</span></div>
+                </div>
+            </div>
+            {% endblock %}
+
+            <!-- Right Sidebar -->
+            <div class="col-lg-3 d-none d-lg-block right-sidebar ">
+                <div class="card mb-3">
+                    <div class="card-body text-center">
+                        <img src="{% if request.user.userprofile.profile_image %}{{ request.user.userprofile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" alt="Sarah" class="rounded-circle mb-3" width="80" height="80">
+                        <h5>{{ request.user.get_full_name }}</h5>
+                        <p class="text-muted">Web Developer</p>
+                        <div class="profile-actions">
+                            <a href="{% url 'saved_posts'%}" class="d-block mb-2">Saved items</a>
+                            <a href="#" class="d-block mb-2">Your Posts</a>
+                            <a href="{% url 'social_dashboard'%}" class="d-block">View Analytics on dashboard</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="card-title">People from Accenture</h6>
+                        <div class="people-list">
+                            <div class="people-item d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex gap-2"><img src="/placeholder.svg?height=40&width=40" alt="Luke" class="rounded-circle"><div><h6 class="mb-0">Luke Wood</h6><small class="text-muted">Web Developer</small></div></div>
+                                <button class="btn btn-primary btn-sm">Follow</button>
+                            </div>
+                            <div class="people-item d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex gap-2"><img src="/placeholder.svg?height=40&width=40" alt="Emima" class="rounded-circle"><div><h6 class="mb-0">Emima Liza</h6><small class="text-muted">Java Developer</small></div></div>
+                                <button class="btn btn-primary btn-sm">Follow</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-link w-100">Show others</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="sharePostModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Share Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Post Preview -->
+                    <div id="postPreview" class="mb-4 p-3 border rounded bg-light"></div>
+    
+                    <!-- Share Message -->
+                    <div class="mb-3">
+                        <textarea id="shareMessage" class="form-control share-message-input" placeholder="Write a message..." rows="2"></textarea>
+                    </div>
+    
+                    <!-- Search and Follower List -->
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="ri-search-line"></i></span>
+                            <input type="text" id="searchFollowers" class="form-control border-start-0" placeholder="Search followers...">
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <!-- Suggested Followers -->
+                        <div class="col-12 col-md-6 mb-3">
+                            <p class="fw-bold mb-2">Suggested</p>
+                            <div class="follower-list-container">
+                                <ul id="followersList" class="list-group"></ul>
+                            </div>
+                        </div>
+    
+                        <!-- Search Results -->
+                        <div class="col-12 col-md-6 d-none" id="searchResultsContainer">
+                            <p class="fw-bold mb-2">Search Results</p>
+                            <div class="follower-list-container">
+                                <ul id="searchResultsList" class="list-group"></ul>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <input type="hidden" id="sharedPostId">
+                    <button id="sendShareBtn" class="btn btn-primary w-100 mt-3">Share Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const currentUser = {
+            id: "{{ request.user.id|escapejs }}",
+            username: "{{ request.user.username|escapejs }}",
+            fullName: "{{ request.user.get_full_name|escapejs }}",
+            profileImage: "{% if request.user.userprofile.profile_image %}{{ request.user.userprofile.profile_image.url|escapejs }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}"
+        };
+        const getCookie = (name) => document.cookie.split(';').map(cookie => cookie.trim()).find(cookie => cookie.startsWith(`${name}=`))?.substring(name.length + 1) ?? null;
+        const timeAgo = (time) => {
+            if (!time) return "Invalid date";
+            let date = typeof time === "string" ? new Date(time) : time instanceof Date ? time : null;
+            if (!date || isNaN(date.getTime())) return "Invalid date";
+            const secondsAgo = Math.floor((new Date() - date) / 1000);
+            if (secondsAgo < 60) return "Just now";
+            const minutesAgo = Math.floor(secondsAgo / 60);
+            if (minutesAgo < 60) return `${minutesAgo} minutes ago`;
+            const hoursAgo = Math.floor(minutesAgo / 60);
+            if (hoursAgo < 24) return `${hoursAgo} hours ago`;
+            return `${Math.floor(hoursAgo / 24)} days ago`;
+        };
+        const DOM = {
+            followersList: () => document.getElementById("followersList"),
+            searchResultsList: () => document.getElementById("searchResultsList"),
+            searchResultsContainer: () => document.getElementById("searchResultsContainer"),
+            postPreview: () => document.getElementById("postPreview"),
+            postAuthor: () => document.getElementById("postAuthor"),
+            sharedPostId: () => document.getElementById("sharedPostId"),
+            searchFollowers: () => document.getElementById("searchFollowers"),
+            sendShareBtn: () => document.getElementById("sendShareBtn"),
+            refreshTimeline: () => document.getElementById("refreshTimeline"),
+            postsContainer: () => document.querySelector(".post-grid"),
+            createPostForm: () => document.getElementById("createPostForm"),
+        };
+        const ShareModal = {
+            allFollowers: [],
+            init: () => {
+                document.querySelectorAll(".share-btn").forEach(button => button.addEventListener("click", ShareModal.handleShareClick));
+                DOM.searchFollowers().addEventListener("input", ShareModal.handleSearch);
+                DOM.sendShareBtn().addEventListener("click", ShareModal.handleSend);
+            },
+            handleShareClick: async (event) => {
+                const postId = event.currentTarget.getAttribute("data-post-id");
+                const modal = new bootstrap.Modal(document.getElementById("sharePostModal"));
+                DOM.sharedPostId().value = postId;
+                DOM.followersList().innerHTML = `<p class="text-center text-muted">Loading followers...</p>`;
+                DOM.searchResultsContainer().classList.add("d-none");
+                try {
+                    const followers = await ShareModal.fetchFollowers();
+                    ShareModal.renderFollowers(followers);
+                    const postData = await ShareModal.fetchPostContent(postId);
+                    ShareModal.renderPostPreview(postData);
+                    modal.show();
+                } catch (error) {
+                    console.error("Error in share modal:", error);
+                    DOM.followersList().innerHTML = `<p class="text-danger text-center">Failed to load followers.</p>`;
+                }
+            },
+            fetchFollowers: async () => {
+                const response = await fetch("/get-followers/");
+                const data = await response.json();
+                ShareModal.allFollowers = data.followers;
+                return data.followers;
+            },
+            fetchPostContent: async (postId) => {
+                const response = await fetch(`/get-post-content/${postId}/`);
+                return response.json();
+            },
+            renderFollowers: (followers) => {
+                const list = DOM.followersList();
+                list.innerHTML = followers.length === 0 ? `<li class="list-group-item text-center text-muted">No followers found.</li>` : followers.map(follower => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="${follower.profile_image}" class="rounded-circle" width="36" height="36" alt="${follower.name}">
+                            <span class="fw-bold">${follower.name}</span>
+                        </div>
+                        <input type="checkbox" class="form-check-input share-recipient" value="${follower.id}">
+                    </li>
+                `).join("");
+            },
+            renderPostPreview: (postData) => {
+                DOM.postPreview().innerHTML = `
+                    <div class="d-flex gap-2 mb-2">
+                        <img src="${postData.profile_image || '{% static "images/Profile-default.png" %}'}" class="rounded-circle" width="40" height="40" alt="${postData.author}">
+                        <div>
+                            <strong>${postData.author}</strong>
+                            <small class="text-muted d-block">${timeAgo(new Date(postData.created_at))}</small>
+                        </div>
+                    </div>
+                    <p class="mb-2">${postData.caption}</p>
+                    ${postData.image ? `<img src="${postData.image}" class="img-fluid rounded w-100" alt="Post Image">` : ""}
+                `;
+            },
+            handleSearch: (event) => {
+                const query = event.target.value.toLowerCase().trim();
+                const container = DOM.searchResultsContainer();
+                const list = DOM.searchResultsList();
+                if (!query) {
+                    container.classList.add("d-none");
+                    return;
+                }
+                const filtered = ShareModal.allFollowers.filter(f => f.name.toLowerCase().includes(query));
+                list.innerHTML = filtered.length === 0 ? `<li class="list-group-item text-center text-muted">No results found.</li>` : filtered.map(f => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="${f.profile_image}" class="rounded-circle" width="36" height="36" alt="${f.name}">
+                            <span class="fw-bold">${f.name}</span>
+                        </div>
+                        <input type="checkbox" class="form-check-input share-recipient" value="${f.id}">
+                    </li>
+                `).join("");
+                container.classList.remove("d-none");
+            },
+            handleSend: async () => {
+                const recipients = Array.from(document.querySelectorAll(".share-recipient:checked")).map(cb => cb.value);
+                if (recipients.length === 0) return alert("Select at least one person to share with.");
+                const message = document.getElementById("shareMessage").value.trim();
+                const button = DOM.sendShareBtn();
+                button.disabled = true;
+                button.textContent = "Sharing...";
+                try {
+                    const response = await fetch("/send-post-share/", {
+                        method: "POST",
+                        headers: { "X-CSRFToken": getCookie("csrftoken"), "Content-Type": "application/json" },
+                        body: JSON.stringify({ post_id: DOM.sharedPostId().value, recipients, message })
+                    });
+                    const data = await response.json();
+                    alert(data.success ? "Post shared successfully!" : "Error sharing post.");
+                    if (data.success) document.getElementById("sharePostModal").querySelector(".btn-close").click();
+                } catch (error) {
+                    console.error("Error sharing post:", error);
+                    alert("Something went wrong. Please try again.");
+                } finally {
+                    button.disabled = false;
+                    button.textContent = "Share Now";
+                }
+            },
+        };
+        const Timeline = {
+            socket: null,
+            followingUserIds: [],
+            followerUserIds: [], // Added: Store follower IDs
+            lastPostTime: null,
+            hasFollowConnections: null, // Added: Track if there are any follow connections
+            init: () => {
+                Promise.all([
+                    Timeline.fetchFollowingUserIds(),
+                    Timeline.fetchFollowerUserIds(), // Added: Fetch follower IDs
+                    Timeline.checkFollowConnections() // Added: Check for follow connections
+                ]).then(() => {
+                    Timeline.setupWebSocket();
+                    DOM.refreshTimeline().addEventListener("click", Timeline.handleRefresh);
+                    Timeline.attachEventListeners();
+                    Timeline.setLastPostTime();
+                });
+            },
+            fetchFollowingUserIds: async () => {
+                try {
+                    const response = await fetch("/get-following-user-ids/");
+                    const data = await response.json();
+                    Timeline.followingUserIds = (data.following_user_ids || []).map(String);
+                } catch (error) {
+                    console.error("Error fetching following user IDs:", error);
+                    Timeline.followingUserIds = [];
+                }
+            },
+            fetchFollowerUserIds: async () => { // Added: Fetch follower IDs
+                try {
+                    const response = await fetch("/get-follower-user-ids/");
+                    const data = await response.json();
+                    Timeline.followerUserIds = (data.follower_user_ids || []).map(String);
+                } catch (error) {
+                    console.error("Error fetching follower user IDs:", error);
+                    Timeline.followerUserIds = [];
+                }
+            },
+            checkFollowConnections: async () => { // Added: Check if any follow connections exist
+                try {
+                    const response = await fetch("/check-follow-connections/");
+                    const data = await response.json();
+                    Timeline.hasFollowConnections = data.has_follow_connections;
+                } catch (error) {
+                    console.error("Error checking follow connections:", error);
+                    Timeline.hasFollowConnections = false; // Default to false on error
+                }
+            },
+            setupWebSocket: () => {
+                Timeline.socket = new WebSocket(`ws://${window.location.host}/ws/timeline/`);
+                Timeline.socket.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    switch (data.action) {
+                        case "new_post":
+                            // Updated: Only render post if it meets the follow connection condition
+                            const isOwnPost = data.post.user_id === currentUser.id;
+                            if (Timeline.hasFollowConnections) {
+                                if (Timeline.followingUserIds.includes(data.post.user_id) || 
+                                    Timeline.followerUserIds.includes(data.post.user_id) || 
+                                    isOwnPost) {
+                                    Timeline.handleNewPost(data.post);
+                                }
+                            } else if (isOwnPost) {
+                                Timeline.handleNewPost(data.post);
+                            }
+                            break;
+                        case "show_refresh_button":
+                            DOM.refreshTimeline().classList.remove("d-none");
+                            break;
+                        case "like_update":
+                            Timeline.updateLikeCount(data.post_id, data.like_count);
+                            break;
+                        case "new_comment":
+                            Timeline.handleNewComment(data);
+                            break;
+                        default:
+                            console.warn("Unknown WebSocket action:", data.action);
+                    }
+                };
+                Timeline.socket.onopen = () => console.log("✅ WebSocket connection established");
+                Timeline.socket.onerror = (error) => console.error("❌ WebSocket error:", error);
+                Timeline.socket.onclose = () => console.log("❌ WebSocket closed");
+            },
+            setLastPostTime: () => {
+                const latestPost = document.querySelector(".post-grid .card");
+                if (latestPost) {
+                    const createdAt = latestPost.querySelector("small.text-muted").textContent.split(" ago")[0];
+                    Timeline.lastPostTime = new Date().toISOString(); // Simplified for now
+                }
+            },
+            handleRefresh: async () => {
+                try {
+                    // Instead of fetching and adding posts, just reload the page
+                    window.location.reload();
+                } catch (error) {
+                    console.error("Error refreshing timeline:", error);
+                }
+            },
+            handleNewPost: (post) => {
+    if (document.querySelector(`[data-post-id="${post.id}"]`)) {
+        console.log(`Post with ID ${post.id} already exists in the DOM, skipping render.`);
+        return;
+    }
+    const postHTML = Timeline.createPostHTML(post);
+    DOM.postsContainer().insertAdjacentHTML("afterbegin", postHTML);
+    Timeline.attachEventListeners();
+},
+            handleNewComment: (data) => {
+                if (document.getElementById(`comment-${data.comment_id}`)) return;
+                const container = data.parent_id ? document.querySelector(`#replies-${data.parent_id}`) : document.querySelector(`#comment-container-${data.post_id}`);
+                const commentCountElement = document.querySelector(`[data-bs-target="#comments-${data.post_id}"]`);
+                if (container) {
+                    container.insertAdjacentHTML("beforeend", Comments.createCommentHTML(data));
+                    Timeline.attachEventListeners();
+                }
+                if (commentCountElement) commentCountElement.innerHTML = `<i class="bi bi-chat"></i> ${data.comment_count}`;
+            },
+            updateLikeCount: (postId, count) => {
+                const element = document.querySelector(`[data-post-id="${postId}"] .like-count`);
+                if (element) element.textContent = count;
+            },
+            attachEventListeners: () => {
+                document.querySelectorAll(".comment-toggle:not(.bound)").forEach(button => {
+                    button.classList.add("bound");
+                    button.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        const targetId = button.getAttribute("data-bs-target");
+                        const collapseElement = document.querySelector(targetId);
+                        if (collapseElement) bootstrap.Collapse.getOrCreateInstance(collapseElement).toggle();
+                    });
+                });
+                document.querySelectorAll(".like-btn:not(.bound)").forEach(button => {
+                    button.classList.add("bound");
+                    button.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        Comments.handleLike(button);
+                    });
+                });
+                document.querySelectorAll(".share-btn:not(.bound)").forEach(button => {
+                    button.classList.add("bound");
+                    button.addEventListener("click", ShareModal.handleShareClick);
+                });
+                document.querySelectorAll(".reply-toggle:not(.bound)").forEach(button => {
+                    button.classList.add("bound");
+                    button.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        const targetId = button.getAttribute("data-reply-id");
+                        const collapseElement = document.querySelector(`#${targetId}`);
+                        if (collapseElement) bootstrap.Collapse.getOrCreateInstance(collapseElement).toggle();
+                    });
+                });
+                document.querySelectorAll(".view-replies:not(.bound)").forEach(button => {
+                    button.classList.add("bound");
+                    button.addEventListener("click", Comments.handleViewReplies);
+                });
+            },
+            createPostHTML: (post) => {
+                // Determine the post type and content
+                const isNormalPost = !post.content_type || post.content_type === "normal";
+                const isBlogPost = post.content_type === "blog";
+                const isWhitepaperPost = post.content_type === "whitepaper";
+                const isInsightPost = post.content_type === "insight";
+    
+                // Base post HTML structure
+                let postContentHTML = "";
+                if (isNormalPost) {
+                    postContentHTML = `
+                        <p>${post.caption}</p>
+                        ${post.image ? `<img src="${post.image}" alt="Post image" class="img-fluid mb-3 w-100 d-block rounded">` : ""}
+                    `;
+                } else if (isBlogPost && post.content) {
+                    postContentHTML = `
+                        <div class="blog-post-content">
+                            <span class="badge bg-primary mb-2">Blog</span>
+                            <h5 class="mb-2">${post.content.title}</h5>
+                            <p class="text-muted mb-3">${post.content.content ? post.content.content.split(" ").slice(0, 30).join(" ") + "..." : ""}</p>
+                            ${post.content.thumbnail ? `<img src="${post.content.thumbnail}" alt="Blog thumbnail" class="img-fluid mb-3 rounded">` : ""}
+                            <a href="/blog/${post.content.id}/" class="btn btn-outline-primary btn-sm">Read More</a>
+                        </div>
+                    `;
+                } else if (isWhitepaperPost && post.content) {
+                    postContentHTML = `
+                        <div class="whitepaper-post-content">
+                            <span class="badge bg-success mb-2">Whitepaper</span>
+                            <h5 class="mb-2">${post.content.title}</h5>
+                            <p class="text-muted mb-3">${post.content.summary ? post.content.summary.split(" ").slice(0, 30).join(" ") + "..." : ""}</p>
+                            <a href="/whitepaper/${post.content.id}/" class="btn btn-outline-success btn-sm">Download Whitepaper</a>
+                        </div>
+                    `;
+                } else if (isInsightPost && post.content) {
+                    postContentHTML = `
+                        <div class="insight-post-content">
+                            <span class="badge bg-info mb-2">Insight</span>
+                            <h5 class="mb-2">${post.content.title}</h5>
+                            <p class="text-muted mb-3">${post.content.summary ? post.content.summary.split(" ").slice(0, 30).join(" ") + "..." : ""}</p>
+                            <a href="/insight/${post.content.id}/" class="btn btn-outline-info btn-sm">View Insight</a>
+                        </div>
+                    `;
+                }
+    
+                // Determine the card class based on content type
+                const cardClass = isNormalPost ? "normal-post-card" : 
+                                isBlogPost ? "blog-post-card" : 
+                                isWhitepaperPost ? "whitepaper-post-card" : 
+                                "insight-post-card";
+    
+                return `
+                    <div class="card mb-3 ${cardClass}" data-post-id="${post.id}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex gap-2">
+                                    <img src="${post.user_profile_image || '/static/images/Profile-default.png'}" alt="${post.username}" class="rounded-circle" width="40" height="40">
+                                    <div>
+                                        <h6 class="mb-0">${post.full_name}</h6>
+                                        <small class="text-muted">${timeAgo(new Date(post.created_at))}</small>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm dropdown-toggle"><i class="bi bi-three-dots"></i></button>
+                                    <ul class="dropdown-menu">
+                                        ${post.user_id === currentUser.id ? `
+                                            <li><button class="dropdown-item text-danger delete-post-btn" data-post-id="${post.id}"><i class="bi bi-trash"></i> Delete Post</button></li>
+                                            ${isNormalPost ? `<li><button class="dropdown-item edit-post-btn" data-post-id="${post.id}" data-post-content="${post.caption}"><i class="bi bi-pencil"></i> Edit Post</button></li>` : ""}
+                                        ` : ""}
+                                        <li><button class="dropdown-item save-post-btn" data-post-id="${post.id}"><i class="bi bi-bookmark"></i> Save Post</button></li>
+                                        <li><button class="dropdown-item report-post-btn" data-post-id="${post.id}"><i class="bi bi-flag"></i> Report Post</button></li>
+                                        <li><button class="dropdown-item hide-post-btn" data-post-id="${post.id}"><i class="bi bi-eye-slash"></i> Hide Post</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            ${postContentHTML}
+                            <div class="post-interactions d-flex justify-content-between align-items-center mb-2 mt-3">
+                                <div class="d-flex gap-3">
+                                    <button class="btn btn-light like-btn" data-post-id="${post.id}">
+                                        <i class="bi bi-heart"></i> <span class="like-count">${post.like_count}</span>
+                                    </button>
+                                    <button class="btn btn-light comment-toggle" data-bs-target="#comments-${post.id}">
+                                        <i class="bi bi-chat"></i> ${post.comment_count}
+                                    </button>
+                                    <button class="btn btn-light share-btn" data-post-id="${post.id}">
+                                        <i class="bi bi-share"></i> Share
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="collapse mt-2" id="comments-${post.id}">
+                                <form class="comment-form mb-3" data-post-id="${post.id}">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control comment-input rounded-pill" placeholder="Add a comment..." required name="comment">
+                                        <button class="btn btn-primary rounded-pill" type="submit">Post</button>
+                                    </div>
+                                </form>
+                                <div class="comment-container" id="comment-container-${post.id}"></div>
+                            </div>
+                        </div>
+                    </div>`;
+            },
+        };
+        const Comments = {
+            init: () => document.addEventListener("submit", Comments.handleSubmit),
+            handleViewReplies: async (event) => {
+                const button = event.currentTarget;
+                const commentId = button.dataset.commentId;
+                const container = document.getElementById(`replies-${commentId}`);
+                if (container.style.display === "none") {
+                    try {
+                        const response = await fetch(`/get-replies/${commentId}/`);
+                        const data = await response.json();
+                        if (data.replies && data.replies.length > 0) {
+                            container.innerHTML = data.replies.map(reply => `
+                                <div class="comment-item d-flex gap-2 mt-2">
+                                    <img src="${reply.user_profile_image || '/static/images/Profile-default.png'}" alt="${reply.user_name}" class="rounded-circle" width="30" height="30">
+                                    <div class="comment-content flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="d-flex flex-column">
+                                                <div class="d-flex align-items-center gap-1">
+                                                    <strong class="fw-bold">${reply.user_name}</strong>
+                                                    <small class="text-muted ms-2">${timeAgo(new Date(reply.created_at))}</small>
+                                                </div>
+                                                <p class="mb-1 text-dark">${reply.text}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join("");
+                            container.style.display = "block";
+                            button.textContent = "Hide Replies";
+                        } else {
+                            container.innerHTML = `<p class="text-muted">No replies yet.</p>`;
+                            container.style.display = "block";
+                            button.textContent = "Hide Replies";
+                        }
+                    } catch (error) {
+                        console.error("Error fetching replies:", error);
+                        container.innerHTML = `<p class="text-danger">Failed to load replies.</p>`;
+                        container.style.display = "block";
+                    }
+                } else {
+                    container.style.display = "none";
+                    button.textContent = "View Replies";
+                }
+            },
+            handleSubmit: async (event) => {
+                if (!event.target.matches(".reply-form, .comment-form")) return;
+                event.preventDefault();
+                const form = event.target;
+                const postId = form.dataset.postId || form.closest(".collapse")?.id.split("-")[1];
+                const parentId = form.dataset.parentId;
+                const input = form.querySelector(".reply-input, [name='comment']");
+                const text = input.value.trim();
+                if (!text) return;
+                try {
+                    const params = new URLSearchParams({ comment: text });
+                    if (parentId && parentId !== "undefined") params.append("parent_id", parentId);
+                    const response = await fetch(`/add_comment/${postId}/`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value,
+                        },
+                        body: params,
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        input.value = "";
+                        const commentData = {
+                            post_id: postId,
+                            comment_id: result.comment_id,
+                            text: text,
+                            username: currentUser.username,
+                            full_name: currentUser.fullName,
+                            created_at: new Date().toISOString(),
+                            parent_id: parentId || null,
+                            comment_count: result.comment_count,
+                            user_profile_image: currentUser.profileImage,
+                        };
+                        Timeline.handleNewComment(commentData);
+                    } else {
+                        alert(`Failed to add comment: ${result.error}`);
+                    }
+                } catch (error) {
+                    console.error("Error submitting comment:", error);
+                    alert("An error occurred while submitting the comment.");
+                }
+            },
+            handleLike: async (button) => {
+                const postId = button.dataset.postId;
+                try {
+                    const response = await fetch(`/toggle_like/${postId}/`, {
+                        method: "POST",
+                        headers: { "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]").value },
+                    });
+                    const result = await response.json();
+                    if (result.success) button.querySelector(".like-count").textContent = result.like_count;
+                } catch (error) {
+                    console.error("Error toggling like:", error);
+                }
+            },
+            createCommentHTML: (data) => `
+                <div class="comment-item d-flex gap-2 mb-3" id="comment-${data.comment_id}">
+                    <img src="${data.user_profile_image || '/static/images/Profile-default.png'}" alt="${data.full_name}" class="rounded-circle" width="36" height="36">
+                    <div class="comment-content flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex flex-column">
+                                <div class="d-flex align-items-center gap-1">
+                                    <strong class="fw-bold">${data.full_name}</strong>
+                                    <small class="text-muted ms-2">${timeAgo(new Date(data.created_at))}</small>
+                                </div>
+                                <p class="mb-1 text-dark">${data.text}</p>
+                            </div>
+                            <button class="btn btn-link btn-sm p-0 reply-toggle text-muted" data-reply-id="reply-${data.comment_id}">
+                                <i class="bi bi-reply"></i>
+                            </button>
+                        </div>
+                        <div class="collapse mt-2" id="reply-${data.comment_id}">
+                            <form class="reply-form" data-post-id="${data.post_id}" data-parent-id="${data.comment_id}">
+                                <div class="input-group">
+                                    <input type="text" class="form-control reply-input rounded-pill" placeholder="Write a reply..." required name="comment">
+                                    <button class="btn btn-secondary rounded-pill" type="submit">Reply</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="reply-container mt-2" id="replies-${data.comment_id}" style="display: none;"></div>
+                        <button class="btn view-replies" data-comment-id="${data.comment_id}">View Replies</button>
+                    </div>
+                </div>`,
+        };
+        const PostCreation = {
+            init: () => {
+                const form = DOM.createPostForm();
+                if (form) form.addEventListener("submit", PostCreation.handleSubmit);
+                const mediaInput = document.getElementById("mediaInput");
+                const mediaButton = document.getElementById("mediaButton");
+                const removeMedia = document.getElementById("removeMedia");
+                if (mediaButton && mediaInput) {
+                    mediaButton.addEventListener("click", () => mediaInput.click());
+                    mediaInput.addEventListener("change", PostCreation.handleMediaChange);
+                    removeMedia.addEventListener("click", PostCreation.clearMedia);
+                }
+            },
+            handleSubmit: async (event) => {
+                event.preventDefault();
+                const formData = new FormData(event.target);
+                try {
+                    const response = await fetch(event.target.action, {
+                        method: "POST",
+                        body: formData,
+                        headers: { "X-CSRFToken": formData.get("csrfmiddlewaretoken") },
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        event.target.reset();
+                        PostCreation.clearMedia();
+                        // Remove this line to prevent double rendering
+                        // Timeline.handleNewPost(result.post);
+                        // Refresh the page after a short delay
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 500);
+                    } else {
+                        alert("Error creating post: " + (result.error || "Unknown error"));
+                    }
+                } catch (error) {
+                    console.error("Error creating post:", error);
+                    alert("An error occurred while creating the post.");
+                }
+            },
+            handleMediaChange: (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+                const fileType = file.type.split("/")[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const mediaPreview = document.getElementById("mediaPreview");
+                    const imagePreview = document.getElementById("imagePreview");
+                    const videoPreview = document.getElementById("videoPreview");
+                    mediaPreview.classList.remove("d-none");
+                    if (fileType === "image") {
+                        imagePreview.src = e.target.result;
+                        imagePreview.classList.remove("d-none");
+                        videoPreview.classList.add("d-none");
+                    } else if (fileType === "video") {
+                        videoPreview.src = e.target.result;
+                        videoPreview.classList.remove("d-none");
+                        imagePreview.classList.add("d-none");
+                    }
+                };
+                reader.readAsDataURL(file);
+            },
+            clearMedia: () => {
+                document.getElementById("mediaInput").value = "";
+                document.getElementById("mediaPreview").classList.add("d-none");
+                document.getElementById("imagePreview").classList.add("d-none");
+                document.getElementById("videoPreview").classList.add("d-none");
+            },
+        };
+        const Dropdowns = {
+            init: () => {
+                document.querySelectorAll(".dropdown-toggle").forEach(button => button.addEventListener("click", Dropdowns.toggleDropdown));
+                document.addEventListener("click", Dropdowns.closeAllDropdowns);
+                document.querySelectorAll(".delete-post-btn").forEach(button => button.addEventListener("click", Dropdowns.handleDelete));
+            },
+            toggleDropdown: (event) => {
+                event.stopPropagation();
+                const menu = event.currentTarget.nextElementSibling;
+                document.querySelectorAll(".dropdown-menu").forEach(m => { if (m !== menu) m.classList.remove("show"); });
+                menu.classList.toggle("show");
+            },
+            closeAllDropdowns: () => document.querySelectorAll(".dropdown-menu").forEach(menu => menu.classList.remove("show")),
+            handleDelete: (event) => {
+                const postId = event.currentTarget.dataset.postId;
+                document.getElementById("confirmDeleteBtn").href = `/delete-post/${postId}/`;
+                new bootstrap.Modal(document.getElementById("deletePostModal")).show();
+            },
+        };
+        const LazyLoading = {
+            page: 1,
+            loading: false,
+            hasMore: true,
+            init: () => {
+                const postGrid = document.getElementById("postGrid");
+                const loadingIndicator = document.getElementById("loadingIndicator");
+                const sentinel = document.createElement("div");
+                sentinel.id = "sentinel";
+                sentinel.style.height = "1px";
+                postGrid.appendChild(sentinel);
+                const observer = new IntersectionObserver((entries) => {
+                    if (entries[0].isIntersecting && !LazyLoading.loading && LazyLoading.hasMore) LazyLoading.loadMorePosts();
+                }, { rootMargin: "0px 0px 200px 0px" });
+                observer.observe(sentinel);
+            },
+            loadMorePosts: async () => {
+                LazyLoading.loading = true;
+                const postGrid = document.getElementById("postGrid");
+                const loadingIndicator = document.getElementById("loadingIndicator");
+                loadingIndicator.style.display = "block";
+                try {
+                    const response = await fetch(`/load_more_posts/?page=${LazyLoading.page + 1}`);
+                    const data = await response.json();
+                    if (data.posts && data.posts.length > 0) {
+                        LazyLoading.page += 1;
+                        data.posts.forEach(post => {
+                            const postHTML = Timeline.createPostHTML(post);
+                            postGrid.insertAdjacentHTML("beforeend", postHTML);
+                        });
+                        Timeline.attachEventListeners();
+                    } else {
+                        LazyLoading.hasMore = false;
+                    }
+                } catch (error) {
+                    console.error("Error loading more posts:", error);
+                } finally {
+                    LazyLoading.loading = false;
+                    loadingIndicator.style.display = "none";
+                }
+            }
+        };
+        document.addEventListener("DOMContentLoaded", () => {
+            ShareModal.init();
+            Timeline.init();
+            Comments.init();
+            PostCreation.init();
+            Dropdowns.init();
+            LazyLoading.init();
+            const searchInput = document.getElementById("userSearch");
+            const suggestionsDiv = document.getElementById("searchSuggestions");
+            if (searchInput && suggestionsDiv) {
+                searchInput.addEventListener("input", async () => {
+                    const query = searchInput.value.trim();
+                    suggestionsDiv.innerHTML = "";
+                    if (query.length <= 1) return;
+                    try {
+                        const response = await fetch(`/ajax/user_search/?q=${encodeURIComponent(query)}`);
+                        const data = await response.json();
+                        suggestionsDiv.innerHTML = data.suggestions.map(s => `
+                            <a href="/profile/${s.username}/" class="list-group-item list-group-item-action">
+                                <img src="${s.profile_image_url || '/static/images/Profile-default.png'}" alt="${s.full_name}" class="rounded-circle me-2" width="40" height="40">
+                                <div class="d-inline-block align-middle">
+                                    <strong>${s.full_name}</strong><br>
+                                    <small class="text-muted">${s.bio}</small>
+                                </div>
+                            </a>
+                        `).join("");
+                    } catch (error) {
+                        console.error("Error fetching suggestions:", error);
+                    }
+                });
+            }
+            const captionInput = document.getElementById("captionInput");
+            const postButton = document.getElementById("postButton");
+            if (captionInput && postButton) {
+                captionInput.addEventListener("focus", () => postButton.classList.remove("d-none"));
+                captionInput.addEventListener("blur", () => {
+                    if (!captionInput.value.trim()) postButton.classList.add("d-none");
+                });
+            }
+        });
+    </script>
+    <script>
+        document.querySelectorAll('.save-post-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const postId = this.getAttribute('data-post-id');
+                fetch(`/save_post/${postId}/`, {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': '{{ csrf_token }}', 'Content-Type': 'application/json' }
+                }).then(response => response.json()).then(data => {
+                    if (data.saved) this.innerHTML = '<i class="bi bi-bookmark-fill"></i> Saved';
+                    else this.innerHTML = '<i class="bi bi-bookmark"></i> Save Post';
+                });
+            });
+        });
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+</body>
+</html>
+{% endblock %}

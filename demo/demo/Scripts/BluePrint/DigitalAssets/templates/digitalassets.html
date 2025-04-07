@@ -1,0 +1,461 @@
+{% extends "dashboard.html" %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Digital Assets</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    
+    <style>
+      body {
+        font-family: Inter;
+      }
+      h5 {
+        font-weight: 500;
+        font-size: 18px;
+        color: #000000;
+        padding-bottom: 20px;
+      }
+      .card-custom {
+        border-radius: 15px;
+        padding: 20px;
+        border: none;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+      }
+      .card-custom:hover {
+        transform: translateY(-5px);
+      }
+      .feature-card h6 {
+        font-weight: 700;
+        font-size: 16px;
+        color: #000000;
+      }
+      .feature-card {
+        background: #f2f4f7;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: left;
+      }
+      .img-1 {
+        width: 76px;
+        height: 72px;
+      }
+      .img-2 {
+        width: 175px;
+        height: 58px;
+      }
+      .feature-card h6 {
+        margin-top: 10px;
+        font-weight: bold;
+      }
+      .feature-card p {
+        font-weight: 500;
+        font-size: 14px;
+        color: #98a2b3;
+      }
+      .feature-card a {
+        font-weight: 500;
+        font-size: 16px;
+        color: #0865b5;
+        font-weight: bold;
+        text-decoration: none;
+      }
+      .feature-card a:hover {
+        cursor: pointer;
+      }
+      .card {
+        border-radius: 15px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+      }
+      .banner-card {
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+        background: url("{% static 'images/banner-card.png' %}") no-repeat center;
+        background-size: cover;
+        color: white;
+        padding: 30px;
+      }
+      .banner-card .overlay {
+        background: rgba(0, 0, 0, 0.5);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 15px;
+      }
+      .banner-card .content {
+        position: relative;
+        z-index: 2;
+      }
+      .banner-card h5 {
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 16px;
+      }
+      .banner-card p {
+        font-size: 14px;
+        font-weight: 300;
+        padding-bottom: 10px;
+      }
+      .read {
+        cursor: pointer;
+        color: #ffffff;
+        text-decoration: none;
+      }
+      i {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+      }
+      .scrollable-content {
+        padding: 20px;
+        /* Remove height and overflow-y to prevent nested scrollbar */
+      }
+      .asset-card {
+        background: #ffffff;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+      }
+      .asset-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      }
+      .asset-card h6 {
+        font-weight: 600;
+        font-size: 16px;
+        color: #2b3241;
+        margin-bottom: 8px;
+      }
+      .asset-card p {
+        font-size: 14px;
+        color: #98a2b3;
+        margin-bottom: 10px;
+      }
+      .asset-card .last-updated {
+        font-size: 12px;
+        color: #666;
+      }
+      .asset-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        align-items: center;
+      }
+      .asset-actions .btn {
+        font-size: 14px;
+        padding: 5px 10px;
+      }
+      .asset-actions .btn-danger {
+        background-color: #dc3545;
+        border: none;
+      }
+      .asset-actions .btn-outline-primary {
+        border-color: #064c89;
+        color: #064c89;
+      }
+      .asset-actions .btn-outline-primary:hover {
+        background-color: #064c89;
+        color: #ffffff;
+      }
+      .asset-type {
+        font-size: 12px;
+        color: #064c89;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
+      .draft-badge {
+        display: inline-block;
+        background-color: #ffc107;
+        color: #fff;
+        font-size: 12px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        margin-left: 10px;
+      }
+      .view-all-btn, .draft-btn {
+        background: transparent;
+        border: 1px solid #064c89;
+        color: #064c89;
+        border-radius: 20px;
+        padding: 5px 15px;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+      .view-all-btn:hover, .draft-btn:hover {
+        background: #064c89;
+        color: #ffffff;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container my-5 scrollable-content">
+      <h5>Create your Digital Assets</h5>
+
+      <div class="row">
+        <!-- Small Feature Cards -->
+        <div class="col-md-3 col-sm-6 mb-4">
+          <div class="feature-card align-items-start">
+            <div class="d-flex justify-content-between">
+              <div class="img-1">
+                <img src="{% static 'images/wordpress.png' %}" alt="WordPress" />
+              </div>
+              <div>
+                <i class="bi bi-three-dots-vertical"></i>
+              </div>
+            </div>
+            <div class="">
+              <h6>WordPress</h6>
+              <p>Guide to build Website without code</p>
+              <a href="#">Start →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3 col-sm-6 mb-4">
+          <div class="feature-card align-items-start">
+            <div class="d-flex justify-content-between">
+              <div class="img-2">
+                <img src="{% static 'images/mparticle.png' %}" alt="IBW" />
+              </div>
+              <div>
+                <i class="bi bi-three-dots-vertical"></i>
+              </div>
+            </div>
+            <div class="pt-3">
+              <h6>IBW</h6>
+              <p>Guide to write Insights, Blogs and Whitepaper</p>
+              <a href="{% url 'ibw' %}">Start →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Large Banner Card -->
+        <div class="col-md-6">
+          <div class="card p-3">
+            <div class="banner-card d-flex align-items-center">
+              <div class="overlay"></div>
+              <div class="content">
+                <h5>Work with the Digital Assets</h5>
+                <p>
+                  Resource creation is an evolutionary section where you can
+                  create your own projects, write whitepapers, make your website
+                  using WordPress, and store all your previously created
+                  projects.
+                </p>
+                <a href="#" class="read">Read more</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assets Section -->
+      <div class="row mt-5">
+        <div class="col-12">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5>Your Digital Assets</h5>
+            <a href="{% url 'view_all_assets' %}" class="view-all-btn">View All</a>
+          </div>
+          <div id="assets-container"></div>
+          <div class="text-center mt-3">
+            <button id="load-more-btn" class="view-all-btn" style="display: none;">Load More</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      let allAssets = []; // Store all fetched assets
+      let displayedAssets = 0; // Track number of displayed assets
+      const assetsPerPage = 10; // Number of assets to load per "page"
+    
+      function getCsrfToken() {
+        const cookieValue = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('csrftoken='))
+          ?.split('=')[1];
+        return cookieValue || '';
+      }
+    
+      function displayAssets(assets, startIndex, count) {
+        const assetsContainer = document.getElementById('assets-container');
+        const endIndex = Math.min(startIndex + count, assets.length);
+    
+        for (let i = startIndex; i < endIndex; i++) {
+          const asset = assets[i];
+          const assetCard = document.createElement('div');
+          assetCard.className = 'asset-card';
+          assetCard.onclick = () => viewAsset(asset.type, asset.id);
+          assetCard.innerHTML = `
+            <div class="asset-type">${asset.type}</div>
+            <h6>
+              ${asset.title || 'Untitled'}
+              ${asset.is_draft ? '<span class="draft-badge">Draft</span>' : ''}
+            </h6>
+            <p>${asset.summary || 'No summary provided.'}</p>
+            <div class="last-updated">Last updated: ${new Date(asset.last_updated).toLocaleDateString()}</div>
+            <div class="asset-actions">
+              <button class="btn btn-outline-primary" onclick="openAsset(event, '${asset.type}', ${asset.id})">
+                Open
+              </button>
+              <button class="btn btn-danger" onclick="deleteAsset(event, '${asset.type}', ${asset.id})">Delete</button>
+            </div>
+          `;
+          assetsContainer.appendChild(assetCard);
+        }
+    
+        displayedAssets = endIndex;
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        if (displayedAssets < assets.length) {
+          loadMoreBtn.style.display = 'block';
+        } else {
+          loadMoreBtn.style.display = 'none';
+        }
+      }
+    
+      function fetchAndDisplayAssets() {
+        fetch('/get-assets/', {
+          method: 'GET',
+          headers: { 'X-CSRFToken': getCsrfToken() }
+        })
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+          return response.json();
+        })
+        .then(data => {
+          const assetsContainer = document.getElementById('assets-container');
+          if (!data.success || !data.assets || data.assets.length === 0) {
+            assetsContainer.innerHTML = '<p>No assets available.</p>';
+            document.getElementById('load-more-btn').style.display = 'none';
+            return;
+          }
+    
+          allAssets = data.assets;
+          assetsContainer.innerHTML = ''; // Clear container
+          displayAssets(allAssets, 0, assetsPerPage); // Display first 10 assets
+        })
+        .catch(error => {
+          console.error('Error fetching assets:', error);
+          assetsContainer.innerHTML = '<p>Error loading assets. Please try again later.</p>';
+          document.getElementById('load-more-btn').style.display = 'none';
+        });
+      }
+    
+      function loadMoreAssets() {
+        displayAssets(allAssets, displayedAssets, assetsPerPage);
+      }
+    
+      function viewAsset(type, assetId) {
+        window.location.href = `/view-asset/${type}/${assetId}/`;
+      }
+    
+      function openAsset(event, type, assetId) {
+        event.stopPropagation();
+        const urlMap = {
+          'blog': `/get-blog/${assetId}/`,
+          'whitepaper': `/get-whitepaper/${assetId}/`,
+          'insight': `/get-insight/${assetId}/`
+        };
+        const redirectMap = {
+          'blog': "{% url 'Blogs' %}",
+          'whitepaper': "{% url 'Whitepapers' %}",
+          'insight': "{% url 'ibw' %}"
+        };
+        const url = urlMap[type];
+        const redirectUrl = redirectMap[type];
+        if (!url || !redirectUrl) {
+          alert('Invalid asset type.');
+          return;
+        }
+    
+        fetch(url, {
+          method: 'GET',
+          headers: { 'X-CSRFToken': getCsrfToken() }
+        })
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+          return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            localStorage.setItem('currentAsset', JSON.stringify(data[type]));
+            window.location.href = redirectUrl;
+          } else {
+            alert('Error loading asset: ' + (data.error || 'Unknown error'));
+          }
+        })
+        .catch(error => {
+          console.error(`Error opening ${type} asset (ID: ${assetId}):`, error);
+          alert('An error occurred while opening the asset.');
+        });
+      }
+    
+      function deleteAsset(event, type, assetId) {
+        event.stopPropagation();
+        if (!confirm('Are you sure you want to delete this asset?')) return;
+    
+        const urlMap = {
+          'blog': `/delete-blog/${assetId}/`,
+          'whitepaper': `/delete-whitepaper/${assetId}/`,
+          'insight': `/delete-insight/${assetId}/`
+        };
+        const url = urlMap[type];
+        if (!url) {
+          alert('Invalid asset type.');
+          return;
+        }
+    
+        fetch(url, {
+          method: 'POST',
+          headers: { 'X-CSRFToken': getCsrfToken() }
+        })
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+          return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            fetchAndDisplayAssets(); // Refresh assets after deletion
+          } else {
+            alert('Error deleting asset: ' + (data.error || 'Unknown error'));
+          }
+        })
+        .catch(error => {
+          console.error(`Error deleting ${type} asset (ID: ${assetId}):`, error);
+          alert('An error occurred while deleting the asset.');
+        });
+      }
+    
+      window.onload = function () {
+        fetchAndDisplayAssets();
+        document.getElementById('load-more-btn').addEventListener('click', loadMoreAssets);
+      };
+    </script>
+  </body>
+</html>
+{% endblock %}

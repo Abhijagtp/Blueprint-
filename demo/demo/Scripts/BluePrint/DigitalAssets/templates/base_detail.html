@@ -1,0 +1,583 @@
+{% extends 'dashboard.html'%}
+
+{% block content %}
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %} - Professional Network</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f5f6fa;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .content-header {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+        .content-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+        .content-header .author-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .content-header .author-info img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+        }
+        .content-header .author-info .author-name {
+            font-weight: 600;
+            color: #333;
+        }
+        .content-header .author-info .publish-date {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .content-header .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .content-header .actions .btn {
+            font-size: 0.9rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        .main-content {
+            display: flex;
+            gap: 20px;
+        }
+        .content-body {
+            flex: 3;
+            background: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .content-body img {
+            max-width: 100%;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .content-body p {
+            line-height: 1.8;
+            font-size: 1rem;
+            color: #444;
+            margin-bottom: 15px;
+        }
+        .content-body h2, .content-body h3 {
+            color: #1e3a8a;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .sidebar {
+            flex: 1;
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        .sidebar h5 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+        .sidebar .category-list, .sidebar .source-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .sidebar .category-list li, .sidebar .source-list li {
+            margin-bottom: 8px;
+        }
+        .sidebar .category-list li span {
+            background: #e0e7ff;
+            color: #1e3a8a;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+        }
+        .sidebar .source-list li a {
+            color: #0d6efd;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .sidebar .source-list li a:hover {
+            text-decoration: underline;
+        }
+        .btn-primary {
+            background-color: #0d6efd;
+            border: none;
+            transition: background-color 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-outline-secondary {
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+        .btn-outline-secondary:hover {
+            background-color: #6c757d;
+            color: #fff;
+        }
+        @media (max-width: 991.98px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .content-body, .sidebar {
+                width: 100%;
+            }
+        }
+
+        /* Share Modal Styling (Copied from timeline.html) */
+        #sharePostModal .modal-content {
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        #sharePostModal .modal-header {
+            padding: 20px 24px;
+        }
+        #sharePostModal .modal-body {
+            padding: 0 24px 24px;
+        }
+        #sharePostModal .modal-title {
+            font-size: 1.25rem;
+            color: #333;
+        }
+        #sharePostModal .btn-close {
+            background-size: 1.2rem;
+            opacity: 0.7;
+        }
+        #sharePostModal .btn-close:hover {
+            opacity: 1;
+        }
+        #sharePostModal #postPreview {
+            background: #fff;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        #sharePostModal #postPreview strong {
+            font-size: 1rem;
+            color: #333;
+        }
+        #sharePostModal #postPreview p {
+            font-size: 0.95rem;
+            color: #555;
+            margin: 8px 0;
+        }
+        #sharePostModal #postPreview img {
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        #sharePostModal #postPreview small {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        #sharePostModal .share-message-input {
+            border-radius: 12px;
+            border: 1px solid #ced4da;
+            padding: 12px;
+            font-size: 0.95rem;
+            resize: none;
+            transition: border-color 0.2s ease;
+        }
+        #sharePostModal .share-message-input:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 5px rgba(13, 110, 253, 0.2);
+        }
+        #sharePostModal .input-group {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        #sharePostModal .input-group-text {
+            border-radius: 20px 0 0 20px;
+            background: #fff;
+            color: #6c757d;
+        }
+        #sharePostModal .form-control {
+            border-radius: 0 20px 20px 0;
+            font-size: 0.95rem;
+            padding: 10px 15px;
+        }
+        #sharePostModal .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: none;
+        }
+        #sharePostModal .follower-list-container {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background: #fff;
+            padding: 5px;
+        }
+        #sharePostModal .list-group-item {
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+        #sharePostModal .list-group-item:hover {
+            background-color: #f8f9fa;
+        }
+        #sharePostModal .list-group-item img {
+            border: 2px solid #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        #sharePostModal .list-group-item .fw-bold {
+            font-size: 0.95rem;
+            color: #333;
+        }
+        #sharePostModal .form-check-input {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin: 0;
+            cursor: pointer;
+            border: 2px solid #ced4da;
+            transition: all 0.2s ease;
+        }
+        #sharePostModal .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        #sharePostModal .btn-primary {
+            border-radius: 20px;
+            padding: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            background-color: #0d6efd;
+            border: none;
+            transition: background-color 0.2s ease;
+        }
+        #sharePostModal .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        #sharePostModal .btn-primary:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        @media (max-width: 767.98px) {
+            #sharePostModal .modal-dialog {
+                margin: 10px;
+            }
+            #sharePostModal .modal-content {
+                border-radius: 10px;
+            }
+            #sharePostModal .modal-header {
+                padding: 15px 20px;
+            }
+            #sharePostModal .modal-body {
+                padding: 0 20px 20px;
+            }
+            #sharePostModal .follower-list-container {
+                max-height: 150px;
+            }
+            #sharePostModal .list-group-item {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="content-header">
+            <h1>{% block content_title %}{% endblock %}</h1>
+            <div class="author-info">
+                <img src="{% if request.user.userprofile.profile_image %}{{ request.user.userprofile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" alt="Author">
+                <div>
+                    <span class="author-name">{{ request.user.get_full_name }}</span>
+                    <div class="publish-date">Published on {{ content.created_at|date:"F d, Y" }}</div>
+                </div>
+            </div>
+            <div class="actions">
+                <!-- Updated Share and Save buttons with post_id -->
+                <button class="btn btn-primary share-btn" data-post-id="{{ post.id }}"><i class="bi bi-share"></i> Share</button>
+                <button class="btn btn-outline-secondary save-btn" data-post-id="{{ post.id }}"><i class="bi bi-bookmark"></i> Save</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="content-body">
+                {% block content_body %}
+                {% endblock %}
+            </div>
+            <div class="sidebar">
+                {% block sidebar %}
+                <h5>Categories</h5>
+                <ul class="category-list">
+                    {% for category in content.categories %}
+                    <li><span>{{ category }}</span></li>
+                    {% empty %}
+                    <li>No categories available.</li>
+                    {% endfor %}
+                </ul>
+                {% if content.sources %}
+                <h5>Sources</h5>
+                <ul class="source-list">
+                    {% for source in content.sources %}
+                    <li><a href="{{ source }}" target="_blank">{{ source|truncatechars:50 }}</a></li>
+                    {% empty %}
+                    <li>No sources available.</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal (Copied from timeline.html) -->
+    <div class="modal fade" id="sharePostModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Share Post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Post Preview -->
+                    <div id="postPreview" class="mb-4 p-3 border rounded bg-light"></div>
+    
+                    <!-- Share Message -->
+                    <div class="mb-3">
+                        <textarea id="shareMessage" class="form-control share-message-input" placeholder="Write a message..." rows="2"></textarea>
+                    </div>
+    
+                    <!-- Search and Follower List -->
+                    <div class="mb-3">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="ri-search-line"></i></span>
+                            <input type="text" id="searchFollowers" class="form-control border-start-0" placeholder="Search followers...">
+                        </div>
+                    </div>
+    
+                    <div class="row">
+                        <!-- Suggested Followers -->
+                        <div class="col-12 col-md-6 mb-3">
+                            <p class="fw-bold mb-2">Suggested</p>
+                            <div class="follower-list-container">
+                                <ul id="followersList" class="list-group"></ul>
+                            </div>
+                        </div>
+    
+                        <!-- Search Results -->
+                        <div class="col-12 col-md-6 d-none" id="searchResultsContainer">
+                            <p class="fw-bold mb-2">Search Results</p>
+                            <div class="follower-list-container">
+                                <ul id="searchResultsList" class="list-group"></ul>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <input type="hidden" id="sharedPostId">
+                    <button id="sendShareBtn" class="btn btn-primary w-100 mt-3">Share Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Current user data
+        const currentUser = {
+            id: "{{ request.user.id|escapejs }}",
+            username: "{{ request.user.username|escapejs }}",
+            fullName: "{{ request.user.get_full_name|escapejs }}",
+            profileImage: "{% if request.user.userprofile.profile_image %}{{ request.user.userprofile.profile_image.url|escapejs }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}"
+        };
+
+        // Utility to get CSRF token from cookies
+        const getCookie = (name) => document.cookie.split(';').map(cookie => cookie.trim()).find(cookie => cookie.startsWith(`${name}=`))?.substring(name.length + 1) ?? null;
+
+        // Utility to format time ago
+        const timeAgo = (time) => {
+            if (!time) return "Invalid date";
+            let date = typeof time === "string" ? new Date(time) : time instanceof Date ? time : null;
+            if (!date || isNaN(date.getTime())) return "Invalid date";
+            const secondsAgo = Math.floor((new Date() - date) / 1000);
+            if (secondsAgo < 60) return "Just now";
+            const minutesAgo = Math.floor(secondsAgo / 60);
+            if (minutesAgo < 60) return `${minutesAgo} minutes ago`;
+            const hoursAgo = Math.floor(minutesAgo / 60);
+            if (hoursAgo < 24) return `${hoursAgo} hours ago`;
+            return `${Math.floor(hoursAgo / 24)} days ago`;
+        };
+
+        // DOM elements for the share modal
+        const DOM = {
+            followersList: () => document.getElementById("followersList"),
+            searchResultsList: () => document.getElementById("searchResultsList"),
+            searchResultsContainer: () => document.getElementById("searchResultsContainer"),
+            postPreview: () => document.getElementById("postPreview"),
+            sharedPostId: () => document.getElementById("sharedPostId"),
+            searchFollowers: () => document.getElementById("searchFollowers"),
+            sendShareBtn: () => document.getElementById("sendShareBtn"),
+        };
+
+        // Share Modal Logic (Copied from timeline.html)
+        const ShareModal = {
+            allFollowers: [],
+            init: () => {
+                document.querySelectorAll(".share-btn").forEach(button => button.addEventListener("click", ShareModal.handleShareClick));
+                DOM.searchFollowers().addEventListener("input", ShareModal.handleSearch);
+                DOM.sendShareBtn().addEventListener("click", ShareModal.handleSend);
+            },
+            handleShareClick: async (event) => {
+                const postId = event.currentTarget.getAttribute("data-post-id");
+                const modal = new bootstrap.Modal(document.getElementById("sharePostModal"));
+                DOM.sharedPostId().value = postId;
+                DOM.followersList().innerHTML = `<p class="text-center text-muted">Loading followers...</p>`;
+                DOM.searchResultsContainer().classList.add("d-none");
+                try {
+                    const followers = await ShareModal.fetchFollowers();
+                    ShareModal.renderFollowers(followers);
+                    const postData = await ShareModal.fetchPostContent(postId);
+                    ShareModal.renderPostPreview(postData);
+                    modal.show();
+                } catch (error) {
+                    console.error("Error in share modal:", error);
+                    DOM.followersList().innerHTML = `<p class="text-danger text-center">Failed to load followers.</p>`;
+                }
+            },
+            fetchFollowers: async () => {
+                const response = await fetch("/get-followers/");
+                const data = await response.json();
+                ShareModal.allFollowers = data.followers;
+                return data.followers;
+            },
+            fetchPostContent: async (postId) => {
+                const response = await fetch(`/get-post-content/${postId}/`);
+                return response.json();
+            },
+            renderFollowers: (followers) => {
+    const list = DOM.followersList();
+    list.innerHTML = followers.length === 0 ? `<li class="list-group-item text-center text-muted">No followers found.</li>` : followers.map(follower => `
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+                <img src="${follower.profile_image || '{% static "images/Profile-default.png" %}'}" class="rounded-circle" width="36" height="36" alt="${follower.name}">
+                <span class="fw-bold">${follower.name}</span>
+            </div>
+            <input type="checkbox" class="form-check-input share-recipient" value="${follower.id}">
+        </li>
+    `).join("");
+},
+            renderPostPreview: (postData) => {
+    // Determine the content to display based on content_type (asset_type)
+    let displayContent = postData.caption;
+    if (postData.content_type !== 'normal' && postData.content && postData.content.title) {
+        displayContent = postData.content.title;
+    }
+
+    DOM.postPreview().innerHTML = `
+        <div class="d-flex gap-2 mb-2">
+            <img src="${postData.profile_image || '{% static "images/Profile-default.png" %}'}" class="rounded-circle" width="40" height="40" alt="${postData.author}">
+            <div>
+                <strong>${postData.author}</strong>
+                <small class="text-muted d-block">${timeAgo(new Date(postData.created_at))}</small>
+            </div>
+        </div>
+        <p class="mb-2">${displayContent || 'No content available'}</p>
+        ${postData.image ? `<img src="${postData.image}" class="img-fluid rounded w-100" alt="Post Image">` : ""}
+    `;
+},
+            handleSearch: (event) => {
+                const query = event.target.value.toLowerCase().trim();
+                const container = DOM.searchResultsContainer();
+                const list = DOM.searchResultsList();
+                if (!query) {
+                    container.classList.add("d-none");
+                    return;
+                }
+                const filtered = ShareModal.allFollowers.filter(f => f.name.toLowerCase().includes(query));
+                list.innerHTML = filtered.length === 0 ? `<li class="list-group-item text-center text-muted">No results found.</li>` : filtered.map(f => `
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-2">
+                            <img src="${f.profile_image}" class="rounded-circle" width="36" height="36" alt="${f.name}">
+                            <span class="fw-bold">${f.name}</span>
+                        </div>
+                        <input type="checkbox" class="form-check-input share-recipient" value="${f.id}">
+                    </li>
+                `).join("");
+                container.classList.remove("d-none");
+            },
+            handleSend: async () => {
+                const recipients = Array.from(document.querySelectorAll(".share-recipient:checked")).map(cb => cb.value);
+                if (recipients.length === 0) return alert("Select at least one person to share with.");
+                const message = document.getElementById("shareMessage").value.trim();
+                const button = DOM.sendShareBtn();
+                button.disabled = true;
+                button.textContent = "Sharing...";
+                try {
+                    const response = await fetch("/send-post-share/", {
+                        method: "POST",
+                        headers: { "X-CSRFToken": getCookie("csrftoken"), "Content-Type": "application/json" },
+                        body: JSON.stringify({ post_id: DOM.sharedPostId().value, recipients, message })
+                    });
+                    const data = await response.json();
+                    alert(data.success ? "Post shared successfully!" : "Error sharing post.");
+                    if (data.success) document.getElementById("sharePostModal").querySelector(".btn-close").click();
+                } catch (error) {
+                    console.error("Error sharing post:", error);
+                    alert("Something went wrong. Please try again.");
+                } finally {
+                    button.disabled = false;
+                    button.textContent = "Share Now";
+                }
+            },
+        };
+
+        // Save Functionality (Copied from timeline.html)
+        document.querySelectorAll('.save-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const postId = this.getAttribute('data-post-id');
+                fetch(`/save_post/${postId}/`, {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': getCookie("csrftoken"), 'Content-Type': 'application/json' }
+                }).then(response => response.json()).then(data => {
+                    if (data.saved) {
+                        this.innerHTML = '<i class="bi bi-bookmark-fill"></i> Saved';
+                    } else {
+                        this.innerHTML = '<i class="bi bi-bookmark"></i> Save';
+                    }
+                }).catch(error => {
+                    console.error("Error saving post:", error);
+                    alert("An error occurred while saving the post.");
+                });
+            });
+        });
+
+        // Initialize ShareModal
+        document.addEventListener("DOMContentLoaded", () => {
+            ShareModal.init();
+        });
+    </script>
+</body>
+</html>
+
+{% endblock %}

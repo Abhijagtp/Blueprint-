@@ -1,0 +1,572 @@
+{% extends 'dashboard.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Creation Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f7fa;
+        }
+
+        .container {
+            display: flex;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 2rem;
+        }
+
+        .form-section {
+            flex: 7; /* Takes 2/3 of the space */
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1a202c;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #2d3748;
+            background: #f7fafc;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .sidebar {
+            flex: 1; /* Takes 1/3 of the space */
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .sidebar h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1a202c;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .step:hover {
+            background: #f7fafc;
+        }
+
+        .step-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-dot {
+            background-color: #2563eb;
+            border-color: #2563eb;
+        }
+
+        .step span {
+            font-size: 1rem;
+            color: #4a5568;
+            transition: color 0.3s ease;
+        }
+
+        .step.active span {
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        .items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .list-item input {
+            flex: 1;
+        }
+
+        .list-item button {
+            padding: 0.5rem 1rem;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            color: #e53e3e;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .list-item button:hover {
+            background: #fefcbf;
+        }
+
+        .stage {
+            display: none;
+        }
+
+        .stage.active {
+            display: block;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        .nav-buttons button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background-color: #2563eb;
+            color: white;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+
+        .nav-buttons button:hover {
+            background-color: #1a4ed8;
+        }
+
+        .nav-buttons button:disabled {
+            background-color: #e2e8f0;
+            color: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        .upload-section {
+            margin-bottom: 2rem;
+        }
+
+        .upload-section h3 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            color: #2d3748;
+        }
+
+        .upload-section input[type="file"] {
+            padding: 0.5rem;
+            background: #fff;
+            border: 1px dashed #e2e8f0;
+        }
+
+        .upload-section p {
+            margin-top: 0.5rem;
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        .add-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: #2563eb;
+            background: #f7fafc;
+            transition: background 0.3s ease;
+        }
+
+        .add-button:hover {
+            background: #edf2f7;
+        }
+
+        .lesson-form {
+            padding: 1.5rem;
+            background: #f7fafc;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+
+            .form-section,
+            .sidebar {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .sidebar {
+                position: static;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form method="POST" enctype="multipart/form-data" action="{% if course %}{% url 'create_course' %}?edit={{ course.id }}{% else %}{% url 'create_course' %}{% endif %}" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="edit_course_id" value="{{ course.id }}">
+
+            <!-- Left Section: Form -->
+            <div class="form-section">
+                <!-- Stage 1: Course Details -->
+                <div class="stage active" id="stage-1">
+                    <h2>Course Details</h2>
+                    <div class="form-group">
+                        <label for="courseTitle">Course Title*</label>
+                        <input type="text" id="courseTitle" name="title" placeholder="Enter course title" required value="{{ course.title|default:'' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courseSubTitle">Course Subtitle*</label>
+                        <input type="text" id="courseSubTitle" name="subtitle" placeholder="Enter course subtitle" required value="{{ course.subtitle|default:'' }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courseOverview">Course Overview*</label>
+                        <textarea id="courseOverview" name="overview" placeholder="Describe your course" required>{{ course.overview|default:'' }}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category">Category*</label>
+                        <select id="category" name="category" required>
+                            <option value="">Select Category</option>
+                            <option value="development" {% if course.category == "development" %}selected{% endif %}>Development</option>
+                            <option value="business" {% if course.category == "business" %}selected{% endif %}>Business</option>
+                            <option value="finance" {% if course.category == "finance" %}selected{% endif %}>Finance & Accounting</option>
+                            <option value="it_software" {% if course.category == "it_software" %}selected{% endif %}>IT & Software</option>
+                            <option value="office_productivity" {% if course.category == "office_productivity" %}selected{% endif %}>Office Productivity</option>
+                            <option value="personal_development" {% if course.category == "personal_development" %}selected{% endif %}>Personal Development</option>
+                            <option value="design" {% if course.category == "design" %}selected{% endif %}>Design</option>
+                            <option value="marketing" {% if course.category == "marketing" %}selected{% endif %}>Marketing</option>
+                            <option value="lifestyle" {% if course.category == "lifestyle" %}selected{% endif %}>Lifestyle</option>
+                            <option value="photography_video" {% if course.category == "photography_video" %}selected{% endif %}>Photography & Video</option>
+                            <option value="health_fitness" {% if course.category == "health_fitness" %}selected{% endif %}>Health & Fitness</option>
+                            <option value="music" {% if course.category == "music" %}selected{% endif %}>Music</option>
+                            <option value="teaching_academics" {% if course.category == "teaching_academics" %}selected{% endif %}>Teaching & Academics</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="difficulty">Difficulty Level*</label>
+                        <select id="difficulty" name="level" required>
+                            <option value="">Select Difficulty</option>
+                            <option value="beginner" {% if course.level == "beginner" %}selected{% endif %}>Beginner</option>
+                            <option value="intermediate" {% if course.level == "intermediate" %}selected{% endif %}>Intermediate</option>
+                            <option value="advanced" {% if course.level == "advanced" %}selected{% endif %}>Advanced</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Prerequisites*</label>
+                        <div class="add-button" onclick="addPrerequisite()">
+                            <span>+</span> Add Prerequisite
+                        </div>
+                        <div id="prerequisitesList" class="items-list"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Skills*</label>
+                        <div class="add-button" onclick="addSkill()">
+                            <span>+</span> Add Skill
+                        </div>
+                        <div id="skillsList" class="items-list"></div>
+                    </div>
+
+                    <div class="nav-buttons">
+                        <button disabled>Back</button>
+                        <button type="button" onclick="nextStage(2)">Next</button>
+                    </div>
+                </div>
+
+                <!-- Stage 2: Media Uploads -->
+                <div class="stage" id="stage-2">
+                    <h2>Media Uploads</h2>
+                    <div class="upload-section">
+                        <h3>Course Thumbnail*</h3>
+                        <input type="file" name="thumbnail" accept="image/*" required>
+                        {% if course.thumbnail %}
+                            <p>Current Thumbnail: <a href="{{ course.thumbnail.url }}" target="_blank">View</a></p>
+                        {% endif %}
+                    </div>
+
+                    <div class="upload-section">
+                        <h3>Preview Video</h3>
+                        <input type="file" name="featured_video" accept="video/*">
+                        {% if course.featured_video %}
+                            <p>Current Video: <a href="{{ course.featured_video.url }}" target="_blank">View</a></p>
+                        {% endif %}
+                    </div>
+
+                    <div class="nav-buttons">
+                        <button type="button" onclick="prevStage(1)">Back</button>
+                        <button type="button" onclick="nextStage(3)">Next</button>
+                    </div>
+                </div>
+
+                <!-- Stage 3: Lessons -->
+                <div class="stage" id="stage-3">
+                    <h2>Course Lessons</h2>
+                    <div id="lessons-container">
+                        {% for lesson in existing_lessons %}
+                        <div class="lesson-form">
+                            <input type="hidden" name="lessons-{{ forloop.counter0 }}-id" value="{{ lesson.id }}">
+                            <div class="form-group">
+                                <label>Lesson Title*</label>
+                                <input type="text" name="lessons-{{ forloop.counter0 }}-title" value="{{ lesson.title }}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Description*</label>
+                                <textarea name="lessons-{{ forloop.counter0 }}-description" required>{{ lesson.description }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Video</label>
+                                <input type="file" name="lessons-{{ forloop.counter0 }}-video">
+                                {% if lesson.video %}
+                                    <p>Current Video: <a href="{{ lesson.video.url }}" target="_blank">View</a></p>
+                                {% endif %}
+                            </div>
+                            <div class="form-group">
+                                <label>Duration (minutes)*</label>
+                                <input type="number" name="lessons-{{ forloop.counter0 }}-duration" value="{{ lesson.duration.total_seconds|floatformat:0 }}" required>
+                            </div>
+                            <button type="button" onclick="this.parentElement.remove()">Remove Lesson</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="add-button" onclick="addLessonForm()">
+                        <span>+</span> Add Lesson
+                    </button>
+
+                    <div class="nav-buttons">
+                        <button type="button" onclick="prevStage(2)">Back</button>
+                        <button type="button" onclick="nextStage(4)">Next</button>
+                    </div>
+                </div>
+
+                <!-- Stage 4: Pricing -->
+                <div class="stage" id="stage-4">
+                    <h2>Pricing</h2>
+                    <div class="form-group">
+                        <label for="price">Course Price*</label>
+                        <input type="number" id="price" name="price" step="0.01" placeholder="Enter price (e.g., 99.99)" required value="{{ course.price|default:'0.00' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="discount">Discount (%)</label>
+                        <input type="number" id="discount" name="discount" min="0" max="100" placeholder="Enter discount percentage" value="{{ course.discount|default:'0' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="is_free">Make Course Free</label>
+                        <input type="checkbox" id="is_free" name="is_free" {% if course.is_free %}checked{% endif %}>
+                    </div>
+
+                    <div class="nav-buttons">
+                        <button type="button" onclick="prevStage(3)">Back</button>
+                        <button type="submit">
+                            {% if course %}
+                                Update Course
+                            {% else %}
+                                Create Course
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Right Section: Sidebar Navigation -->
+        <div class="sidebar">
+            <h2>Creation Steps</h2>
+            <div class="steps">
+                <div class="step active" onclick="showStage(1)">
+                    <div class="step-dot"></div><span>Details</span>
+                </div>
+                <div class="step" onclick="showStage(2)">
+                    <div class="step-dot"></div><span>Media</span>
+                </div>
+                <div class="step" onclick="showStage(3)">
+                    <div class="step-dot"></div><span>Lessons</span>
+                </div>
+                <div class="step" onclick="showStage(4)">
+                    <div class="step-dot"></div><span>Pricing</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Load prerequisites (Comma-separated string)
+            const prerequisitesList = document.getElementById('prerequisitesList');
+            const prerequisitesData = "{{ course.prerequisites|escapejs }}".split(',').map(item => item.trim());
+            prerequisitesData.forEach(prerequisite => {
+                if (prerequisite) addPrerequisite(prerequisite);
+            });
+
+            // Load skills (Newline-separated string)
+            const skillsList = document.getElementById('skillsList');
+            const skillsData = "{{ course.skills|escapejs }}".split('\n').map(item => item.trim());
+            skillsData.forEach(skill => {
+                if (skill) addSkill(skill);
+            });
+        });
+
+        // Functions to dynamically add fields
+        function addPrerequisite(value = '') {
+            const container = document.getElementById('prerequisitesList');
+            const newField = document.createElement('div');
+            newField.className = 'list-item';
+            newField.innerHTML = `
+                <input type="text" name="prerequisites" placeholder="Enter prerequisite" value="${value}">
+                <button type="button" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            container.appendChild(newField);
+        }
+
+        function addSkill(value = '') {
+            const skillsList = document.getElementById('skillsList');
+            const skillInput = document.createElement('div');
+            skillInput.classList.add('list-item');
+            skillInput.innerHTML = `
+                <input type="text" name="skills" placeholder="Enter skill" value="${value}" required>
+                <button type="button" onclick="this.parentElement.remove()">Remove</button>
+            `;
+            skillsList.appendChild(skillInput);
+        }
+
+        let lessonCount = {{ existing_lessons|length|default:0 }};
+
+        function addLessonForm() {
+            const container = document.getElementById('lessons-container');
+            const newForm = document.createElement('div');
+            newForm.className = 'lesson-form';
+            newForm.innerHTML = `
+                <div class="form-group">
+                    <label>Lesson Title*</label>
+                    <input type="text" name="lessons-${lessonCount}-title" placeholder="Enter lesson title" required>
+                </div>
+                <div class="form-group">
+                    <label>Description*</label>
+                    <textarea name="lessons-${lessonCount}-description" placeholder="Describe the lesson" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Video Upload*</label>
+                    <input type="file" name="lessons-${lessonCount}-video" accept="video/*" required>
+                </div>
+                <div class="form-group">
+                    <label>Duration (minutes)*</label>
+                    <input type="number" name="lessons-${lessonCount}-duration" placeholder="Enter duration in minutes" required>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()">Remove Lesson</button>
+            `;
+            container.appendChild(newForm);
+            lessonCount++;
+        }
+
+        // Stage navigation functions
+        function showStage(stage) {
+            document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`stage-${stage}`).classList.add('active');
+            document.querySelectorAll('.step')[stage - 1].classList.add('active');
+        }
+
+        function nextStage(next) {
+            if (next <= 4) showStage(next);
+        }
+
+        function prevStage(prev) {
+            if (prev >= 1) showStage(prev);
+        }
+
+        document.addEventListener('contextmenu', function(e) {
+    if (e.target.tagName === 'VIDEO') {
+        e.preventDefault();
+    }
+});
+    </script>
+</body>
+
+</html>
+{% endblock %}

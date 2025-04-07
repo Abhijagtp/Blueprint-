@@ -1,0 +1,162 @@
+{% extends 'dashboard.html'%}
+
+{%block content%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Courses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .back-button {
+            text-decoration: none;
+            color: #000;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+        }
+
+        .page-title {
+            color: #1a0f5c;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+        }
+
+        .course-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .course-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background-color: #4a4a4a;
+        }
+
+        .course-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-description {
+            color: #4b5563;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .course-duration {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .course-rating {
+            color: #f59e0b;
+            font-size: 0.9rem;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+
+        .options-button {
+            color: #6b7280;
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .course-image {
+                height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mb-4 mt-5">
+        <a href="{% url 'traning' %}" class="text-dark text-decoration-none">
+            <i class="bi bi-arrow-left me-2"></i>Back
+        </a>
+    </div>
+    <div class="container py-4">
+        <h1 class="page-title">My Courses</h1>
+
+        <!-- Loop through courses -->
+        {% for course in courses %}
+        
+        <div class="course-card mb-4">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="course-image">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body p-4 d-flex justify-content-between">
+                        <div>
+                            <h2 class="course-title">{{ course.title }}</h2>
+                            <p class="course-description">{{ course.subtitle }}</p>
+                            <p class="course-duration mb-0"><span>{{ course.total_duration }}</span></p>
+                        </div>
+                        <div class="d-flex flex-column justify-content-between align-items-end">
+                            <!-- Dropdown menu for Edit and Delete -->
+                            <div class="dropdown">
+                                <button class="options-button" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
+                                    </svg>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <li><a class="dropdown-item" href="{% url 'edit_course' course.id %}">Edit</a></li>
+                                    <li>
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deleteCourseModal{{ course.id }}">Delete</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="course-rating">
+                                Ratings Received <strong>{{ course.rating }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Delete Confirmation Modal -->
+            <div class="modal fade" id="deleteCourseModal{{ course.id }}" tabindex="-1" aria-labelledby="deleteCourseModalLabel{{ course.id }}" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCourseModalLabel{{ course.id }}">Confirm Delete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    Are you sure you want to delete the course "<strong>{{ course.title }}</strong>"?
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form method="POST" action="{% url 'delete_course' course.id %}">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        
+        {% endfor %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{% endblock %}

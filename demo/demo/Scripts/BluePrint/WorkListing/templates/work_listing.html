@@ -1,0 +1,373 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Listing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <style>
+        .explore {
+            background: url("{% static 'images/explore.png' %}") no-repeat;
+        }
+
+        footer {
+            display: block;
+            background-image: url("{% static 'images/banner.png' %}");
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <!--Sectional Nav-->
+    {% include 'worklisting_nav.html' %}
+    {% block main_content %}
+    <!-- Hero Section -->
+    <div class="explore">
+
+        <div class="explore-1">
+        </div>
+        <div class="explore-2">
+        </div>
+    </div>
+    <section class="hero text-center text-white">
+        <div class="header p-1">
+            <div class="d-flex justify-content-center align-items-center p-2">
+                <a href="{% url 'explore_projects' %}"class="btn btn-light">Explore
+                    Projects</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <div class="container-fluid">
+        <div class="result-heading my-4 px-3">Mobile App Development</div>
+        <div class="pro-card row d-flex flex-wrap">
+            <!-- Project Card 1 -->
+            <div class="col mb-4">
+                <div class="card shadow-md">
+                    <div class="card-body">
+                        <div class="card-title">Lucid Flow</div>
+                        <p class="text-muted">Employee Attendance System</p>
+                        <div class="price d-flex">
+                            <p class="price-text">Payment:</p>
+                            <p class="text-success ms-2">₹30,000</p>
+                        </div>
+                        <div class="card-desc my-3">
+                            We are looking for a talented and detail-oriented Frontend
+                            Developer to join our tea....
+                        </div>
+                        <div class="date d-flex mb-3">
+                            <div>
+                                <img src="{% static 'images/date.png' %}" alt="" class="image-date" />
+                            </div>
+                            <div class="date-text ms-2 pt-1">2 Feb, 2005</div>
+                        </div>
+                        <div class="date d-flex mb-3">
+                            <div class="exp">Experience:</div>
+                            <div class="date-text ms-2">0-1 Years</div>
+                        </div>
+                        <div class="skills d-flex">
+                            <div class="skill-title">Skills:</div>
+                            <div class="skillset d-flex flex-wrap ms-2 gap-2">
+                                <span class="badge">HTML</span>
+                                <span class="badge">CSS</span>
+                                <span class="badge">WordPress</span>
+                                <span class="badge">JavaScript</span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button data-bs-toggle="modal" data-bs-target="#myModal2"
+                                class="card-button1 btn btn-sm btn-outline-primary px-3">
+                                View
+                            </button>
+                            <button onclick="window.location.href = 'worklisting2.html';"
+                                class="card-button2 btn btn-sm btn-primary px-3">
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 2 -->
+            <div class="col mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="card-title">Finster</div>
+                        <p class="text-muted">Learning Portal</p>
+                        <div class="price d-flex">
+                            <p class="price-text">Payment:</p>
+                            <p class="text-success ms-2">₹30,000</p>
+                        </div>
+                        <div class="card-desc my-3">
+                            We are looking for a talented and detail-oriented Frontend
+                            Developer to join our tea....
+                        </div>
+                        <div class="date d-flex mb-3">
+                            <div>
+                                <img src="images/date.png" alt="" class="image-date" />
+                            </div>
+                            <div class="date-text ms-2 pt-1">12 Feb, 2005</div>
+                        </div>
+                        <div class="date d-flex mb-3">
+                            <div class="exp">Experience:</div>
+                            <div class="date-text ms-2">0-1 Years</div>
+                        </div>
+                        <div class="skills d-flex">
+                            <div class="skill-title">Skills:</div>
+                            <div class="skillset d-flex flex-wrap ms-2 gap-2">
+                                <span class="badge">HTML</span>
+                                <span class="badge">Tailwind CSS</span>
+                                <span class="badge">WordPress</span>
+                                <span class="badge">Android Studio</span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button data-bs-toggle="modal" data-bs-target="#myModal1"
+                                class="card-button1 btn btn-sm btn-outline-primary px-3">
+                                View
+                            </button>
+                            <button onclick="window.location.href = 'worklisting2.html';"
+                                class="card-button2 btn btn-sm btn-primary px-3">
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 3 -->
+            <div class="col mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body p-3">
+                        <div class="card-title">Cryptask</div>
+                        <p class="text-muted">Project Management System</p>
+                        <div class="price d-flex">
+                            <p class="price-text">Payment:</p>
+                            <p class="text-success ms-2">₹30,000</p>
+                        </div>
+                        <div class="card-desc my-3">
+                            We are looking for a talented and detail-oriented Frontend
+                            Developer to join our tea....
+                        </div>
+                        <div class="date d-flex mb-3">
+                            <div>
+                                <img src="images/date.png" alt="" class="image-date" />
+                            </div>
+                            <div class="date-text ms-2 pt-1">20 Mar, 2005</div>
+                        </div>
+                        <div class="date d-flex mb-3">
+                            <div class="exp">Experience:</div>
+                            <div class="date-text ms-2">0-1 Years</div>
+                        </div>
+                        <div class="skills d-flex">
+                            <div class="skill-title">Skills:</div>
+                            <div class="skillset d-flex flex-wrap ms-2 gap-2">
+                                <span class="badge">HTML</span>
+                                <span class="badge">Flutter</span>
+                                <span class="badge">JavaScript</span>
+                                <span class="badge">Android Studio</span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button data-bs-toggle="modal" data-bs-target="#myModal3"
+                                class="card-button1 btn btn-sm btn-outline-primary px-3">
+                                View
+                            </button>
+                            <button onclick="window.location.href = 'worklisting2.html';"
+                                class="card-button2 btn btn-sm btn-primary px-3">
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="result-heading my-4 px-3">Community Projects</div>
+        <div class="pro-card row d-flex flex-wrap">
+            <!-- Project Card 1 -->
+            <div class="col mb-4">
+                <div class="card shadow-md">
+                    <div class="card-body">
+                        <div class="card-title">Lucid Flow</div>
+                        <p class="text-muted">Employee Attendance System</p>
+                        <div class="price d-flex">
+                            <p class="price-text">Payment:</p>
+                            <p class="text-success ms-2">₹30,000</p>
+                        </div>
+                        <div class="card-desc my-3">
+                            We are looking for a talented and detail-oriented Frontend
+                            Developer to join our tea....
+                        </div>
+                        <div class="date d-flex mb-3">
+                            <div>
+                                <img src="images/date.png" alt="" class="image-date" />
+                            </div>
+                            <div class="date-text ms-2 pt-1">2 Feb, 2005</div>
+                        </div>
+                        <div class="date d-flex mb-3">
+                            <div class="exp">Experience:</div>
+                            <div class="date-text ms-2">0-1 Years</div>
+                        </div>
+                        <div class="skills d-flex">
+                            <div class="skill-title">Skills:</div>
+                            <div class="skillset d-flex flex-wrap ms-2 gap-2">
+                                <span class="badge">HTML</span>
+                                <span class="badge">CSS</span>
+                                <span class="badge">WordPress</span>
+                                <span class="badge">JavaScript</span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button data-bs-toggle="modal" data-bs-target="#myModal2"
+                                class="card-button1 btn btn-sm btn-outline-primary px-3">
+                                View
+                            </button>
+                            <button onclick="window.location.href = 'worklisting2.html';"
+                                class="card-button2 btn btn-sm btn-primary px-3">
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 2 -->
+            <div class="col mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="card-title">Finster</div>
+                        <p class="text-muted">Learning Portal</p>
+                        <div class="price d-flex">
+                            <p class="price-text">Payment:</p>
+                            <p class="text-success ms-2">₹30,000</p>
+                        </div>
+                        <div class="card-desc my-3">
+                            We are looking for a talented and detail-oriented Frontend
+                            Developer to join our tea....
+                        </div>
+                        <div class="date d-flex mb-3">
+                            <div>
+                                <img src="images/date.png" alt="" class="image-date" />
+                            </div>
+                            <div class="date-text ms-2 pt-1">12 Feb, 2005</div>
+                        </div>
+                        <div class="date d-flex mb-3">
+                            <div class="exp">Experience:</div>
+                            <div class="date-text ms-2">0-1 Years</div>
+                        </div>
+                        <div class="skills d-flex">
+                            <div class="skill-title">Skills:</div>
+                            <div class="skillset d-flex flex-wrap ms-2 gap-2">
+                                <span class="badge">HTML</span>
+                                <span class="badge">Tailwind CSS</span>
+                                <span class="badge">WordPress</span>
+                                <span class="badge">Android Studio</span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button data-bs-toggle="modal" data-bs-target="#myModal1"
+                                class="card-button1 btn btn-sm btn-outline-primary px-3">
+                                View
+                            </button>
+                            <button onclick="window.location.href = 'worklisting2.html';"
+                                class="card-button2 btn btn-sm btn-primary px-3">
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card 3 -->
+            <div class="col mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-body p-3">
+                        <div class="card-title">Cryptask</div>
+                        <p class="text-muted">Project Management System</p>
+                        <div class="price d-flex">
+                            <p class="price-text">Payment:</p>
+                            <p class="text-success ms-2">₹30,000</p>
+                        </div>
+                        <div class="card-desc my-3">
+                            We are looking for a talented and detail-oriented Frontend
+                            Developer to join our tea....
+                        </div>
+                        <div class="date d-flex mb-3">
+                            <div>
+                                <img src="images/date.png" alt="" class="image-date" />
+                            </div>
+                            <div class="date-text ms-2 pt-1">20 Mar, 2005</div>
+                        </div>
+                        <div class="date d-flex mb-3">
+                            <div class="exp">Experience:</div>
+                            <div class="date-text ms-2">0-1 Years</div>
+                        </div>
+                        <div class="skills d-flex">
+                            <div class="skill-title">Skills:</div>
+                            <div class="skillset d-flex flex-wrap ms-2 gap-2">
+                                <span class="badge">HTML</span>
+                                <span class="badge">Flutter</span>
+                                <span class="badge">JavaScript</span>
+                                <span class="badge">Android Studio</span>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-4">
+                            <button data-bs-toggle="modal" data-bs-target="#myModal3"
+                                class="card-button1 btn btn-sm btn-outline-primary px-3">
+                                View
+                            </button>
+                            <button onclick="window.location.href = 'worklisting2.html';"
+                                class="card-button2 btn btn-sm btn-primary px-3">
+                                Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="foot">
+        <footer class="d-flex justify-content-center p-2">
+            <div class="premium-banner d-flex flex-row p-3 px-5">
+                <div class="d-flex flex-column">
+                    <div class="banner-title d-flex justify-content-center">
+                        Get Premium
+                    </div>
+                    <div class="banner-desc">
+                        To unlock paid projects without completing at least 3 projects,
+                        get the subscription
+                    </div>
+                </div>
+                <div class="ms-4 my-auto">
+                    <button class="subs btn btn-sm btn-primary px-2 py-1">
+                        Subscribe
+                    </button>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+{% endblock %}
+{% endblock %}

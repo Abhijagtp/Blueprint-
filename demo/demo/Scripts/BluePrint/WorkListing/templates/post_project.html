@@ -1,0 +1,955 @@
+    {% extends 'dashboard.html' %}
+    {% block content %}
+    {% load static %}
+    {% include 'worklisting_nav.html' %}
+    {% block main_content %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <style>
+
+
+        .button-post {
+            border-bottom: 1px solid #e0e0e0;
+            padding: 15px 0;
+            background-color: white;
+            margin-bottom: 1rem;
+        }
+
+        .post-new-btn {
+            color: #555;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .post-new-btn i {
+            margin-left: 8px;
+            font-size: 1.2rem;
+        }
+
+        .dropdown-section {
+            padding: 20px 0;
+            border-bottom: 1px solid #e0e0e0;
+            background-color: white;
+        }
+
+        .dropdown-toggle {
+            color: #333;
+            font-weight: 500;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-toggle::after {
+            margin-left: 8px;
+        }
+
+        .search-container {
+            margin: 20px 0;
+        }
+
+        .search-input {
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px 15px;
+        }
+
+        .search-btn {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-btn i {
+            margin-right: 8px;
+        }
+
+        .project-card {
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .company-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .job-title {
+            font-size: 1.5rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .payment {
+            margin-bottom: 15px;
+        }
+
+        .payment-amount {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .job-description {
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .see-more {
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-align: right;
+            display: block;
+        }
+
+        .job-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #555;
+        }
+
+        .job-meta i {
+            margin-right: 8px;
+        }
+
+        .skills-container {
+            margin-bottom: 20px;
+        }
+
+        .skill-tags {
+            background-color: #e8f0fe;
+            color: #0056b3;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .check-status-btn {
+            background-color: white;
+            color: #0056b3;
+            border: 1px solid #0056b3;
+            border-radius: 4px;
+            padding: 8px 20px;
+        }
+
+        .stop-applications-btn {
+            background-color: white;
+            color: #dc3545;
+            border: none;
+            padding: 8px 0;
+        }
+
+        .project-form {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .project-form input,
+        .project-form textarea,
+        .project-form select {
+            margin-bottom: 15px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .project-form button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .add-skill-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        .skill-input-container {
+            margin-bottom: 15px;
+        }
+
+        /* Updated Applicants Panel */
+        .applicant-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            max-width: 500px;
+            /* Adjusted for responsiveness */
+            width: 90%;
+            /* Makes it adaptable for smaller screens */
+            height: 100%;
+            background: #fff;
+            box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            padding: 20px;
+            transition: right 0.4s ease-in-out;
+            z-index: 1000;
+        }
+
+        .applicant-panel.visible {
+            right: 0;
+        }
+
+        /* Close button */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 22px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Applicant List */
+        .applicant-list {
+            margin-top: 20px;
+        }
+
+        /* Applicant Item */
+        .applicant-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Profile & Info */
+        .applicant-details {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            gap: 12px;
+            /* Improved spacing */
+        }
+
+        .profile-pic {
+            width: 65px;
+            /* Slightly bigger for better visibility */
+            height: 65px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .info h4 {
+            margin: 0;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .info p {
+            margin: 3px 0 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        /* Status Label */
+        .status-label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 5px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+
+        .btn {
+            padding: 7px 14px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .accept-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .reject-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .message-btn {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.85;
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        /* Tabs Container */
+    .tabs-container {
+        margin: 20px 0;
+    }
+
+    /* Tabs */
+    .tabs {
+        display: flex;
+        border-bottom: 2px solid #e0e0e0;
+        margin-bottom: 20px;
+    }
+
+    .tab-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #555;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .tab-button:hover {
+        color: #007bff;
+    }
+
+    .tab-button.active {
+        color: #007bff;
+        border-bottom: 2px solid #007bff;
+    }
+
+    /* Tab Content */
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+    /* Assigned Professional Section */
+.assigned-professional {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+    border-left: 4px solid #007bff;
+}
+
+.assigned-professional h4 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+/* Professional Details - Flexbox Layout */
+.professional-details {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Profile Picture Styling */
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid #007bff;
+    object-fit: cover;
+}
+
+/* Info Section */
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.info h4 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.info p {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+}
+
+/* Message Button */
+.message-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.3s ease;
+    margin-top: 5px;
+}
+
+.message-btn:hover {
+    background: #0056b3;
+}
+
+/* No Assigned Professional Message */
+.no-assignee {
+    font-size: 0.9rem;
+    color: #777;
+    text-align: center;
+    margin-top: 10px;
+}
+
+    </style>
+    </head>
+
+    <body>
+        <!-- Header -->
+        <div class="button-post">
+            <div class="container">
+                <a href="#" class="post-new-btn" id="post-new-btn">
+                    Post New Project
+                    <i class="bi bi-plus"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Project Form -->
+        <div class="container project-form" id="project-form">
+            <form>
+                <input type="text" placeholder="Enter Domain" required>
+                <textarea placeholder="Project Description" required></textarea>
+                <input type="number" placeholder="Experience in Years" required>
+
+                <div class="skill-input-container">
+                    <input type="text" placeholder="Add Skill" class="skill-input">
+                    <button type="button" class="add-skill-btn" id="add-skill-btn">Add Skill</button>
+                </div>
+                <div id="skills-list"></div>
+
+                <label for="submission_date">Deadline to apply for this project</label>
+                <input type="date" placeholder="Submission Date" required>
+                <input type="number" placeholder="Payment in Rs" required>
+
+                <button type="submit">Post</button>
+            </form>
+        </div>
+
+    <!-- Tabs Section -->
+    <div class="tabs-container">
+        <div class="tabs">
+            <button class="tab-button active" data-tab="posted-projects">Posted Projects</button>
+            <button class="tab-button" data-tab="running-projects">Running Projects</button>
+            <button class="tab-button" data-tab="completed-projects">Completed Projects</button>
+        </div>
+        
+
+        <!-- Posted Projects Tab Content -->
+        <div id="posted-projects" class="tab-content active">
+            <section class="container">
+                {% for project in posted_projects %}
+                <div class="project-card">
+                    <h2 class="company-name">{{ project.org.get_full_name }}</h2>
+                    <h3 class="job-title">{{ project.domain }}</h3>
+                    <div class="payment">Payment: <span class="payment-amount">Rs. {{ project.payment }}</span></div>
+        
+                    <p class="job-description">
+                        {{ project.description|truncatewords:20 }}
+                        <a href="#" class="see-more">see more</a>
+                    </p>
+        
+                    <div class="job-meta">
+                        <i class="bi bi-calendar"></i>
+                        {{ project.submission_date }}
+                    </div>
+        
+                    <div class="mb-3">
+                        <strong>Experience:</strong> {{ project.experience_required }} Years
+                    </div>
+        
+                    <div class="skills-container">
+                        <div class="mb-2"><strong>Skills:</strong></div>
+                        {% if project.skills_list %}
+                            {% for skill in project.skills_list %}
+                                {% if skill %}
+                                    <span class="skill-tags">{{ skill }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <span>No skills specified.</span>
+                        {% endif %}
+                    </div>
+        
+                    <div class="action-buttons">
+                        <button class="btn check-status-btn" data-project-id="{{ project.id }}">Check Status</button>
+                        <button class="btn stop-applications-btn" data-project-id="{{ project.id }}">Stop Applications</button>
+                    </div>
+                </div>
+                {% empty %}
+                <p>No posted projects available.</p>
+                {% endfor %}
+            </section>
+        </div>
+
+        
+<!-- Running Projects Tab Content -->
+<div id="running-projects" class="tab-content">
+    <section class="container">
+        {% for item in running_projects_with_assignees %}
+        <div class="project-card">
+            <div class="project-header">
+                <div class="company-info">
+                    <h2 class="company-name">{{ item.project.org.get_full_name }}</h2>
+                    <h3 class="job-title">{{ item.project.domain }}</h3>
+                </div>
+                <div class="payment">
+                    <span class="payment-label">Payment:</span> 
+                    <span class="payment-amount">Rs. {{ item.project.payment }}</span>
+                </div>
+            </div>
+
+            <p class="job-description">
+                {{ item.project.description|truncatewords:20 }}
+                <a href="#" class="see-more">see more</a>
+            </p>
+
+            <div class="job-meta">
+                <i class="bi bi-calendar"></i>
+                <span>Starting Date: {{ item.project.starting_date }}</span>
+            </div>
+
+            <div class="experience-skills">
+                <div class="experience">
+                    <strong>Experience Required:</strong> {{ item.project.experience_required }} Years
+                </div>
+                <div class="skills-container">
+                    <strong>Skills:</strong>
+                    {% if item.project.skills_list %}
+                        {% for skill in item.project.skills_list %}
+                            {% if skill %}
+                                <span class="skill-tags">{{ skill }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <span>No skills specified.</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if item.assigned_professional %}
+            <div class="assigned-professional">
+                <h4>Assigned to:</h4>
+                <div class="professional-details">
+                    <img src="{% if item.assigned_professional.userprofile.profile_image %}
+                        {{ item.assigned_professional.userprofile.profile_image.url }}
+                        {% else %}{% static 'images/Profile-default.png' %}{% endif %}"
+                        alt="Profile Picture" class="profile-pic">
+                    <div class="info">
+                        <h4>{{ item.assigned_professional.get_full_name }}</h4>
+                        <p>{{ item.assigned_professional.userprofile.bio }}</p>
+                        <a href="{% url 'chat_room' username=item.assigned_professional.username %}">
+                            <button class="btn message-btn">Message</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <p class="no-assignee"><strong>No professional assigned yet.</strong></p>
+            {% endif %}
+
+            <div class="action-buttons">
+                <button class="btn check-status-btn" data-project-id="{{ item.project.id }}">Check Status</button>
+                <button class="btn continue-applications-btn" data-project-id="{{ item.project.id }}"
+                    {% if item.has_accepted_professional %}disabled{% endif %}>
+                    Continue Applications
+                </button>
+                <button class="btn stop-applications-btn" data-project-id="{{ item.project.id }}"
+                    {% if item.has_accepted_professional %}disabled{% endif %}>
+                    Stop Applications
+                </button>
+            </div>
+        </div>
+        {% empty %}
+        <p class="no-projects">No running projects available.</p>
+        {% endfor %}
+    </section>
+</div>
+
+<!-- completed Projects  -->
+
+<div id="completed-projects" class="tab-content">
+    <section class="container">
+        {% for project in completed_projects %}
+        <div class="project-card">
+            <h2 class="company-name">{{ project.org.get_full_name }}</h2>
+            <h3 class="job-title">{{ project.domain }}</h3>
+            <div class="payment">Payment: <span class="payment-amount">Rs. {{ project.payment }}</span></div>
+
+            <p class="job-description">
+                {{ project.description|truncatewords:20 }}
+                <a href="#" class="see-more">see more</a>
+            </p>
+
+            <div class="job-meta">
+                <i class="bi bi-calendar"></i>
+                {{ project.submission_date }}
+            </div>
+
+            <div class="skills-container">
+                <div class="mb-2"><strong>Skills:</strong></div>
+                {% if project.skills_list %}
+                    {% for skill in project.skills_list %}
+                        {% if skill %}
+                            <span class="skill-tags">{{ skill }}</span>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <span>No skills specified.</span>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <strong>Completed By:</strong> 
+                {% for submission in project.requests.submissions.all %}
+                    {% if submission.status == "accepted" %}
+                        {{ submission.project_request.professional.get_full_name }} (Rating: {{ submission.rating }})
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% empty %}
+        <p>No completed projects available.</p>
+        {% endfor %}
+    </section>
+</div>
+
+
+    </div>
+    <!-- Sliding Panel -->
+    <div id="applicant-panel" class="applicant-panel">
+        <button id="close-panel" class="close-btn">&times;</button>
+        <h3>Applicants</h3>
+        <div id="applicant-list" class="applicant-list">
+            <!-- Applicant items will be dynamically inserted here -->
+        </div>
+    </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Toggle form visibility
+            document.getElementById('post-new-btn').addEventListener('click', function (e) {
+                e.preventDefault();
+                const form = document.getElementById('project-form');
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            });
+
+            // Add skill functionality
+            document.getElementById('add-skill-btn').addEventListener('click', function () {
+                const skillInput = document.querySelector('.skill-input');
+                const skill = skillInput.value.trim();
+                if (skill) {
+                    const skillsList = document.getElementById('skills-list');
+                    const skillTag = document.createElement('span');
+                    skillTag.className = 'skill-tags';
+                    skillTag.textContent = skill;
+                    skillsList.appendChild(skillTag);
+                    skillInput.value = '';
+                }
+            });
+        </script>
+        <script>
+            document.getElementById('post-new-btn').addEventListener('click', function (e) {
+                e.preventDefault();
+                const form = document.getElementById('project-form');
+                // Reset the form and clear skills list when opening
+                if (form.style.display === 'none') {
+                    document.querySelector('form').reset();
+                    document.getElementById('skills-list').innerHTML = '';
+                }
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            });
+
+            document.getElementById('add-skill-btn').addEventListener('click', function () {
+                const skillInput = document.querySelector('.skill-input');
+                const skill = skillInput.value.trim();
+                if (skill) {
+                    const skillsList = document.getElementById('skills-list');
+                    const skillTag = document.createElement('span');
+                    skillTag.className = 'skill-tags';
+                    skillTag.textContent = skill;
+                    skillsList.appendChild(skillTag);
+                    skillInput.value = '';
+                }
+            });
+
+            document.querySelector('form').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const domain = document.querySelector('input[placeholder="Enter Domain"]').value;
+                const description = document.querySelector('textarea').value;
+                const experience_required = document.querySelector('input[placeholder="Experience in Years"]').value;
+                const submission_date = document.querySelector('input[placeholder="Submission Date"]').value;
+                const payment = document.querySelector('input[placeholder="Payment in Rs"]').value;
+
+                // Collect skills ONLY from the form's skills-list div
+                const skillElements = document.querySelectorAll('#skills-list .skill-tags');
+                const skills_required = Array.from(skillElements).map(skill => skill.textContent);
+
+                // Debug: Log the skills being sent
+                console.log("Skills being sent to backend:", skills_required);
+
+                fetch('/create-project/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        domain,
+                        description,
+                        experience_required,
+                        skills_required,
+                        submission_date,
+                        payment
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        document.getElementById('skills-list').innerHTML = '';
+                        document.querySelector('form').reset();
+                        window.location.reload();
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+            function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+        </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Event listener for "Check Status" buttons
+                document.querySelectorAll(".check-status-btn").forEach(button => {
+                    button.addEventListener("click", function () {
+                        let projectId = this.getAttribute("data-project-id");
+                        fetch(`/project/${projectId}/applicants/`)
+                            .then(response => response.json())
+                            .then(data => {
+                                let applicantList = document.getElementById("applicant-list");
+                                applicantList.innerHTML = ""; // Clear previous data
+
+                                if (data.applicants.length === 0) {
+                                    applicantList.innerHTML = "<p>No applicants yet.</p>";
+                                } else {
+                                    data.applicants.forEach(applicant => {
+                                        let applicantItem = document.createElement("div");
+                                        applicantItem.classList.add("applicant-item");
+
+                                        // Display status label
+                                        let statusLabel = `<p class="status-label">Status: ${applicant.status.charAt(0).toUpperCase() + applicant.status.slice(1)}</p>`;
+
+                                        applicantItem.innerHTML = `
+            <div class="applicant-details">
+                <img src="${applicant.profile_image}" alt="${applicant.name}" class="profile-pic">
+                <div class="info">
+                    <h4>${applicant.name}</h4>
+                    <p>${applicant.bio}</p>
+                    ${statusLabel}
+                </div>
+            </div>
+            ${applicant.status === "pending" ? `
+            <div class="action-buttons">
+                <button class="btn accept-btn" onclick="updateApplicationStatus(${applicant.application_id}, 'accepted', this)">Accept</button>
+                <button class="btn reject-btn" onclick="updateApplicationStatus(${applicant.application_id}, 'rejected', this)">Reject</button>
+            </div>
+            ` : ""}
+        `;
+                                        applicantList.appendChild(applicantItem);
+                                    });
+
+                                }
+
+                                // Show the applicant panel
+                                document.getElementById("applicant-panel").classList.add("visible");
+                            });
+                    });
+                });
+
+                // Close the applicant panel
+                document.getElementById("close-panel").addEventListener("click", function () {
+                    document.getElementById("applicant-panel").classList.remove("visible");
+                });
+            });
+
+            // Function to update application status
+            function updateApplicationStatus(applicantId, status, button) {
+                console.log("Sending application ID:", applicantId);  // Debugging log
+
+                fetch("/update-application-status/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCSRFToken(),
+                    },
+                    body: JSON.stringify({
+                        application_id: parseInt(applicantId),  // Ensure it's an integer
+                        status: status
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Response from server:", data);  // Log backend response
+
+                        if (data.success) {
+                            let applicantItem = button.closest(".applicant-item");
+                            applicantItem.querySelector(".action-buttons").remove();
+                            applicantItem.querySelector(".info").innerHTML += `
+                    <p class="status-label">Status: ${status.charAt(0).toUpperCase() + status.slice(1)}</p>
+                `;
+                        } else {
+                            console.error("Error:", data);
+                            alert(data.error || "Failed to update status");
+                        }
+                    })
+                    .catch(error => console.error("Fetch Error:", error));
+            }
+
+
+            // Function to get CSRF token
+            function getCSRFToken() {
+                return document.cookie.split("; ")
+                    .find(row => row.startsWith("csrftoken"))
+                    ?.split("=")[1];
+            }
+        </script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Tab Switching Logic
+        const tabButtons = document.querySelectorAll(".tab-button");
+        const tabContents = document.querySelectorAll(".tab-content");
+
+        tabButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                const targetTab = this.getAttribute("data-tab");
+
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => btn.classList.remove("active"));
+                tabContents.forEach(content => content.classList.remove("active"));
+
+                // Add active class to the clicked button and corresponding content
+                this.classList.add("active");
+                document.getElementById(targetTab).classList.add("active");
+            });
+        });
+    });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".stop-applications-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let projectId = this.getAttribute("data-project-id");
+                toggleApplications(projectId, "stop", this);
+            });
+        });
+
+        document.querySelectorAll(".continue-applications-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let projectId = this.getAttribute("data-project-id");
+                toggleApplications(projectId, "continue", this);
+            });
+        });
+    });
+
+    function toggleApplications(projectId, action, button) {
+        fetch(`/project/${projectId}/toggle-applications/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken(),
+            },
+            body: JSON.stringify({ action: action }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                window.location.reload();  // Reload the page to reflect changes
+            } else {
+                alert("Error updating application status.");
+            }
+        })
+        .catch(error => console.error("Fetch Error:", error));
+    }
+
+    function getCSRFToken() {
+        return document.cookie.split("; ")
+            .find(row => row.startsWith("csrftoken"))
+            ?.split("=")[1];
+    }
+
+    </script>
+    </body>
+
+    </html>
+    {% endblock %}
+    {% endblock %}

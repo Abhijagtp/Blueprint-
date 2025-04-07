@@ -1,0 +1,851 @@
+{% extends 'dashboard.html'%}
+
+
+{% block content %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ course.title }} - Course Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #0055ff;
+            --secondary-color: #666;
+            --border-color: #e5e7eb;
+            --success-color: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .course-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .course-description {
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .course-meta {
+            margin-bottom: 1.5rem;
+        }
+
+        .meta-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .label {
+            font-weight: 500;
+            margin-right: 0.5rem;
+        }
+
+        .most-bought {
+            display: inline-block;
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .skill-tag {
+            background-color: #1A91F733;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            border: 1px dashed #1A91F7;
+        }
+
+        .prerequisites-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 2rem;
+        }
+
+        .prerequisites-list li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .prerequisites-list li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+
+        .curriculum-section {
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .curriculum-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            background-color: white;
+        }
+
+        .curriculum-item:last-child {
+            border-bottom: none;
+        }
+
+        .curriculum-item .duration {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+        }
+
+        .course-card {
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 1rem;
+        }
+
+        .card-content h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .instructor {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .meta {
+            color: var(--secondary-color);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+      
+
+        .price {
+            font-weight: 600;
+        }
+
+        .course-preview {
+            position: sticky;
+            top: 1rem;
+        }
+
+        .video-container {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    /* background: #000; */
+}
+
+.video-container video {
+    width: 100%;
+    height: auto;
+}
+
+.play-button {
+    transition: opacity 0.3s ease;
+}
+
+.play-button:hover {
+    opacity: 0.8;
+}
+
+.price-section {
+    border: 1px solid #e0e6ed !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+}
+
+.current-price {
+    color: #007bff !important;
+}
+
+.btn-outline-primary {
+    border-color: #007bff !important;
+    color: #007bff !important;
+    font-weight: 500;
+    border-radius: 6px !important;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff !important;
+    color: #fff !important;
+}
+
+.modal-content {
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    padding: 1.5rem 1.5rem 0 !important;
+}
+
+.modal-title {
+    font-size: 1.25rem;
+    color: #333;
+}
+
+.share-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #f1f3f5;
+    color: #333;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.share-icon:hover {
+    background: #e0e6ed;
+}
+
+.share-icon i {
+    font-size: 1.5rem;
+}
+
+.share-icon .fa-facebook-f {
+    color: #3b5998;
+}
+
+.share-icon .fa-twitter {
+    color: #1da1f2;
+}
+
+.share-icon .fa-instagram {
+    color: #e1306c;
+}
+
+.share-icon .fa-whatsapp {
+    color: #25d366;
+}
+
+.share-icon .fa-envelope {
+    color: #007bff;
+}
+.share-icon .fa-bookmark {
+    color: #007bff; /* Blueprint brand color (customize as needed) */
+}
+
+.input-group-text {
+    background: #f1f3f5 !important;
+    color: #6c757d !important;
+}
+
+.form-control {
+    background: #f1f3f5 !important;
+    color: #333 !important;
+}
+
+.btn-primary {
+    background-color: #6f42c1 !important; /* Purple to match the image */
+    border-color: #6f42c1 !important;
+    border-radius: 0 8px 8px 0 !important;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #5a32a3 !important;
+    border-color: #5a32a3 !important;
+}
+
+@media (max-width: 768px) {
+    .course-preview {
+        position: static;
+        margin-top: 2rem;
+    }
+
+    .price-section {
+        text-align: center;
+    }
+
+    .price-section .d-flex {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-outline-primary {
+        width: 100%;
+    }
+}
+
+        .original-price {
+            text-decoration: line-through;
+            color: var(--secondary-color);
+        }
+
+        .current-price {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .course-preview {
+                position: static;
+                margin-top: 2rem;
+            }
+
+            .skills-container {
+                flex-direction: column;
+            }
+
+            .skill-tag {
+                width: fit-content;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="mb-4 mt-5">
+        <a href="{% url 'traning' %}" class="text-dark text-decoration-none">
+            <i class="bi bi-arrow-left me-2"></i>Back
+        </a>
+    </div>
+    <div class="container py-4">
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-md-7">
+                <!-- Course Title and Description -->
+                <h1 class="course-title">{{ course.title }}</h1>
+                <p class="course-description">{{ course.subtitle }}</p>
+
+                <!-- Course Meta -->
+                <div class="course-meta">
+                    <div class="meta-item">
+                        <span class="label">Level:</span>
+                        <span>{{ course.get_level_display }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="label">Instructor:</span>
+                        <span>{{ course.instructor.get_full_name }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="label">Duration:</span>
+                        <!-- Assuming duration is a timedelta object -->
+                        <span>{{ course.total_duration }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="label">Category:</span>
+                        <span>{{ course.get_category_display }}</span>
+                    </div>
+                    <!-- Optionally include a student count if available -->
+                    {% if students_count %}
+                    <div class="meta-item">
+                        <span class="label">Students Enrolled:</span>
+                        <span>{{ students_count }}</span>
+                    </div>
+                {% endif %}
+                </div>
+
+                <!-- (Optional) Badge if most bought -->
+                {% if course.most_bought %}
+                <div class="most-bought">Most bought</div>
+                {% endif %}
+
+                <!-- Skills / What you will gain (if available) -->
+                {% if course.skills %}
+                <div class="section-title">Skills you will gain</div>
+                <div class="skills-container">
+                    {% for skill in course.skills.splitlines %}
+                        <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+                <!-- Prerequisites -->
+                {% if course.prerequisites %}
+                <div class="section-title">Prerequisites</div>
+                <ul class="prerequisites-list">
+                    {% for prereq in prerequisites_list %}
+                    <li>{{ prereq }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+<!-- Curriculum / Lessons -->
+{% if course.lessons.all %}
+    <div class="section-title">Curriculum</div>
+    <div class="accordion" id="curriculumAccordion">
+        {% for lesson in course.lessons.all %}
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ forloop.counter }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="false"
+                        aria-controls="collapse{{ forloop.counter }}">
+
+                    <div class="d-flex align-items-center w-100">
+                        <!-- Checkbox at the left side -->
+                        {% if user_enrolled %}
+                            <input type="checkbox" class="lesson-completed" data-lesson-id="{{ lesson.id }}"
+                                   {% for progress in lesson_progress %}
+                                       {% if progress.lesson_id == lesson.id and progress.completed %}
+                                           checked
+                                       {% endif %}
+                                   {% endfor %}
+                            >
+                        {% endif %}
+
+                        <!-- Title of the lesson -->
+                        <span class="ms-2">{{ lesson.title }}</span>
+                    </div>
+
+                    <span class="ms-auto text-muted">
+                        {% with total_seconds=lesson.duration.total_seconds %}
+                        {% with minutes=total_seconds|divisibleby:60 %}
+                        {{ minutes|floatformat:0 }} min
+                        {% endwith %}
+                        {% endwith %}
+                    </span>
+
+                </button>
+            </h2>
+            <div id="collapse{{ forloop.counter }}" class="accordion-collapse collapse"
+                 aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#curriculumAccordion">
+                <div class="accordion-body">
+                    <p>{{ lesson.description }}</p>
+
+                    {% if user_enrolled %}
+                        <!-- Show video if user is enrolled -->
+                        <video id="video{{ lesson.id }}" width="100%" controls>
+                            <source src="{{ lesson.video.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% else %}
+                        <!-- Show locked message if user is not enrolled -->
+                        <div class="locked-video text-center p-3 bg-light">
+                            <p class="text-danger">Enroll in this course to watch the lessons.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+
+
+{% if all_completed %}
+    <!-- Share Learning and Get Certificate Buttons -->
+<div class="mt-4">
+    <button class="btn btn-info w-100 py-2 fw-bold" data-bs-toggle="modal" data-bs-target="#shareModal">
+        <i class="fa-solid fa-share-nodes me-2"></i> Share Learning
+    </button>
+    <a href="" class="btn btn-success w-100 py-2 fw-bold mt-2">
+        <i class="fa-solid fa-certificate me-2"></i> Get Certificate
+    </a>
+</div>
+
+<!-- Share Modal -->
+<!-- Share Modal -->
+<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="shareModalLabel">Share Modal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <!-- Post on Blueprint -->
+                <div class="mb-4">
+                    <p class="fw-medium mb-2">Post here on Blueprint</p>
+                    <div class="d-flex justify-content-start">
+                        <a href="https://blueprint.example.com/share?url={{ request.build_absolute_uri }}"
+                           target="_blank" class="share-icon me-3">
+                            <i class="fas fa-bookmark"></i> <!-- Placeholder icon for Blueprint -->
+                        </a>
+                    </div>
+                </div>
+                <!-- Share via Social Media -->
+                <div class="mb-4">
+                    <p class="fw-medium mb-2">Share this link via</p>
+                    <div class="d-flex justify-content-around">
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}"
+                           target="_blank" class="share-icon">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <!-- Twitter -->
+                        <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}&text=Check%20out%20this%20course%20on%20{{ course.title }}!"
+                           target="_blank" class="share-icon">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <!-- Instagram -->
+                        <a href="https://www.instagram.com/" target="_blank" class="share-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <!-- WhatsApp -->
+                        <a href="https://api.whatsapp.com/send?text=Check%20out%20this%20course:%20{{ request.build_absolute_uri }}"
+                           target="_blank" class="share-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                        <!-- Email -->
+                        <a href="mailto:?subject=Check%20out%20this%20course&body=I%20found%20this%20amazing%20course:%20{{ request.build_absolute_uri }}"
+                           class="share-icon">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- Copy Link -->
+                <div>
+                    <p class="fw-medium mb-2">Or copy link</p>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="fas fa-link"></i>
+                        </span>
+                        <input type="text" class="form-control border-start-0" id="shareLink" value="{{ request.build_absolute_uri }}" readonly>
+                        <button class="btn btn-primary" type="button" onclick="copyLink()">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+
+              <!-- Similar Courses (if provided) -->
+{% if similar_courses %}
+<div class="section-title mt-5">Similar Courses</div>
+<div class="row g-4">
+    {% for similar in similar_courses %}
+    <div class="col-md-6 col-lg-4">
+        <div class="course-card">
+            <img src="{{ similar.thumbnail.url }}" alt="{{ similar.title }}" class="card-img">
+            <div class="card-content">
+                <h3>{{ similar.title }}</h3>
+                <div class="instructor">{{ similar.instructor.get_full_name }}</div>
+                <div class="meta">{{ similar.get_level_display }} •
+                    {% if similar.duration %}
+                    {% with total_seconds=similar.duration.total_seconds %}
+                    {% with minutes=total_seconds|divisibleby:60 %}
+                    {{ minutes|floatformat:0 }} min
+                    {% endwith %}
+                    {% endwith %}
+                    {% endif %}
+                </div>
+                <div class="price-section">
+                    <span class="price">₹{{ similar.price }}</span>
+                    <a href="{% url 'course_detail' slug=similar.slug %}"
+                        class="btn btn-warning btn-sm">Buy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+            </div>
+<!-- Right Column: Course Preview / Video -->
+<div class="col-md-5">
+    <div class="course-preview">
+        <!-- Video Container -->
+        <div class="video-container shadow-sm">
+            {% if course.featured_video %}
+            <video id="courseVideo-{{ course.id }}" class="img-fluid rounded" muted>
+                <source src="{{ course.featured_video.url }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div id="playButton-{{ course.id }}"
+                 class="play-button position-absolute top-50 start-50 translate-middle d-flex align-items-center justify-content-center bg-primary bg-opacity-75 rounded-circle"
+                 style="width: 70px; height: 70px; cursor: pointer;">
+                <i class="bi bi-play-fill text-white" style="font-size: 2.5rem;"></i>
+            </div>
+            {% else %}
+            <img src="{{ course.thumbnail.url }}" alt="Course Preview" class="img-fluid rounded">
+            {% endif %}
+        </div>
+
+        <!-- Price and Button Section -->
+        <div class="price-section p-4 border rounded shadow-sm bg-white mt-3">
+            <div class="pricing mb-4">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="current-price text-primary fw-bold fs-3">
+                        ₹ {{ course.discounted_price }}
+                    </span>
+                    {% if course.discount and course.discount > 0 %}
+                    <span class="original-price text-muted text-decoration-line-through fs-5">
+                        ₹ {{ course.price }}
+                    </span>
+                    {% endif %}
+                </div>
+                {% if course.discount and course.discount > 0 %}
+                <span class="discount-badge text-success fw-medium fs-6">
+                    Save {{ course.discount }}%
+                </span>
+                {% endif %}
+            </div>
+            <div class="d-flex gap-3">
+                {% if user_enrolled %}
+                <button class="btn btn-success py-2 px-4 fw-bold flex-grow-1" disabled>
+                    <i class="bi bi-check-circle me-2"></i> Enrolled
+                </button>
+                {% else %}
+                {% if course.is_free or course.discounted_price == 0 %}
+                <a href="{% url 'enroll_course' course.id %}" class="btn btn-success py-2 px-4 fw-bold flex-grow-1">
+                    <i class="bi bi-gift me-2"></i> Enroll for Free
+                </a>
+                {% else %}
+                <a href="{% url 'buy_course' course.id %}" class="btn btn-primary py-2 px-4 fw-bold flex-grow-1">
+                    <i class="bi bi-credit-card me-2"></i> Buy Now
+                </a>
+                {% if course_in_cart %}
+                <button class="btn btn-outline-secondary py-2 px-4 fw-bold flex-grow-1" disabled>
+                    <i class="bi bi-cart-check me-2"></i> Added to Cart
+                </button>
+                {% else %}
+                <button onclick="addToCart({{ course.id }})" class="btn btn-outline-primary py-2 px-4 d-flex align-items-center justify-content-center flex-grow-1">
+                    <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                </button>
+                {% endif %}
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Select all checkboxes for marking lessons as completed
+    const checkboxes = document.querySelectorAll('.lesson-completed');
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const lessonId = checkbox.getAttribute('data-lesson-id');
+            const completed = checkbox.checked;
+
+            // Send the progress update to the backend
+            fetch("{% url 'update_progress' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    lesson_id: lessonId,
+                    completed: completed
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Optionally, show a success message using Django messages
+                    console.log("Progress updated successfully");
+                } else {
+                    alert("Error updating progress");
+                }
+            })
+            .catch(error => {
+                alert("An error occurred. Please try again later.");
+            });
+        });
+    });
+});
+
+    </script>
+
+<script>
+    function addToCart(courseId) {
+        console.log('Course ID being sent:', courseId);  // Debug log
+        fetch('/add-to-cart/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+            },
+            body: JSON.stringify({
+                course_id: courseId
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Course added to cart successfully!');
+            } else {
+                alert('Error adding course to cart: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error details:', error);
+            alert('An error occurred while adding to cart: ' + error.message);
+        });
+    }
+    </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.lesson-completed');
+        const completionButtons = document.getElementById('completion-buttons');
+
+        // Function to check if all lessons are completed
+        function checkAllCompleted() {
+            let allCompleted = true;
+
+            // Check if all checkboxes are checked
+            checkboxes.forEach(function (checkbox) {
+                if (!checkbox.checked) {
+                    allCompleted = false;
+                }
+            });
+
+            // Show or hide the buttons based on completion status
+            if (allCompleted) {
+                completionButtons.style.display = 'block'; // Show buttons if all lessons are completed
+            } else {
+                completionButtons.style.display = 'none'; // Hide buttons if not all lessons are completed
+            }
+        }
+
+        // Add event listener for changes on checkboxes
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener('change', function () {
+                checkAllCompleted(); // Check progress on each change
+            });
+        });
+
+        // Initially check if all lessons are completed
+        checkAllCompleted();
+    });
+
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+    // Get all video elements
+    const videos = document.querySelectorAll('video');
+
+    videos.forEach(video => {
+        const lessonId = video.id.replace('video', ''); // Extract lesson ID from video ID
+        const checkbox = document.querySelector(`input[data-lesson-id="${lessonId}"]`);
+
+        // If the checkbox is already checked, skip this video
+        if (checkbox.checked) return;
+
+        // Add event listener for 'timeupdate' to track the video progress
+        video.addEventListener('timeupdate', function () {
+            const progress = (video.currentTime / video.duration) * 100;
+
+            // Check if the video is 95% complete
+            if (progress >= 95) {
+                // Check the checkbox
+                checkbox.checked = true;
+
+                // Send AJAX request to update the completion status in the backend
+                fetch(`/update-lesson-progress/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        lesson_id: lessonId,
+                        completed: true,
+                    }),
+                });
+
+                // Optionally, automatically go to the next lesson
+                const nextLesson = video.closest('.accordion-item').nextElementSibling;
+                if (nextLesson) {
+                    const nextAccordionButton = nextLesson.querySelector('.accordion-button');
+                    if (nextAccordionButton) {
+                        nextAccordionButton.click(); // Expand the next lesson
+                    }
+                }
+            }
+        });
+    });
+});
+
+</script>
+    
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const video = document.getElementById('courseVideo-{{ course.id }}');
+        const playButton = document.getElementById('playButton-{{ course.id }}');
+    
+        if (video && playButton) {
+            playButton.addEventListener('click', function () {
+                if (video.paused) {
+                    video.play();
+                    playButton.style.opacity = '0';
+                } else {
+                    video.pause();
+                    playButton.style.opacity = '1';
+                }
+            });
+    
+            video.addEventListener('play', function () {
+                playButton.style.opacity = '0';
+            });
+    
+            video.addEventListener('pause', function () {
+                playButton.style.opacity = '1';
+            });
+        }
+    });
+    </script>
+    
+</body>
+
+</html>
+{% endblock %}

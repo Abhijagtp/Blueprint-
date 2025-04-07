@@ -1,0 +1,45 @@
+<div class="fixed-top-menu">
+  <div class="d-flex justify-content-between align-items-center px-2">
+    <div class="pt-4">
+      <h5>IBW</h5>
+    </div>
+    <div>
+      <button class="btn btn-light nav-btn {% if request.path == '/ibw/' %}active{% endif %}">
+        <a href="{% url 'ibw' %}" class="text-decoration-none text-black">Insights</a>
+      </button>
+    </div>
+    <div>
+      <button class="btn btn-light nav-btn {% if request.path == '/blogs/' %}active{% endif %}">
+        <a href="{% url 'Blogs' %}" class="text-decoration-none text-black">Blogs</a>
+      </button>
+    </div>
+    <div>
+      <button class="btn btn-light nav-btn {% if request.path == '/whitepaper/' %}active{% endif %}">
+        <a href="{% url 'Whitepapers' %}" class="text-decoration-none text-black">Whitepapers</a>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  
+
+  .nav-btn {
+    border-radius: 20px; /* Rounded border */
+    padding: 5px 30px; /* Adjust padding for better appearance */
+    transition: all 0.3s ease; /* Smooth transition for hover and active states */
+  }
+
+  .nav-btn:hover {
+    background-color: #e9ecef; /* Light gray hover effect */
+  }
+
+  .nav-btn.active {
+    background-color: #E4E7EC; /* Bootstrap primary blue for active state */
+    color: #fff; /* White text for active state */
+  }
+
+  .nav-btn.active a {
+    color: #fff; /* Ensure the link text is white when active */
+  }
+</style>

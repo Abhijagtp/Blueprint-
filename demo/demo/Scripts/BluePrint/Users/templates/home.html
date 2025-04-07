@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BluePrint Landing Page</title>
+  {% load static %}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .hero-section {
+      background: url("{% static 'images/landing-bg.jpg' %}") no-repeat center center fixed;
+      padding: 60px 0;
+     
+      height: 100vh;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    .hero-section-content{
+        position: absolute;
+        text-align: center;
+        left: -10%;
+        /* background: #000; */
+        top: 30%;
+    }
+    .hero-section h1 {
+      font-size: 3.5rem;
+      font-weight: bold;
+    }
+    .hero-section p {
+      font-size: 1.5rem;
+      margin: 20px 0;
+    }
+    .btn-primary {
+      margin-right: 10px;
+    }
+    .features-section {
+      padding: 40px 0;
+    }
+    .features-section h2 {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .feature {
+      text-align: center;
+      padding: 20px;
+    }
+    .cta-section {
+      text-align: center;
+      background-color: #eaf7ff;
+      padding: 40px 0;
+    }
+    .cta-section h3 {
+      font-size: 2rem;
+    }
+    .cta-section p {
+      font-size: 1.2rem;
+      margin: 10px 0;
+    }
+    .btn{
+        width: 150px;
+        background: #200A58;
+        border: none;
+    }
+    .btn1{
+        background-color: transparent;
+        border: 1px solid #200A58;
+        color: #200A58;
+    }
+    .btn1:hover{
+        background-color: #200A58;
+        color: #fff;
+        border: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="#"><img src="{% static 'images/logo.png' %}" alt=""></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Research</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Digital Assets</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Training & Development</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Social</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Worklisting</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="hero-section">
+  <div class="container hero-section-content">
+    <h1>Skill Today, Career Tomorrow</h1>
+    <p>Narrowing Down the Gap Between the Aspiring Professionals and Industry Standards</p>
+    <div>
+      <a href="{%url 'login'%}" class="btn btn-primary">Login</a>
+      <a href="{%url 'user_selection'%}" class="btn btn1 btn-outline-primary">Register</a>
+    </div>
+  </div>
+</div>
+
+<!-- Features Section -->
+<div class="features-section">
+  <div class="container">
+    <h2>What you will do</h2>
+    <div class="row">
+      <div class="col-md-4 feature">
+        <div class="icon mb-3">
+          <i class="bi bi-search"></i>
+        </div>
+        <h5>Research with us</h5>
+        <p>Research about different industries and organizations of your own interest and understand the gaps between them.</p>
+      </div>
+      <div class="col-md-4 feature">
+        <div class="icon mb-3">
+          <i class="bi bi-pencil-square"></i>
+        </div>
+        <h5>Create your Projects here</h5>
+        <p>You can create your projects here itself, you don’t need to download extra apps.</p>
+      </div>
+      <div class="col-md-4 feature">
+        <div class="icon mb-3">
+          <i class="bi bi-trophy"></i>
+        </div>
+        <h5>Post your Achievements</h5>
+        <p>Let everybody know your achievements and publish your projects and achievements here itself, let your peers know what you have created.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Call-to-Action Section -->
+<div class="cta-section">
+  <div class="container">
+    <h3>Build Your Career Roadmap</h3>
+    <p>Think Beyond Jobs. Become Professionals.</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

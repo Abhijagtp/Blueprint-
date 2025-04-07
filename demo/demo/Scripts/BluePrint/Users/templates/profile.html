@@ -1,0 +1,1018 @@
+{% extends 'dashboard.html'%}
+
+{% block content %}
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #4a90e2;
+            --text-color: #333;
+            --muted-text: #666;
+            --border-color: #e1e1e1;
+            --background-color: #fff;
+            --gradient-start: #ff9966;
+            --gradient-middle: #66ccff;
+            --gradient-end: #cc99ff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        /* Header styles */
+        .header {
+            height: 150px;
+            background-image: url("{% if user_profile.cover_image %}{{ user_profile.cover_image.url }}{% else %}{% static 'images/bg-cover.jpg' %}{% endif %}");
+            background-position: center;
+            background-size: cover;
+            /* background-color:black; */
+            position: relative;
+            overflow: hidden;
+        }
+
+
+
+        .edit-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            padding: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            gap: 0.2rem;
+            border-radius: 5px;
+            padding: 0.5rem 1.5rem;
+            
+        }
+
+        /* Main content styles */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Profile section styles */
+        .profile-info {
+            display: flex;
+            gap: 2rem;
+            margin-top: -4rem;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 2rem;
+        }
+
+        .profile-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 10%;
+            border: 4px solid var(--background-color);
+            overflow: hidden;
+            flex-shrink: 0;
+            position: absolute;
+            left: 12rem;
+            top: 12rem;
+            margin-right: 5rem;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-details {
+            flex: 1;
+        }
+
+        .edit-icon-profile {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.374);
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+
+        .edit-icon-profile i {
+            color: rgb(227, 227, 227);
+            /* Customize icon color as needed */
+            font-size: 10px;
+        }
+
+        .profile-header {
+            /* display: flex; */
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            flex: row;
+            margin-left: 14rem;
+            margin-top: 5rem;
+        }
+
+        .name-role h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .role {
+            color: var(--muted-text);
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            border: 1px solid #064C89;
+
+        }
+
+        .edit-profile-btn {
+            border: 1px solid var(--border-color);
+            background: transparent;
+            padding: 0.5rem 2rem;
+            border: 1px solid #064C89;
+        }
+
+        .share-btn {
+            background: transparent;
+            color: black;
+            border: none;
+            padding: 0.5rem 3rem;
+            border: 1px solid #064C89;
+        }
+
+        .profile-stats {
+            position: absolute;
+            right: 0rem;
+            top: 10.5rem;
+            display: flex;
+            gap: 2rem;
+
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-weight: bold;
+            font-size: 1.125rem;
+        }
+
+        .stat-label {
+            color: var(--muted-text);
+            font-size: 0.875rem;
+        }
+
+        /* Navigation tabs styles */
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-tabs li {
+            margin-right: 1.5rem;
+        }
+
+        .nav-tabs a {
+            display: inline-block;
+            padding: 0.75rem 0;
+            color: var(--text-color);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .nav-tabs .active a {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        /* Post button styles */
+        .post-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem;
+            background: transparent;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+        }
+
+        .post-icon {
+            font-size: 1.75rem;
+            padding: 0.2rem;
+            background-color: #33333349;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            /* font-weight:400; */
+        }
+
+        /* Posts grid styles */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .post-card {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            /* border: 1px solid red; */
+        }
+
+        .post-image {
+            height: 200px;
+            overflow: hidden;
+            padding: 0.4rem;
+        }
+
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+
+        }
+
+        .post-content {
+            padding: 1rem;
+        }
+
+        .post-content h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .post-content p {
+            color: var(--muted-text);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 1rem;
+            color: var(--muted-text);
+            font-size: 0.875rem;
+        }
+
+        /* Modal Background */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  padding: 40px 0;
+}
+
+/* Modal Content */
+.modal-content {
+  background: #fff;
+  margin: auto;
+  border-radius: 8px;
+  padding: 30px;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Close Button */
+.close {
+  color: #aaa;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+}
+
+/* Headings */
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 24px;
+  text-align: center;
+}
+
+.modal-content h3 {
+  margin: 25px 0 10px;
+  font-size: 20px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 5px;
+}
+
+/* Form Styling */
+#editProfileForm {
+  display: flex;
+  flex-direction: column;
+}
+
+#editProfileForm label {
+  margin: 10px 0 5px;
+  font-weight: 600;
+  color: #333;
+}
+
+#editProfileForm input[type="text"],
+#editProfileForm input[type="url"],
+#editProfileForm input[type="date"],
+#editProfileForm textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+#editProfileForm input[type="text"]:focus,
+#editProfileForm input[type="url"]:focus,
+#editProfileForm input[type="date"]:focus,
+#editProfileForm textarea:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+#editProfileForm textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Checkbox styling (optional modern tweak) */
+#editProfileForm input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+}
+
+/* Submit Button */
+#editProfileForm button[type="submit"] {
+  margin-top: 20px;
+  padding: 12px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#editProfileForm button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+/* Preview image sizing inside modal */
+.modal-content .preview-img {
+  max-width: 100%;       /* Ensures the image doesn't overflow the modal */
+  max-height: 400px;     /* Sets a maximum height (adjust as needed) */
+  width: auto;           /* Keeps the original aspect ratio */
+  height: auto;
+  display: block;        /* Ensures the image behaves as a block element */
+  margin: 10px auto;     /* Adds vertical spacing and centers the image horizontally */
+  border: 1px solid #ccc;/* Optional: adds a light border */
+  border-radius: 4px;    /* Optional: rounds the corners */
+}
+/* Modern & Classic Button Styles within Modal */
+.modal-content button {
+  background-color: #007BFF;      /* Classic blue button */
+  color: #fff;                    /* White text */
+  border: none;                   /* Remove default border */
+  border-radius: 4px;             /* Rounded corners */
+  font-size: 16px;                /* Legible font size */
+  padding: 12px 24px;             /* Comfortable padding */
+  cursor: pointer;                /* Pointer on hover */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-top: 15px;
+}
+
+.modal-content button:hover {
+  background-color: #0056b3;      /* Darker blue on hover */
+  transform: translateY(-2px);    /* Slight lift effect */
+}
+
+/* Modern & Classic Text Styles */
+.modal-content h2 {
+  font-size: 28px;                /* Large heading for emphasis */
+  font-family: 'Georgia', serif;  /* Classic, elegant font */
+  color: #333;                    /* Dark gray for good contrast */
+  margin-bottom: 20px;            /* Space below the heading */
+  text-align: center;             /* Center the heading text */
+}
+
+.modal-content h3 {
+  font-size: 22px;
+  font-family: 'Georgia', serif;
+  color: #444;
+  margin: 20px 0 10px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 5px;
+}
+
+.modal-content label {
+  font-size: 16px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #555;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.modal-content p {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+/* Input & Textarea Styling (for a consistent modern look) */
+.modal-content input[type="text"],
+.modal-content input[type="url"],
+.modal-content input[type="date"],
+.modal-content textarea,
+.modal-content input[type="file"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-bottom: 15px;
+  transition: border-color 0.3s ease;
+}
+
+.modal-content input[type="text"]:focus,
+.modal-content input[type="url"]:focus,
+.modal-content input[type="date"]:focus,
+.modal-content textarea:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+/* Animation Keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+
+
+/* ✅ Laptops & Small Desktops (992px - 1199px) */
+@media (max-width: 1199px) {
+    .profile-image {
+        width: 200px;
+        height: 200px;
+        left: 5rem;
+        top: 13.5rem;
+    }
+    .profile-header {
+        margin-left: 15rem;
+        margin-top: 5rem;
+    }
+    .profile-stats {
+        right: 5rem;
+        top: 10.3rem;
+    }
+}
+
+/* ✅ Tablets & Medium Devices (768px - 991px) */
+@media (max-width: 991px) {
+    .profile-image {
+        width: 210px;
+        height: 210px;
+        left: 12rem;
+        top: 24rem;
+    }
+    .profile-header {
+        /* background: #000; */
+        margin-left: 15rem;
+        margin-top: 5rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        
+    }
+    .profile-stats {
+        right: -0.5rem;
+        top: 5rem;
+        margin-bottom: 10rem;
+    }
+ 
+    .posts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ✅ Small Tablets & Large Phones (480px - 767px) */
+@media (max-width: 767px) {
+    .profile-image {
+        width: 200px;
+        height: 200px;
+        left: 9rem;
+        top: 25rem;
+    }
+    .profile-header {
+        margin-top: 5rem;
+        margin-left: 14rem;
+        align-items: center;
+        /* margin-bottom: 5rem; */
+    }
+    .profile-stats {
+        display: none;
+        right: 4rem;
+        top: 20rem;
+    }
+    .profile-actions {
+        width: 100%;
+    }
+    .btn {
+        width: 100%;
+    }
+    .nav-tabs {
+        gap: 1rem;
+        justify-content: center;
+    }
+    .edit-profile-btn {
+            border: 1px solid var(--border-color);
+            background: transparent;
+            padding: 0.5rem 1rem;
+            border: 1px solid #064C89;
+        }
+
+    .share-btn {
+            background: transparent;
+            color: black;
+            border: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid #064C89;
+        }
+}
+
+/* ✅ Mobile Phones (Below 480px) */
+@media (max-width: 480px) {
+    .profile-image {
+        width: 160px;
+        height: 160px;
+        left: 7rem;
+        top: 26rem;
+    }
+    .profile-header {
+        margin-top: 12rem;
+        margin-bottom: 5rem;
+        flex-direction: column;
+        margin-left: 1rem;
+        text-align: center;
+    }
+    .profile-stats {
+        right: 6rem;
+        top: 25rem;
+    }
+    .profile-actions {
+        width: 100%;
+        flex-direction: column;
+    }
+    .btn {
+        width: 100%;
+    }
+    .nav-tabs {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .posts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+    </style>
+</head>
+
+<body>
+ 
+
+  <div class="profile-container">
+      <!-- Header with gradient background -->
+      <header class="header">
+          {% if is_owner %}
+            <button id="openCoverModal" class="edit-button">
+                Edit Cover <i class="ri-pencil-fill"></i>
+            </button>
+          {% endif %}
+      </header>
+  
+      <!-- Profile Image Section -->
+      <div class="profile-image">
+          <img src="{% if user_profile.profile_image %}{{ user_profile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" alt="Profile picture">
+          {% if is_owner %}
+            <div id="openProfilePicModal" class="edit-icon-profile">
+                <i class="fa-solid fa-pen"></i>
+            </div>
+          {% endif %}
+      </div>
+  
+      <!-- MODAL: Update Profile Picture -->
+      {% if is_owner %}
+      <div id="profilePicModal" class="modal">
+          <div class="modal-content">
+              <span class="close" id="profilePicClose">&times;</span>
+              <h2>Update Profile Picture</h2>
+              <form id="profilePicForm" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <label for="profile_image">Select a new profile picture</label>
+                  <input type="file" id="profile_image" name="profile_image" accept="image/*">
+                  <img id="profile_image_preview" class="preview-img"
+                       src="{% if user_profile.profile_image %}{{ user_profile.profile_image.url }}{% endif %}" alt="Profile Image Preview">
+                  <button type="submit">Save</button>
+              </form>
+          </div>
+      </div>
+      {% endif %}
+  
+      <!-- MODAL: Update Cover Image -->
+      {% if is_owner %}
+      <div id="coverImageModal" class="modal">
+          <div class="modal-content">
+              <span class="close" id="coverImageClose">&times;</span>
+              <h2>Update Cover Image</h2>
+              <form id="coverImageForm" method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <label for="cover_image">Select a new cover image</label>
+                  <input type="file" id="cover_image" name="cover_image" accept="image/*">
+                  <img id="cover_image_preview" class="preview-img"
+                       src="{% if user_profile.cover_image %}{{ user_profile.cover_image.url }}{% endif %}" alt="Cover Image Preview">
+                  <button type="submit">Save</button>
+              </form>
+          </div>
+      </div>
+      {% endif %}
+  
+      <main class="main-content">
+          <!-- Profile Info Section -->
+          <section class="profile-info">
+              <div class="profile-details">
+                  <div class="profile-header px-3">
+                      <div class="name-role">
+                        <h1>{{ user_obj.first_name }} {{ user_obj.last_name }}</h1>
+                          <p>{{ bio }}</p>
+                      </div>
+                      <div class="profile-actions">
+                        {% if is_owner %}
+                            <button id="openModal" class="edit-profile-btn">Edit Profile</button>
+                        {% else %}
+                            {% if follow_request_status == 'pending' %}
+                                <button class="follow-btn disabled">Request Sent</button>
+                            {% elif follow_request_status == 'accepted' %}
+                                <!-- Unfollow button for both users -->
+                                <form method="POST" action="{% url 'unfollow_user' user_obj.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="unfollow-btn">Unfollow</button>
+                                </form>
+                            {% else %}
+                                <form method="POST" action="{% url 'send_follow_request' user_obj.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="follow-btn">Follow</button>
+                                </form>
+                            {% endif %}
+                            <button class="message-btn">Message</button>
+                        {% endif %}
+                    </div>
+                    
+                    
+                    
+                  </div>
+                  <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">{{ following_count }}</span>
+                        <span class="stat-label">Following</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ followers_count }}</span>
+                        <span class="stat-label">Followers</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">{{ posts_count }}</span>
+                        <span class="stat-label">Posts</span>
+                    </div>
+                </div>
+              </div>
+          </section>
+  
+          <!-- Combined Edit Profile Modal (only for owner) -->
+          {% if is_owner %}
+<div id="editProfileModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Edit Profile</h2>
+        <form id="editProfileForm" method="post">
+            {% csrf_token %}
+            
+            <!-- Profile Information Fields -->
+            <h3>Profile Information</h3>
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="fname" value="{{ user.first_name }}">
+
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="lname" value="{{ user.last_name }}">
+
+            <label for="bio">Bio</label>
+            <textarea id="bio" name="bio">{{ bio }}</textarea>
+
+            <label for="website">Website</label>
+            <input type="url" id="website" name="website" value="{{ user_profile.website }}">
+            
+            <button type="submit">Save</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+  
+          <!-- Navigation Tabs -->
+          <nav class="profile-nav">
+            <ul class="nav-tabs">
+                <li class="active"><a href="#posts" data-target="posts" data-username="{{ searched_user_profile.user.username }}">Posts</a></li>
+                <li><a href="#projects" data-target="projects">Projects</a></li>
+                <li><a href="#experience" data-target="experience">Experience</a></li>
+                <li><a href="#education" data-target="education">Education</a></li>
+                <li><a href="#skills" data-target="skills">Skills</a></li>
+                <li><a href="#certifications" data-target="certifications">Certifications</a></li>
+            </ul>
+        </nav>
+  
+          <div id="dynamic-content">
+              <!-- Content for the selected tab will be loaded here (e.g. via AJAX) -->
+          </div>
+          <!-- (Optionally) Posts Grid can be loaded in one of the tabs -->
+      </main>
+      <div id="profile-username" data-username="{{ user_obj.username }}"></div>
+
+  </div>
+  
+
+  <script>
+   document.addEventListener('DOMContentLoaded', function () {
+    // Utility Functions
+    function getCookie(name) {
+        const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+        for (const cookie of cookies) {
+            if (cookie.startsWith(name + '=')) {
+                return decodeURIComponent(cookie.substring(name.length + 1));
+            }
+        }
+        return null;
+    }
+
+    function previewImage(inputElement, previewImgId) {
+        const file = inputElement.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById(previewImgId).src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function handleModal(modalId, openBtnSelector, closeBtnSelector) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+
+        const openBtn = document.querySelector(openBtnSelector);
+        const closeBtn = modal.querySelector(closeBtnSelector);
+
+        if (openBtn) {
+            openBtn.onclick = () => modal.style.display = 'block';
+        }
+        if (closeBtn) {
+            closeBtn.onclick = () => modal.style.display = 'none';
+        }
+    }
+
+    function handleFormSubmission(formId, url, method = 'POST', headers = {}, bodyProcessor = (form) => form) {
+        const form = document.getElementById(formId);
+        if (!form) return;
+
+        form.onsubmit = function (event) {
+            event.preventDefault();
+            const formData = bodyProcessor(form);
+
+            fetch(url, {
+                method,
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    ...headers
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    window.location.reload();
+                })
+                .catch(error => console.error('Error:', error));
+        };
+    }
+
+    // Initialize Modals
+    handleModal('editProfileModal', '.edit-profile-btn', '.close');
+    handleModal('profilePicModal', '#openProfilePicModal', '#profilePicClose');
+    handleModal('coverImageModal', '#openCoverModal', '#coverImageClose');
+
+    handleFormSubmission('editProfileForm', '/save_profile/', 'POST', {
+    'Content-Type': 'application/json'
+}, (form) => JSON.stringify({
+    fname: form.querySelector('#fname').value,
+    lname: form.querySelector('#lname').value,
+    bio: form.querySelector('#bio').value,
+    website: form.querySelector('#website').value
+}));
+
+
+    handleFormSubmission('profilePicForm', '/update_profile_image/', 'POST', {}, (form) => new FormData(form));
+    handleFormSubmission('coverImageForm', '/update_cover_image/', 'POST', {}, (form) => new FormData(form));
+
+    // Image Preview
+    document.getElementById('profile_image')?.addEventListener('change', function () {
+        previewImage(this, 'profile_image_preview');
+    });
+
+    document.getElementById('cover_image')?.addEventListener('change', function () {
+        previewImage(this, 'cover_image_preview');
+    });
+
+    // Close Modals on Outside Click
+    window.onclick = function (event) {
+        const modals = ['editProfileModal', 'profilePicModal', 'coverImageModal'];
+        modals.forEach(modalId => {
+            const modal = document.getElementById(modalId);
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    };
+
+    // Tab Logic
+    const dynamicContent = document.getElementById('dynamic-content');
+    if (!dynamicContent) {
+        console.error("Container with id 'dynamic-content' not found.");
+        return;
+    }
+
+    const mainTabs = document.querySelectorAll('.nav-tabs a');
+    let activeTab = localStorage.getItem('activeTab') || 'posts';
+
+    function loadTabContent(target) {
+        const username = document.getElementById('profile-username')?.dataset.username || '';
+        let url = `/load_tab_content/?section=${target}`;
+
+        // Append username to the URL for sections that require it
+        if (['experience', 'education', 'skills', 'certifications', 'projects', 'posts'].includes(target)) {
+            url += `&username=${username}`;
+        }
+
+        fetch(url, {
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(data => {
+                dynamicContent.innerHTML = data;
+                console.log(`Tab content loaded: ${target}`);
+                if (target === 'posts') {
+                    setTimeout(initializeSubTabs, 100);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading content:', error);
+                dynamicContent.innerHTML = '<p>Error loading content. Please try again.</p>';
+            });
+    }
+
+    function initializeSubTabs() {
+        const subNav = dynamicContent.querySelector('.sub-nav');
+        if (!subNav) return;
+
+        subNav.replaceWith(subNav.cloneNode(true));
+        const newSubNav = dynamicContent.querySelector('.sub-nav');
+
+        newSubNav.addEventListener('click', function (e) {
+            const tab = e.target.closest('a');
+            if (tab) {
+                e.preventDefault();
+                newSubNav.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+                tab.parentElement.classList.add('active');
+
+                const subTarget = tab.getAttribute('data-target');
+                fetch(`/load_posts_content/?section=${subTarget}`)
+                    .then(response => response.text())
+                    .then(data => {
+                        dynamicContent.innerHTML = data;
+                        initializeSubTabs();
+                    })
+                    .catch(error => {
+                        console.error('Error loading sub-tab content:', error);
+                        dynamicContent.innerHTML = '<p>Error loading content. Please try again.</p>';
+                    });
+            }
+        });
+    }
+
+    mainTabs.forEach(tab => {
+        tab.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = this.getAttribute('data-target');
+
+            mainTabs.forEach(t => t.parentElement.classList.remove('active'));
+            this.parentElement.classList.add('active');
+            localStorage.setItem('activeTab', target);
+
+            loadTabContent(target);
+        });
+    });
+
+    const defaultMainTab = document.querySelector(`[data-target="${activeTab}"]`);
+    if (defaultMainTab) {
+        defaultMainTab.click();
+    }
+});
+    </script>
+    
+        
+    </body>
+</html>
+
+{% endblock %}

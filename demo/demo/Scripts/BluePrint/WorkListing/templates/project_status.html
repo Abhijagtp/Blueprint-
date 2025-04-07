@@ -1,0 +1,434 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+{% load static %}
+{% include 'worklisting_nav.html' %}
+{% block main_content %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+<link rel="stylesheet" href="style.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,700&display=swap"
+  rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+
+<!-- Hero Section -->
+<section class="hero text-white">
+  <div class="d-flex flex-row p-3 mb-2 px-5">
+    <div class="search-bar me-3 w-50">
+      <input type="text" class="form-control" placeholder="Search..." />
+    </div>
+    <div class="me-4">
+      <button class="search-button btn btn-primary btn-sm px-2 py-1">
+        <i class="bi bi-search me-1 white-icon"></i>Search
+      </button>
+    </div>
+  </div>
+</section>
+
+<div class="d-flex p-3 px-5">
+  <div>
+    <button onclick="changeStage(1)" class="btn btn-primary app-button2">
+      Completed Applications (02)
+    </button>
+  </div>
+  <div class="ms-5">
+    <button onclick="changeStage(2)" class="btn btn-outline-primary app-button1">
+      In Progress Applications (01)
+    </button>
+  </div>
+</div>
+
+<!-- Stage-1: Completed Applications -->
+<div id="stage1" class="stage active p-3 px-5">
+  {% for submission in completed_submissions %}
+  <div class="p-2 project-tile mb-3" data-bs-toggle="modal" data-bs-target="#myModal1">
+      <div class="d-flex justify-content-between align-items-start">
+          <!-- Left Section (Project Image & Details) -->
+          <div class="d-flex">
+              <div class="d-flex flex-column">
+                  <div>
+                      <img src="images/leisure.png" alt="" class="project" />
+                  </div>
+              </div>
+              <div class="ms-3">
+                  <div class="project-title d-flex">
+                      <div class="project-label me-2">{{ submission.project_request.project.domain }} |</div>
+                      <div>{{ submission.project_request.project.description|truncatechars:50 }}</div>
+                  </div>
+                  <div class="project-description me-2">
+                      {{ submission.project_request.project.description|truncatechars:150 }}
+                  </div>
+                  <div class="mt-4 submit">
+                      Submitted <span class="sub-date ms-2">{{ submission.submitted_at|date:"d M, Y" }}</span>
+                  </div>
+                  <div class="payment">
+                      Payment Status 
+                      <span class="amount ms-2">
+                          {% if submission.status == 'accepted' %}Paid{% else %}Amount Due{% endif %}
+                      </span>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Right Section (Status Button) -->
+          <div class="d-flex flex-column justify-content-end">
+              <div class="d-flex justify-content-end">
+                  <button class="btn btn-secondary submitted">
+                      {% if submission.status == 'pending' %}
+                          Pending
+                      {% elif submission.status == 'accepted' %}
+                          Accepted
+                      {% else %}
+                          Rejected
+                      {% endif %}
+                  </button>
+              </div>
+          </div>
+      </div>
+  </div>
+  {% empty %}
+  <p class="text-muted">No completed applications yet.</p>
+  {% endfor %}
+</div>
+
+<!-- Stage-2: In Progress Applications -->
+<div id="stage2" class="stage p-3 px-5">
+  {% for project_request in in_progress_projects %}
+  <div class="p-2 project-tile mb-3">
+      <div class="d-flex justify-content-between align-items-start">
+          <!-- Left Section (Project Image & Details) -->
+          <div class="d-flex">
+              <div class="d-flex flex-column">
+                  <div>
+                      {% if project_request.project.org.userprofile.profile_image %}
+                      <img src="{{ project_request.project.org.userprofile.profile_image.url }}" alt="Company Logo" class="ai" />
+                      {% else %}
+                      <img src="images/default_company.png" alt="Default Logo" class="ai" />
+                      {% endif %}
+                  </div>
+              </div>
+              <div class="ms-3">
+                  <div class="project-title">
+                      {{ project_request.project.domain }}
+                  </div>
+                  <div class="project-description me-2">
+                      {{ project_request.project.description|truncatechars:150 }}
+                  </div>
+                  <div class="mt-4 submit">
+                      Submission Date <span class="sub-date ms-2">{{ project_request.project.submission_date|date:"d M, Y" }}</span>
+                  </div>
+                  <div class="payment">
+                      Payment Status <span class="sub-date ms-2">${{ project_request.project.payment }}</span>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Right Section (Buttons) -->
+          <div class="ms-btn text-end">
+              <div class="pt-5 d-flex flex-column">
+                  <div class="d-flex justify-content-end ms-4 mb-3">
+                      <button class="btn btn-secondary action-btn1">Message</button>
+                  </div>
+                  <div class="d-flex justify-content-end ms-4">
+                      <button class="btn btn-primary action-btn2 submit-btn" 
+                          data-bs-toggle="modal" 
+                          data-bs-target="#myModal2"
+                          data-project-id="{{ project_request.project.id }}"
+                          data-project-title="{{ project_request.project.domain }}"
+                          data-project-description="{{ project_request.project.description }}"
+                          data-project-submission="{{ project_request.project.submission_date|date:'d M, Y' }}"
+                          data-project-payment="${{ project_request.project.payment }}"
+                          data-project-org="{{ project_request.project.org.get_full_name }}"
+                          data-project-skills="{{ project_request.project.skills_required|join:', ' }}"
+                          data-project-experience="{{ project_request.project.experience_required }}"
+                          data-project-image="{% if project_request.project.org.userprofile.profile_image %}{{ project_request.project.org.userprofile.profile_image.url }}{% else %}/static/images/default_company.png{% endif %}">
+                          Submit
+                      </button>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  {% empty %}
+  <p class="text-muted">No in-progress applications yet.</p>
+  {% endfor %}
+</div>
+
+
+<!--Modals-->
+<div class="modal fade" id="myModal1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Project Overview</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <div class="d-flex mb-3">
+          <div>
+            <img src="images/finpro.png" alt="" class="company-logo" />
+          </div>
+          <div class="ms-3 mt-3 company-name">Finster</div>
+        </div>
+        <div class="post-title d-flex justify-content-between my-2">
+          <div class="subtitle">Leave Management System</div>
+          <div class="posted pt-2">Posted on 6 Aug, 2024</div>
+        </div>
+        <div class="project-desc my-3">
+          Develop a Leave Management System (LMS) involves creating a
+          software solution that helps organizations manage employee leave
+          requests, track leave balances, and streamline the approval
+          process.
+        </div>
+        <div class="deadline d-flex">
+          <div class="date d-flex">
+            <div>
+              <img src="images/date.png" alt="" class="image-date" />
+            </div>
+            <div class="date-text ms-2 pt-1">1 Sept, 2024</div>
+          </div>
+          <div class="date d-flex ms-5 mt-1">
+            <div class="exp">Deadline:</div>
+            <div class="date-text ms-2">31 Dec, 2024</div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="text-t">About Company:</div>
+          <div class="text-d ms-3">
+            Lorem ipsum dolor sit amet consectetur. Elementum eu enim
+            porttitor elit viverra. Diam quam dignissim quam volutpat eget
+            augue. Facilisis ornare pellentesque dui sollicitudin donec
+            vestibulum maecenas potenti blandit. Eget sit tincidunt magnis
+            quam risus tortor enim libero. Mauris consectetur eget amet
+            pellentesque.
+          </div>
+        </div>
+        <div class="mt-4 d-flex flex-row">
+          <div class="text-t">Skills:</div>
+          <div class="text-d ms-3">
+            <div class="skill d-flex justify-content-between flex-wrap px-2">
+              <div class="skill-box px-3 py-1">Word Press</div>
+              <div class="skill-box px-3 py-1">Tailwind CSS</div>
+              <div class="skill-box px-3 py-1">Android Studio</div>
+              <div class="skill-box px-3 py-1">HTML</div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 d-flex flex-row">
+          <div class="text-t">Skills Matched:</div>
+          <div class="text-d ms-3 flex-wrap">2 out of 4</div>
+        </div>
+        <div class="mt-4 d-flex flex-row">
+          <div class="text-t">Experience:</div>
+          <div class="text-d ms-2 mt-1">0-1 Years</div>
+        </div>
+        <div class="mt-4 d-flex flex-row">
+          <div class="text-t">Difficulty:</div>
+          <div class="text-d ms-2">Intermediate</div>
+        </div>
+        <div class="mt-4 d-flex flex-row">
+          <div class="text-t">Payment:</div>
+          <div class="price-d ms-2">Rs. 2800</div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-btn btn btn-secondary px-3" data-bs-dismiss="modal" disabled>
+          Submitted
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Project Overview</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body p-4">
+        <div class="d-flex mb-3">
+          <div>
+            <img src="images/ai.png" alt="" class="company-logo" />
+          </div>
+          <div class="ms-3 mt-3 company-name">AI Gamma</div>
+        </div>
+        <div class="post-title d-flex justify-content-between my-2">
+          <div class="subtitle">Developing AI chatbot</div>
+          <div class="posted pt-2">Posted on 1 Nov, 2024</div>
+        </div>
+        <div class="project-desc my-3">
+          Develop a chatbot which should involve creating a software
+          application that can simulate conversations with users, either
+          through text or voice. Chatbots can be used for customer service,
+          automation, entertainment, and more.
+        </div>
+        <div class="deadline d-flex">
+          <div class="date d-flex ms-5 mt-1">
+            <div class="exp">Deadline:</div>
+            <div class="date-text ms-2">26 Jan, 2025</div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="text-t col-2">About Company:</div>
+          <div class="text-d col-10 company-description">
+            Company description will be inserted here dynamically.
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="text-t col-2">Skills :</div>
+          <div class="text-d col-10">
+            <div class="skill d-flex justify-content-between flex-wrap">
+              <div class="skill-box px-3 py-1">Word Press</div>
+              <div class="skill-box px-3 py-1">Tailwind CSS</div>
+              <div class="skill-box px-3 py-1">Android Studio</div>
+              <div class="skill-box px-3 py-1">HTML</div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="text-t col-2">Experience:</div>
+          <div class="text-d col-10 experience-text">0-1 Years</div>
+        </div>
+        <div class="row mt-4">
+          <div class="text-t col-2">Payment:</div>
+          <div class="price-d col-10 payment-text">Rs. 2800</div>
+        </div>
+        <form id="submissionForm">
+          <div class="row mt-4">
+            <input type="url" id="submission_link" name="submission_link" placeholder="Enter your project link*" required />
+          </div>
+        
+          <div class="modal-footer">
+            <button type="submit" class="modal-btn btn btn-primary px-3">Submit</button>
+          </div>
+        </form>
+        
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function changeStage(stageNumber) {
+    // Hide all stages
+    const stages = document.querySelectorAll(".stage");
+    stages.forEach((stage) => stage.classList.remove("active"));
+
+    // Show the selected stage
+    const selectedStage = document.getElementById(`stage${stageNumber}`);
+    selectedStage.classList.add("active");
+  }
+
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("myModal2");
+    const submitButtons = document.querySelectorAll(".submit-btn");
+
+    submitButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+            const projectId = this.getAttribute("data-project-id"); // ✅ Get project ID
+            if (!projectId) {
+                console.error("Project ID is missing!");
+                return;
+            }
+
+            const projectTitle = this.getAttribute("data-project-title");
+            const projectDescription = this.getAttribute("data-project-description");
+            const projectSubmission = this.getAttribute("data-project-submission");
+            const projectPayment = this.getAttribute("data-project-payment");
+            const projectOrg = this.getAttribute("data-project-org");
+            const projectSkills = this.getAttribute("data-project-skills");
+            const projectExperience = this.getAttribute("data-project-experience");
+            const projectImage = this.getAttribute("data-project-image");
+
+            // Update modal elements
+            modal.querySelector(".modal-title").textContent = "Project Overview";
+            modal.querySelector(".company-name").textContent = projectOrg;
+            modal.querySelector(".subtitle").textContent = projectTitle;
+            modal.querySelector(".project-desc").textContent = projectDescription;
+            modal.querySelector(".posted").textContent = `Posted on ${projectSubmission}`;
+            modal.querySelector(".payment-text").textContent = projectPayment;
+            modal.querySelector(".experience-text").textContent = projectExperience;
+
+            // Update skills dynamically
+            const skillsContainer = modal.querySelector(".skill");
+            skillsContainer.innerHTML = "";
+            projectSkills.split(", ").forEach(skill => {
+                const skillElement = document.createElement("div");
+                skillElement.className = "skill-box px-3 py-1";
+                skillElement.textContent = skill;
+                skillsContainer.appendChild(skillElement);
+            });
+
+            // Update company logo
+            const companyLogo = modal.querySelector(".company-logo");
+            companyLogo.src = projectImage;
+
+            // ✅ Save projectId inside the modal for later use
+            modal.setAttribute("data-project-id", projectId);
+        });
+    });
+
+    // ✅ Handle form submission
+    document.getElementById("submissionForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const projectId = modal.getAttribute("data-project-id"); // ✅ Retrieve project ID from modal
+        if (!projectId) {
+            alert("Project ID is missing!");
+            return;
+        }
+
+        const submissionLink = document.getElementById("submission_link").value;
+        if (!submissionLink) {
+            alert("Please enter a valid URL.");
+            return;
+        }
+
+        fetch(`/submit-project/${projectId}/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken(),
+            },
+            body: JSON.stringify({ submission_url: submissionLink }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Project submitted successfully!");
+                location.reload();
+            } else {
+                alert("Error: " + data.error);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("An error occurred. Check the console for details.");
+        });
+
+        function getCSRFToken() {
+            return document.cookie.split("; ")
+                .find(row => row.startsWith("csrftoken"))
+                ?.split("=")[1];
+        }
+    });
+});
+
+
+
+
+</script>
+
+{% endblock %}
+{% endblock %}

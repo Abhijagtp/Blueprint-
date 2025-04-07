@@ -1,0 +1,513 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Form</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="{% static 'css/user_form.css' %}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,700&display=swap" rel="stylesheet" />
+  <style>
+    .stage { display: none; }
+    .stage.active { display: block; }
+    .timeline { display: flex; justify-content: space-between; margin-bottom: 20px; list-style: none; padding: 0; }
+    .timeline li { width: 25%; text-align: center; position: relative; }
+    .timeline li::before { content: ""; width: 20px; height: 20px; background: lightgray; display: block; margin: auto; border-radius: 50%; }
+    .timeline li.active::before { background: blue; }
+    .timeline li::after { content: ""; position: absolute; width: 100%; height: 4px; background: lightgray; top: 8px; left: 50%; transform: translateX(-50%); z-index: -1; }
+    .timeline li:first-child::after { display: none; }
+    .timeline li.active::after { background: blue; }
+    .stage { padding-top: 10px; padding-left: 20px; padding-right: 20px; }
+
+    /* Modern styling for skills/certifications display */
+    .skills { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 10px; 
+    }
+    .skill-label { 
+      font-size: 16px; 
+      color: #6c757d; 
+      margin-bottom: 0; 
+    }
+    .skill-display { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 10px; 
+      margin-top: 10px; 
+    }
+    .skill-item { 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-width: 80px; 
+      padding: 8px 15px; 
+      border: 2px dotted #007bff; 
+      border-radius: 50px; 
+      background-color: #e7f1ff; 
+      font-size: 14px; 
+      color: #0056b3; 
+      font-weight: 500; 
+      text-align: center; 
+      transition: all 0.3s ease; 
+    }
+    .skill-item:hover { 
+      background-color: #d0e4ff; 
+      transform: scale(1.05); 
+    }
+
+    /* Modern checkbox styling */
+    .checkbox-group { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 12px; 
+      margin-top: 15px; 
+    }
+    .form-check { 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+    }
+    .form-check-input { 
+      width: 20px; 
+      height: 20px; 
+      border: 2px solid #007bff; 
+      border-radius: 4px; 
+      cursor: pointer; 
+      transition: all 0.3s ease; 
+    }
+    .form-check-input:checked { 
+      background-color: #007bff; 
+      border-color: #007bff; 
+    }
+    .form-check-label { 
+      font-size: 16px; 
+      color: #333; 
+      font-weight: 400; 
+    }
+
+    /* Button styling */
+    .btn-primary { 
+      background-color: #007bff; 
+      border-color: #007bff; 
+      padding: 8px 20px; 
+      font-weight: 500; 
+      transition: all 0.3s ease; 
+    }
+    .btn-primary:hover { 
+      background-color: #0056b3; 
+      border-color: #0056b3; 
+    }
+    .btn-secondary { 
+      background-color: #6c757d; 
+      border-color: #6c757d; 
+      padding: 8px 20px; 
+      font-weight: 500; 
+      transition: all 0.3s ease; 
+    }
+    .btn-secondary:hover { 
+      background-color: #5a6268; 
+      border-color: #5a6268; 
+    }
+    .btn-outline-primary { 
+      border-color: #007bff; 
+      color: #007bff; 
+      font-weight: 500; 
+      transition: all 0.3s ease; 
+    }
+    .btn-outline-primary:hover { 
+      background-color: #007bff; 
+      color: #fff; 
+    }
+  </style>
+</head>
+
+<body>
+  <div class="top">
+    <div><img src="{% static 'images/logo.png' %}" alt="" class="image" /></div>
+    <div class="text">Skills Today, Career Tomorrow</div>
+  </div>
+  
+  <div class="left">
+    <div class="container mt-3">
+      <ul class="timeline">
+        <li class="active" id="step-1"></li>
+        <li id="step-2"></li>
+        <li id="step-3"></li>
+        <li id="step-4"></li>
+        <li id="step-5"></li>
+      </ul>
+
+      <form id="staged-form" method="POST" action="{% url 'user_form' %}">
+        {% csrf_token %}
+        
+        <!-- Stage 1: Education Information -->
+        <div class="stage active" id="stage-1">
+          <div class="title">Let's build together</div>
+          <div class="desc">Help us to know you better!</div>
+          <h5>Educational Information</h5>
+          <div class="my-4">
+            <select class="form-select" name="highest_degree" id="highest_degree" onchange="updateSpecializations()" required>
+              <option value="">Select Highest Degree*</option>
+              {% for degree in degrees %}
+                <option value="{{ degree.id }}">{{ degree.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-4">
+            <select class="form-select" name="specialization" id="specialization" required>
+              <option value="">Select Specialization*</option>
+            </select>
+          </div>
+          <div class="mb-4">
+            <input type="number" name="graduation_year" placeholder="Graduation Year*" required class="form-control" />
+          </div>
+          
+          <button type="button" class="btn btn-primary" onclick="nextStage(1)">Next</button>
+        </div>
+
+        <!-- Stage 2: Details -->
+        <div class="stage" id="stage-2">
+          <div class="title">Let's build together</div>
+          <div class="desc">Let's have a little closer look!</div>
+          <h5>Details</h5>
+          <div class="my-4">
+            <input type="text" name="current_occupation" placeholder="Current Occupation*" required class="form-control" />
+          </div>
+          <div class="mb-4">
+            <input type="text" name="current_organization" placeholder="Current Organization Name*" required class="form-control" />
+          </div>
+          <div class="mb-4">
+            <input type="number" name="experience_years" placeholder="Years of Experience*" required class="form-control" />
+          </div>
+          <div class="mb-4">
+            <div class="skills">
+              <div class="d-flex align-items-center gap-3">
+                <label class="skill-label">Add your skills gained</label>
+                <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#topSkillsModal">
+                  Add Skills
+                </button>
+              </div>
+              <div class="skill-display" id="top-skills-display">
+                <!-- Skills will be displayed here -->
+              </div>
+              <input type="hidden" name="top_skills" id="top-skills-input" />
+            </div>
+          </div>
+          <div class="mb-4">
+            <div class="checkbox-group">
+              <div class="form-check">
+                <input type="checkbox" name="is_fresher" class="form-check-input" id="is_fresher" />
+                <label class="form-check-label" for="is_fresher">Fresher</label>
+              </div>
+              <div class="form-check">
+                <input type="checkbox" name="on_career_break" class="form-check-input" id="on_career_break" />
+                <label class="form-check-label" for="on_career_break">Above is my previous organization - on career break</label>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" onclick="prevStage(2)">Back</button>
+            <button type="button" class="btn btn-primary" onclick="nextStage(2)">Next</button>
+          </div>
+        </div>
+
+        <!-- Stage 3: Career Goal -->
+        <div class="stage" id="stage-3">
+          <div class="title">Let's build together</div>
+          <div class="desc">Wish you a successful career ahead!</div>
+          <h5>Career Goal</h5>
+          <div class="my-4">
+            <select class="form-select" name="preferred_industry" required>
+              <option value="">Select Preferred Industry*</option>
+              {% for industry in industries %}
+                <option value="{{ industry.id }}">{{ industry.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="mb-4">
+            <input type="text" name="desired_job_role" placeholder="Desired Job Role*" required class="form-control" />
+          </div>
+          <div class="mb-4">
+            <input type="text" name="specific_position" placeholder="Specific Position*" required class="form-control" />
+          </div>
+          <div class="mb-4">
+            <div class="skills">
+              <div class="d-flex align-items-center gap-3">
+                <label class="skill-label">Add your career goal skills</label>
+                <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#careerGoalSkillsModal">
+                  Add Skills
+                </button>
+              </div>
+              <div class="skill-display" id="career-goal-skills-display">
+                <!-- Skills will be displayed here -->
+              </div>
+              <input type="hidden" name="career_goal_skills" id="career-goal-skills-input" />
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" onclick="prevStage(3)">Back</button>
+            <button type="button" class="btn btn-primary" onclick="nextStage(3)">Next</button>
+          </div>
+        </div>
+
+        <!-- Stage 4: Your Efforts -->
+        <div class="stage" id="stage-4">
+          <div class="title">Let's build together</div>
+          <div class="desc">We will value your persistence here!</div>
+          <h5>Your Efforts</h5>
+          <div class="my-4">
+            <div class="skills">
+              <div class="d-flex align-items-center gap-3">
+                <label class="skill-label">Add your certifications</label>
+                <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#certificationsModal">
+                  Add Certifications
+                </button>
+              </div>
+              <div class="skill-display" id="certifications-display">
+                <!-- Certifications will be displayed here -->
+              </div>
+              <input type="hidden" name="certifications" id="certifications-input" />
+            </div>
+          </div>
+          <div class="mb-4">
+            <p>Looking for career switch</p>
+            <div class="form-check">
+              <input type="radio" name="looking_for_career_switch" value="true" class="form-check-input" id="career_switch_yes" />
+              <label class="form-check-label" for="career_switch_yes">Yes</label>
+            </div>
+            <div class="form-check">
+              <input type="radio" name="looking_for_career_switch" value="false" class="form-check-input" id="career_switch_no" checked />
+              <label class="form-check-label" for="career_switch_no">No</label>
+            </div>
+          </div>
+          <div class="mb-4">
+            <p>Willing to take Projects</p>
+            <div class="form-check">
+              <input type="radio" name="willing_to_take_projects" value="true" class="form-check-input" id="projects_yes" />
+              <label class="form-check-label" for="projects_yes">Yes</label>
+            </div>
+            <div class="form-check">
+              <input type="radio" name="willing_to_take_projects" value="false" class="form-check-input" id="projects_no" checked />
+              <label class="form-check-label" for="projects_no">No</label>
+            </div>
+          </div>
+          <div class="mb-4">
+            <p>Are you interested in taking new course</p>
+            <div class="form-check">
+              <input type="radio" name="interested_in_new_course" value="true" class="form-check-input" id="course_yes" />
+              <label class="form-check-label" for="course_yes">Yes</label>
+            </div>
+            <div class="form-check">
+              <input type="radio" name="interested_in_new_course" value="false" class="form-check-input" id="course_no" checked />
+              <label class="form-check-label" for="course_no">No</label>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary" onclick="prevStage(4)">Back</button>
+            <button type="button" class="btn btn-primary" onclick="nextStage(4)">Next</button>
+          </div>
+        </div>
+
+        <!-- Stage 5: Almost There -->
+        <div class="stage" id="stage-5">
+          <div class="title">Let's build together</div>
+          <div class="desc">Great, you are one step away now!</div>
+          <h5>Almost there</h5>
+          <div class="my-4">
+            <input type="url" name="portfolio_link" placeholder="Link to Portfolio*" required class="form-control" />
+          </div>
+          <div class="mb-4">
+            <input type="text" name="ideal_organization" placeholder="Ideal Organization To Work*" required class="form-control" />
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="button" class="btn btn-secondary px-3" onclick="prevStage(5)">Back</button>
+            <button type="submit" class="btn btn-success px-3">Submit</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Modal for Top Skills -->
+      <div class="modal fade" id="topSkillsModal" tabindex="-1" aria-labelledby="topSkillsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="topSkillsModalLabel">Add Top Skills</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="top-skills-container">
+              <div class="mb-3">
+                <input type="text" class="form-control top-skill-input" placeholder="Enter a skill" />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="addSkillInput('top-skills-container')">Add More</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="saveTopSkills()">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal for Career Goal Skills -->
+      <div class="modal fade" id="careerGoalSkillsModal" tabindex="-1" aria-labelledby="careerGoalSkillsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="careerGoalSkillsModalLabel">Add Career Goal Skills</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="career-goal-skills-container">
+              <div class="mb-3">
+                <input type="text" class="form-control career-goal-skill-input" placeholder="Enter a skill" />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="addSkillInput('career-goal-skills-container')">Add More</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="saveCareerGoalSkills()">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal for Certifications -->
+      <div class="modal fade" id="certificationsModal" tabindex="-1" aria-labelledby="certificationsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="certificationsModalLabel">Add Certifications</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="certifications-container">
+              <div class="mb-3">
+                <input type="text" class="form-control certification-input" placeholder="Enter a certification" />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="addSkillInput('certifications-container')">Add More</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="saveCertifications()">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="right">
+    <img src="{% static 'images/slide.png' %}" alt="" class="image-1" />
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let currentStage = 1;
+
+    function nextStage(stage) {
+      document.getElementById(`stage-${stage}`).classList.remove("active");
+      document.getElementById(`stage-${stage + 1}`).classList.add("active");
+      document.getElementById(`step-${stage}`).classList.remove("active");
+      document.getElementById(`step-${stage + 1}`).classList.add("active");
+      currentStage++;
+    }
+
+    function prevStage(stage) {
+      document.getElementById(`stage-${stage}`).classList.remove("active");
+      document.getElementById(`stage-${stage - 1}`).classList.add("active");
+      document.getElementById(`step-${stage}`).classList.remove("active");
+      document.getElementById(`step-${stage - 1}`).classList.add("active");
+      currentStage--;
+    }
+
+    function updateSpecializations() {
+      const degreeId = document.getElementById('highest_degree').value;
+      const specSelect = document.getElementById('specialization');
+      specSelect.innerHTML = '<option value="">Select Specialization*</option>';
+
+      if (degreeId) {
+        fetch(`/get-specializations/?degree=${degreeId}`)
+          .then(response => response.json())
+          .then(data => {
+            data.forEach(spec => {
+              const option = document.createElement('option');
+              option.value = spec.id;
+              option.text = spec.name;
+              specSelect.appendChild(option);
+            });
+          })
+          .catch(error => console.error('Error:', error));
+      }
+    }
+
+    function addSkillInput(containerId) {
+      const container = document.getElementById(containerId);
+      const newInputDiv = document.createElement('div');
+      newInputDiv.className = 'mb-3';
+      const newInput = document.createElement('input');
+      newInput.type = 'text';
+      newInput.className = 'form-control ' + containerId.split('-')[0] + '-input';
+      newInput.placeholder = 'Enter a ' + containerId.split('-')[0].replace('container', '');
+      newInputDiv.appendChild(newInput);
+      container.appendChild(newInputDiv);
+    }
+
+    function saveTopSkills() {
+      const inputs = document.querySelectorAll('#top-skills-container .top-skill-input');
+      const skills = Array.from(inputs).map(input => input.value).filter(skill => skill.trim() !== '');
+      
+      const display = document.getElementById('top-skills-display');
+      display.innerHTML = '';
+      skills.forEach(skill => {
+        const span = document.createElement('span');
+        span.className = 'skill-item';
+        span.textContent = skill;
+        display.appendChild(span);
+      });
+
+      document.getElementById('top-skills-input').value = JSON.stringify(skills);
+      const modal = bootstrap.Modal.getInstance(document.getElementById('topSkillsModal'));
+      modal.hide();
+    }
+
+    function saveCareerGoalSkills() {
+      const inputs = document.querySelectorAll('#career-goal-skills-container .career-goal-skill-input');
+      const skills = Array.from(inputs).map(input => input.value).filter(skill => skill.trim() !== '');
+      
+      const display = document.getElementById('career-goal-skills-display');
+      display.innerHTML = '';
+      skills.forEach(skill => {
+        const span = document.createElement('span');
+        span.className = 'skill-item';
+        span.textContent = skill;
+        display.appendChild(span);
+      });
+
+      document.getElementById('career-goal-skills-input').value = JSON.stringify(skills);
+      const modal = bootstrap.Modal.getInstance(document.getElementById('careerGoalSkillsModal'));
+      modal.hide();
+    }
+
+    function saveCertifications() {
+      const inputs = document.querySelectorAll('#certifications-container .certification-input');
+      const certifications = Array.from(inputs).map(input => input.value).filter(cert => cert.trim() !== '');
+      
+      const display = document.getElementById('certifications-display');
+      display.innerHTML = '';
+      certifications.forEach(cert => {
+        const span = document.createElement('span');
+        span.className = 'skill-item';
+        span.textContent = cert;
+        display.appendChild(span);
+      });
+
+      document.getElementById('certifications-input').value = JSON.stringify(certifications);
+      const modal = bootstrap.Modal.getInstance(document.getElementById('certificationsModal'));
+      modal.hide();
+    }
+  </script>
+</body>
+</html>

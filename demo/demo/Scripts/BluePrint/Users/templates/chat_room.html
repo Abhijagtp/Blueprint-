@@ -1,0 +1,526 @@
+{% extends 'timeline.html' %}
+{% block main_content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emoji-mart/css/emoji-mart.css">
+<script src="https://cdn.jsdelivr.net/npm/emoji-mart/dist/browser.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+{% load static %}
+{% load custom_filters %}
+<style>
+      
+    /* Updated CSS */
+    .chat-container {
+        max-width: 600px;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ddd;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .chat-header {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-bottom: 1px solid #ddd;
+        backdrop-filter: blur(5px);
+    }
+
+    .chat-profile-pic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 10px;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-header-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .chat-header-info h3 {
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .chat-header-info p {
+        margin: 2px 0 0;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
+    }
+
+    .message {
+        padding: 10px 15px;
+        margin: 5px;
+        border-radius: 10px;
+        max-width: 75%;
+        word-wrap: break-word;
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        position: relative;
+    }
+
+    .sent {
+        align-self: flex-end;
+        background-color: #5493f8;
+        color: white;
+        border-top-right-radius: 0;
+    }
+
+    .received {
+        align-self: flex-start;
+        background-color: #fff;
+        color: black;
+        border-top-left-radius: 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .message-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .message-content {
+        flex: 1;
+    }
+
+    .message-content strong {
+        font-size: 14px;
+    }
+
+    .message-content small {
+        font-size: 12px;
+        color: #666;
+    }
+
+    .message-status {
+        font-size: 12px;
+        margin-left: 5px;
+        color: #666;
+    }
+
+    .sent .message-status {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .shared-post {
+        max-width: 60%;
+        padding: 12px;
+        border-radius: 10px;
+        margin: 8px 0;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .sent .shared-post {
+        background-color: #007bff;
+        color: white;
+        align-self: flex-end;
+    }
+
+    .received .shared-post {
+        background-color: #f8f8f8;
+        color: black;
+        align-self: flex-start;
+    }
+
+    .post-header {
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .post-preview {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .post-image {
+        width: 100%;
+        max-height: 250px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .post-caption {
+        font-size: 14px;
+        margin: 0;
+        color: inherit;
+    }
+
+    .view-post-link {
+        display: inline-block;
+        color: #007aff;
+        font-weight: bold;
+        text-decoration: none;
+        margin-top: 8px;
+    }
+
+    .view-post-link:hover {
+        text-decoration: underline;
+    }
+
+    .post-timestamp {
+        display: block;
+        font-size: 12px;
+        color: #666;
+        margin-top: 8px;
+        text-align: right;
+    }
+
+    .sent .post-timestamp {
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    .date-separator {
+        text-align: center;
+        margin: 10px auto;
+        padding: 5px 10px;
+        background-color: #f0f0f0;
+        border-radius: 12px;
+        color: #555;
+        font-size: 0.9em;
+        width: fit-content;
+        max-width: 80%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .typing-indicator {
+        display: none;
+        font-size: 12px;
+        color: #666;
+        margin: 5px 0;
+        padding: 5px 10px;
+        background-color: #fff;
+        border-radius: 15px;
+        align-self: flex-start;
+        max-width: 60%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-input {
+        padding: 10px;
+        background: #fff;
+        border-top: 1px solid #ddd;
+        display: flex;
+        justify-content: center;
+    }
+
+    .input-container {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 600px;
+        background: #f1f1f1;
+        border-radius: 30px;
+        padding: 8px 12px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-container input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    .input-container button {
+        border: none;
+        background: none;
+        font-size: 20px;
+        cursor: pointer;
+        padding: 8px;
+        transition: transform 0.2s ease-in-out;
+        color: #666;
+    }
+
+    .input-container button:hover {
+        transform: scale(1.2);
+    }
+
+    #send-button {
+        color: #007bff;
+    }
+
+    #emoji-button {
+        color: #ffcc00;
+    }
+</style>
+
+<div class="chat-container p-0">
+    <a href="{% url 'profile_detail' receiver.username %}" class="text-decoration-none">
+        <div class="chat-header">
+            <img src="{% if receiver.userprofile.profile_image %}{{ receiver.userprofile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}"
+                alt="Profile Picture" class="chat-profile-pic">
+            <div class="chat-header-info">
+                <h3>{{ receiver.get_full_name }}</h3>
+                <p>{{ receiver.userprofile.bio }}</p>
+            </div>
+        </div>
+    </a>
+
+    <div class="chat-messages" id="chat-box">
+        {% for item in chats %}
+            {% if item.date %}
+                <div class="date-separator">{{ item.date }}</div>
+            {% else %}
+                {% if item.message %}
+                    <div class="message {% if item.is_sent_by_user %}sent{% else %}received{% endif %}"
+                         data-message-id="{{ item.message_id }}"
+                         data-is-read="{{ item.is_read|lower }}">
+                        <img src="{% if item.sender_profile_image %}{{ item.sender_profile_image }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}"
+                             alt="Profile Picture" class="message-avatar">
+                        <div class="message-content">
+                            {{ item.message }}
+                            <br>
+                            <small>{{ item.timestamp }}</small>
+                            {% if item.is_sent_by_user %}
+                                <span class="message-status">
+                                    {% if item.is_read %}
+                                        <i class="fas fa-check-double"></i>
+                                    {% else %}
+                                        <i class="fas fa-check"></i>
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% elif item.post %}
+                    <div class="shared-post {% if item.is_sent_by_user %}sent{% else %}received{% endif %}">
+                        <div class="post-header text-black">
+                            <img src="{% if item.sender_profile_image %}{{ item.sender_profile_image }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}"
+                                 alt="Profile Picture" class="message-avatar">
+                            <strong>{% if item.is_sent_by_user %}You{% else %}{{ item.sender_name }}{% endif %}</strong> shared a post:
+                        </div>
+                        <div class="post-preview">
+                            {% if item.post.image_url %}
+                                <img src="{{ item.post.image_url }}" alt="Post Image" class="post-image">
+                            {% endif %}
+                            <div class="post-content">
+                                <p class="post-caption text-black">{{ item.post.caption }}</p>
+                                <a href="{{ item.post.post_link }}" class="view-post-link">🔗 View Post</a>
+                            </div>
+                        </div>
+                        <small class="post-timestamp">{{ item.timestamp }}</small>
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        <div class="typing-indicator" id="typing-indicator" style="display: none;">
+            <span>{{ receiver.get_full_name }} is typing...</span>
+        </div>
+    </div>
+
+    <div class="chat-input">
+        <input type="hidden" id="receiver_id" value="{{ receiver.id }}">
+        <div class="input-container">
+            <button id="emoji-button"><i class="fas fa-smile"></i></button>
+            <input type="text" id="message-content" placeholder="Type your message...">
+            <button id="send-button"><i class="fas fa-paper-plane"></i></button>
+        </div>
+        <div id="emoji-picker" style="display: none; position: absolute;"></div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const chatBox = document.getElementById("chat-box");
+        const messageInput = document.getElementById("message-content");
+        const receiverId = document.getElementById("receiver_id").value;
+        const socketUrl = (window.location.protocol === "https:" ? "wss://" : "ws://") + window.location.host + "/ws/chat/{{ receiver.username }}/";
+
+        let socket = new WebSocket(socketUrl);
+
+        socket.onopen = function () {
+            console.log("✅ WebSocket connection established.");
+        };
+
+        socket.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+
+            if (data.type === "new_message") {
+                appendMessage(data);
+
+                // Mark as read if the message is received and belongs to the current chat
+                if (data.sender_name !== "{{ request.user.first_name }}") {
+                    socket.send(JSON.stringify({ type: "mark_as_read", message_id: data.message_id }));
+                }
+            } else if (data.type === "message_status") {
+                const messageElement = document.querySelector(`[data-message-id="${data.message_id}"]`);
+                if (messageElement) {
+                    const statusElement = messageElement.querySelector(".message-status");
+                    if (statusElement) {
+                        statusElement.innerHTML = data.is_read ? '<i class="fas fa-check-double"></i>' : '<i class="fas fa-check"></i>';
+                    }
+                }
+            } else {
+                appendMessage(data);
+            }
+        };
+
+        socket.onerror = function (error) {
+            console.error("⚠️ WebSocket Error:", error);
+        };
+
+        socket.onclose = function () {
+            console.warn("🔌 WebSocket closed. Reconnecting...");
+            setTimeout(() => {
+                socket = new WebSocket(socketUrl);
+            }, 3000);
+        };
+
+        function appendMessage(data) {
+            if (!data) return;
+
+            const chatBox = document.getElementById("chat-box");
+            const newMessage = document.createElement("div");
+
+            if (data.message) {
+                newMessage.classList.add("message", data.sender_name === "{{ request.user.first_name }}" ? "sent" : "received");
+                newMessage.setAttribute("data-message-id", data.message_id);
+                newMessage.setAttribute("data-is-read", data.is_read);
+                newMessage.innerHTML = `
+                    <img src="${data.sender_profile_image || "{% static 'images/Profile-default.png' %}"}" alt="Profile Picture" class="message-avatar">
+                    <div class="message-content">
+                        ${data.message} <br>
+                        <small>${data.timestamp}</small>
+                        ${data.sender_name === "{{ request.user.first_name }}" ? `
+                            <span class="message-status">
+                                ${data.is_read ? '<i class="fas fa-check-double"></i>' : '<i class="fas fa-check"></i>'}
+                            </span>
+                        ` : ""}
+                    </div>
+                `;
+            } else if (data.post) {
+                newMessage.classList.add("shared-post", data.sender_name === "{{ request.user.first_name }}" ? "sent" : "received");
+                newMessage.innerHTML = `
+                    <div class="post-header">
+                        <img src="${data.sender_profile_image || "{% static 'images/Profile-default.png' %}"}" alt="Profile Picture" class="message-avatar">
+                        <strong>${data.sender_name === "{{ request.user.first_name }}" ? "You" : data.sender_name}</strong> shared a post:
+                    </div>
+                    <div class="post-preview">
+                        ${data.post.image_url ? `<img src="${data.post.image_url}" alt="Post Image" class="post-image">` : ""}
+                        <div class="post-content">
+                            <p class="post-caption">${data.post.caption || "No caption available"}</p>
+                            <a href="${data.post.post_link}" class="view-post-link">🔗 View Post</a>
+                        </div>
+                    </div>
+                    <small class="post-timestamp">${data.timestamp}</small>
+                `;
+            }
+
+            chatBox.appendChild(newMessage);
+            chatBox.scrollTo({ top: chatBox.scrollHeight, behavior: "smooth" });
+        }
+
+        function sendMessage() {
+            const content = messageInput.value.trim();
+            if (!content) {
+                console.warn("⚠️ Cannot send an empty message.");
+                return;
+            }
+
+            const messageData = {
+                sender: "{{ request.user.first_name }}",
+                receiver_id: receiverId,
+                message: content,
+                timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: true })
+            };
+
+            socket.send(JSON.stringify(messageData));
+            messageInput.value = "";
+        }
+
+        document.getElementById("send-button").addEventListener("click", sendMessage);
+        messageInput.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Typing Indicator
+        let typingTimeout;
+        messageInput.addEventListener("input", () => {
+            socket.send(JSON.stringify({ type: "typing", sender: "{{ request.user.first_name }}" }));
+
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                socket.send(JSON.stringify({ type: "stop_typing", sender: "{{ request.user.first_name }}" }));
+            }, 2000);
+        });
+
+        // Mark messages as read when the chat window is opened
+document.addEventListener("DOMContentLoaded", function () {
+    markAllMessagesAsRead();
+});
+
+function markAllMessagesAsRead() {
+    document.querySelectorAll(".message").forEach(message => {
+        const messageId = message.dataset.messageId;
+        const isRead = message.dataset.isRead === "true";
+
+        if (!isRead) {
+            socket.send(JSON.stringify({ type: "mark_as_read", message_id: messageId }));
+
+            // Immediately update UI
+            const statusElement = message.querySelector(".message-status");
+            if (statusElement) {
+                statusElement.innerHTML = '<i class="fas fa-check-double"></i>';
+            }
+
+            message.setAttribute("data-is-read", "true");
+        }
+    });
+}
+
+// WebSocket message handler
+socket.onmessage = function (event) {
+    const data = JSON.parse(event.data);
+
+    if (data.type === "new_message") {
+        appendMessage(data);
+
+        // Mark as read if the message is received and belongs to the current chat
+        if (data.sender_name !== "{{ request.user.first_name }}") {
+            socket.send(JSON.stringify({ type: "mark_as_read", message_id: data.message_id }));
+        }
+    } else if (data.type === "message_status") {
+        const messageElement = document.querySelector(`[data-message-id="${data.message_id}"]`);
+        if (messageElement) {
+            const statusElement = messageElement.querySelector(".message-status");
+            if (statusElement) {
+                statusElement.innerHTML = data.is_read ? '<i class="fas fa-check-double"></i>' : '<i class="fas fa-check"></i>';
+            }
+        }
+    } else {
+        appendMessage(data);
+    }
+};
+    });
+</script>
+
+{% endblock %}

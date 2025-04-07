@@ -1,0 +1,296 @@
+
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BluePrint Navbar</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Toastify CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+<!-- Toastify JS -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<!-- Bootstrap Bundle (includes Popper.js) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+  <style>
+    .navbar {
+      background-color: #ffffff;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: #043959;
+    }
+
+    .navbar-brand img {
+      width: 150px;
+      margin-right: 10px;
+    }
+
+    .nav-center {
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .nav-link {
+      color: #555;
+      font-weight: 500;
+      margin-right: 15px;
+      padding: 5px 15px;
+      border-radius: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      background-color: blueviolet;
+      /* color: white; */
+      color: #10b981;
+    }
+
+    .active-link {
+      background-color: #043959;
+      color: #ffffff !important;
+    }
+
+    .icon-container {
+      margin-right: 15px;
+      position: relative;
+    }
+
+    .icon-container i {
+      font-size: 1.2rem;
+      color: #555;
+      cursor: pointer;
+    }
+
+    .icon-container .badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      font-size: 0.6rem;
+      background-color: #f44336;
+      color: white;
+      border-radius: 50%;
+      padding: 2px 5px;
+    }
+
+    .profile-section {
+      display: flex;
+      align-items: center;
+      position: relative;
+    }
+
+    .profile-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #f1f1f1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 10px;
+    }
+
+    .apps-window {
+      position: absolute;
+      top: 45px;
+      right: 0;
+      width: 200px;
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      z-index: 1000;
+      display: none;
+    }
+
+    .apps-window .apps-item {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .apps-window .apps-item:hover {
+      background-color: #f8f9fa;
+    }
+
+    .apps-window .apps-item i {
+      font-size: 1.2rem;
+      margin-right: 10px;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg px-4 py-2">
+    <div class="container-fluid">
+      <!-- Brand -->
+      <a class="navbar-brand" href="#">
+        <img src="{% static 'images/logo.png'%}" alt="Logo"> 
+      </a>
+
+      <!-- Center Nav Links -->
+      <div class="nav-center">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active-link" href="{%url 'dashboard_new'%}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Research</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{%url 'digitalassets'%}">Digital Assets</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{%url 'traning'%}">Training</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{%url 'timeline'%}">Social</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% if user.user_type == 'organizational' %}{% url 'search_talent' %}{% else %}{% url 'work_listing' %}{% endif %}">
+                {% if user.user_type == 'organizational' %}Search Talent{% else %}Work Listing{% endif %}
+            </a>
+        </li>
+        
+        </ul>
+      </div>
+
+      <!-- Right Section -->
+      <div class="d-flex align-items-center">
+        <!-- Notification Icon -->
+        <div class="icon-container">
+          <i class="bi bi-bell"></i>
+          <span class="badge">3</span>
+        </div>
+
+        <!-- Apps Icon -->
+        <div class="icon-container">
+          <i class="bi bi-grid" id="appsToggle"></i>
+          <!-- Apps Window -->
+          <div class="apps-window" id="appsWindow">
+            <div class="apps-item">
+              <a href="{%url 'inbox'%}"><i class="bi bi-envelope"></i> Email</a>
+            </div>
+            <div class="apps-item">
+              <i class="bi bi-chat-dots"></i> ChatApp
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="profile-section dropdown">
+          <div class="profile-icon">
+            <i class="bi bi-person fs-5"></i>
+          </div>
+          <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            {{ user.first_name }} {{ user.last_name }}
+        </span>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'logout'%}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+  {% for message in messages %}
+        <div class="toast-message" data-type="{{ message.tags }}" data-text="{{ message }}"></div>
+    {% endfor %}
+
+  <div class="container my-4">
+    {% block content %}
+    
+        
+
+      
+    {% endblock %}
+  </div>
+
+  <script>
+    const appsToggle = document.getElementById("appsToggle");
+    const appsWindow = document.getElementById("appsWindow");
+
+    // Toggle Apps Window on Click
+    appsToggle.addEventListener("click", () => {
+      appsWindow.style.display =
+        appsWindow.style.display === "block" ? "none" : "block";
+    });
+
+    // Close Apps Window if clicked outside
+    document.addEventListener("click", (event) => {
+      if (!appsToggle.contains(event.target) && !appsWindow.contains(event.target)) {
+        appsWindow.style.display = "none";
+      }
+    });
+  </script>
+   <script>
+    // Check if there are any messages from Django
+    document.querySelectorAll('.toast-message').forEach(function(messageElement) {
+        let messageType = messageElement.getAttribute('data-type');
+        let messageText = messageElement.getAttribute('data-text');
+
+        // Use Toastify to display the message
+        Toastify({
+            text: messageText,
+            duration: 3000, // Duration for the toast to show
+            gravity: 'top', // Position of the toast
+            position: 'right',
+            backgroundColor: messageType === 'success' ? 'green' : 'red', // Different color based on message type
+        }).showToast();
+    });
+</script>
+<!-- <script>
+  let lastMessageId = null;  // Store last seen message in memory
+
+  function checkNewMessages() {
+      fetch("{% url 'get_unread_messages' %}")  
+          .then(response => response.json())
+          .then(data => {
+              let latestMessage = data.latest_message;
+
+              if (latestMessage && latestMessage.id !== lastMessageId) {
+                  // Show toast only if the message is new
+                  Toastify({
+                      text: `New message from ${latestMessage.sender}: ${latestMessage.text}`,
+                      duration: 3000,
+                      gravity: "top",
+                      position: "right",
+                      backgroundColor: "green",
+                  }).showToast();
+
+                  lastMessageId = latestMessage.id;  // Update last seen message
+              }
+          })
+          .catch(error => console.error("Error fetching messages:", error));
+  }
+
+  // Check for new messages every 10 seconds
+  setInterval(checkNewMessages, 5000);
+</script> -->
+
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

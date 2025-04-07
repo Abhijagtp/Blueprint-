@@ -1,0 +1,1126 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #F5F6FA;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Timeline Section */
+        .timeline {
+            position: relative;
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(90deg, #9CB6FF80 0%, #FFFFFF7F 100%);
+            border-radius: 12px;
+            opacity: 0;
+            animation: fadeInContainer 1s ease forwards;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            min-height: 350px;
+        }
+
+        .timeline::-webkit-scrollbar {
+            display: none;
+        }
+
+        @keyframes fadeInContainer {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .timeline h2 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+
+        .timeline .journey {
+            font-size: 16px;
+            font-weight: 500;
+            color: #0865B5;
+            margin-bottom: 20px;
+        }
+
+        .timeline .timeframe {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #666;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 5px 10px;
+            border-radius: 12px;
+        }
+
+        .timeline-line {
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin: 40px 0;
+            padding: 20px 0;
+            white-space: nowrap;
+            height: 100px;
+        }
+
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #007bff;
+            z-index: 1;
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+
+        .timeline-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #d3d3d3;
+            z-index: 0;
+        }
+
+        .user-icon {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translate(-50%, -50%);
+            width: 32px;
+            height: 32px;
+            z-index: 3;
+            transition: left 0.5s ease-in-out;
+            margin-left: 20px;
+        }
+
+        .user-icon img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .timeline-point {
+            position: relative;
+            width: 16px;
+            height: 16px;
+            background: #fff;
+            border: 2px solid #007bff;
+            border-radius: 50%;
+            z-index: 2;
+            margin: 0 200px;
+            opacity: 0;
+            transform: scale(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .timeline-point.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .timeline-point.locked {
+            background: #d3d3d3;
+            border-color: #d3d3d3;
+        }
+
+        .timeline-point.unlocked {
+            background: #fff;
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .timeline-point.future {
+            background: transparent;
+            border: 2px dashed #007bff;
+            opacity: 1;
+        }
+
+        .timeline-point .icon {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            fill: #999;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .timeline-point:nth-child(odd) .icon {
+            bottom: 20px;
+            top: auto;
+        }
+
+        .timeline-point:nth-child(even) .icon {
+            top: 20px;
+            bottom: auto;
+        }
+
+        .timeline-point.locked .icon.lock {
+            opacity: 1;
+            fill: #999;
+        }
+
+        .timeline-point.unlocked .icon.unlock {
+            opacity: 1;
+            fill: #007bff;
+        }
+
+        .timeline-point.future .icon.lock {
+            opacity: 1;
+            fill: #999;
+        }
+
+        .timeline-point.locked .tooltip,
+        .timeline-point.future .tooltip {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: #fff;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .timeline-point:nth-child(odd) .tooltip {
+            top: -40px;
+            bottom: auto;
+        }
+
+        .timeline-point:nth-child(even) .tooltip {
+            bottom: -40px;
+            top: auto;
+        }
+
+        .timeline-point.locked:hover .tooltip,
+        .timeline-point.future:hover .tooltip {
+            opacity: 1;
+        }
+
+        .timeline-point.locked .tooltip::after,
+        .timeline-point.future .tooltip::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+        }
+
+        .timeline-point:nth-child(odd) .tooltip::after {
+            bottom: -5px;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .timeline-point:nth-child(even) .tooltip::after {
+            top: -5px;
+            border-color: transparent transparent #333 transparent;
+        }
+
+        .timeline-item {
+            position: absolute;
+            text-align: center;
+            width: 120px;
+            padding: 8px;
+            background: #0865B5;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            opacity: 0;
+            transition: background 0.5s ease, color 0.5s ease;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .timeline-point:nth-child(odd) .timeline-item {
+            top: -90px;
+        }
+
+        .timeline-point:nth-child(even) .timeline-item {
+            bottom: -90px;
+            top: auto;
+        }
+
+        .timeline-item.active {
+            opacity: 1;
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        @keyframes slideIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-50%) translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .timeline-item.locked span {
+            color: #999;
+        }
+
+        /* Research Button and Arrow */
+        .research-container {
+            position: relative;
+            display: inline-block;
+            margin-left: 20px;
+        }
+
+        .research-button {
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #007bff 0%, #0056b3 100%);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .research-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            right: 100%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 2px;
+            background: #007bff;
+            margin-right: 10px;
+        }
+
+        .arrow::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: -5px;
+            border: 5px solid transparent;
+            border-left-color: #007bff;
+        }
+
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .card {
+            position: relative; /* For positioning the dots icon */
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px; /* Reduced padding to match screenshot */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card .menu-dots {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 16px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .card h3 {
+            font-size: 16px; /* Reduced to match screenshot */
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 10px; /* Reduced margin */
+        }
+
+        .card .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px; /* Reduced margin */
+        }
+
+        .card .change-container {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between change indicator and secondary text */
+        }
+
+        .card .change {
+            font-size: 12px; /* Smaller font to match screenshot */
+            font-weight: 500;
+            color: #fff;
+            background: #28a745; /* Green for positive */
+            padding: 2px 8px;
+            border-radius: 10px; /* Pill shape */
+            display: inline-block;
+        }
+
+        .card .change.negative {
+            background: #dc3545; /* Red for negative */
+        }
+
+        .card .secondary-text {
+            font-size: 12px; /* Smaller font to match screenshot */
+            color: #666;
+        }
+
+        .project-status .progress {
+            height: 8px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .project-status .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #ff9500, #ff4d4d); /* Gradient from orange to red */
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .project-status .remaining {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .project-status .project-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .project-status .project-name {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .project-status .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #28a745; /* Green dot */
+            border-radius: 50%;
+        }
+
+        .project-status .due-date {
+            color: #666;
+        }
+
+        /* Conversations Section */
+        .conversations {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            margin: 30px 0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .conversations:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .conversations h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .conversations .message {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.3s ease;
+        }
+
+        .conversations .message:hover {
+            background: #f9f9f9;
+        }
+
+        .conversations .message img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .conversations .message div {
+            flex: 1;
+        }
+
+        .conversations .message strong {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .conversations .message p {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .conversations .message small {
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* Activity and Time Spent Section */
+        .activity-chart-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .activity-chart {
+            width: 350px; /* Adjusted size to match screenshot */
+            height: 250px;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.1)); /* Added subtle shadow */
+        }
+
+        .time-spent canvas {
+            width: 100%;
+            height: 250px;
+            margin-top: 20px;
+        }
+
+        /* Followed Pages Section */
+        .followed-pages {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .followed-pages:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .followed-pages h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 20px;
+        }
+
+        .followed-pages .page {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.3s ease;
+        }
+
+        .followed-pages .page:hover {
+            background: #f9f9f9;
+        }
+
+        .followed-pages .page img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .followed-pages .page div {
+            flex: 1;
+        }
+
+        .followed-pages .page strong {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .followed-pages .page p {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-item {
+                width: 100px;
+            }
+
+            .timeline-item span {
+                font-size: 12px;
+            }
+
+            .card .value {
+                font-size: 24px;
+            }
+
+            .timeline-point {
+                margin: 0 100px;
+            }
+
+            .timeline-point:nth-child(odd) .timeline-item {
+                top: -80px;
+            }
+
+            .timeline-point:nth-child(even) .timeline-item {
+                bottom: -80px;
+            }
+
+            .timeline-point:nth-child(odd) .icon {
+                bottom: 15px;
+            }
+
+            .timeline-point:nth-child(even) .icon {
+                top: 15px;
+            }
+
+            .time-spent canvas {
+                height: 200px;
+            }
+
+            .activity-chart {
+                width: 120px;
+                height: 120px;
+            }
+
+            .activity-chart-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .timeline-point {
+                margin: 0 50px;
+            }
+
+            .timeline-item {
+                width: 80px;
+            }
+
+            .timeline-item span {
+                font-size: 10px;
+            }
+
+            .timeline-point:nth-child(odd) .timeline-item {
+                top: -70px;
+            }
+
+            .timeline-point:nth-child(even) .timeline-item {
+                bottom: -70px;
+            }
+
+            .timeline-point:nth-child(odd) .icon {
+                bottom: 10px;
+            }
+
+            .timeline-point:nth-child(even) .icon {
+                top: 10px;
+            }
+
+            .time-spent canvas {
+                height: 180px;
+            }
+
+            .activity-chart {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Timeline -->
+        <div class="timeline">
+            <h2>Journey so far as</h2>
+            <p class="journey">Software Developer</p>
+            <div class="timeframe">Timeframe: This month</div>
+            <div class="timeline-line">
+                <!-- User Profile Image -->
+                <div class="user-icon">
+                   <img src="{% if user.userprofile.profile_image %}{{ user.userprofile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}"
+                alt="Profile Picture" class="chat-profile-pic">
+                </div>
+                {% for education in educations %}
+                    <div class="timeline-point {% if not education.is_studying %}locked{% else %}unlocked{% endif %}">
+                        <svg class="icon lock" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"/>
+                        </svg>
+                        <svg class="icon unlock" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock-fill" viewBox="0 0 16 16">
+                            <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"/>
+                        </svg>
+                        {% if not education.is_studying %}
+                            <div class="tooltip">Research to unlock</div>
+                        {% endif %}
+                        <div class="timeline-item {% if not education.is_studying %}locked{% else %}active{% endif %}" style="--index: {{ forloop.counter0 }}">
+                            <span>{{ education.degree }}<br>{{ education.start_date|date:"Y M" }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% for experience in experiences %}
+                    <div class="timeline-point {% if not experience.is_current %}locked{% else %}unlocked{% endif %}">
+                        <svg class="icon lock" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"/>
+                        </svg>
+                        <svg class="icon unlock" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-unlock-fill" viewBox="0 0 16 16">
+                            <path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2"/>
+                        </svg>
+                        {% if not experience.is_current %}
+                            <div class="tooltip">Research to unlock</div>
+                        {% endif %}
+                        <div class="timeline-item {% if not experience.is_current %}locked{% else %}active{% endif %}" style="--index: {{ educations|length|add:forloop.counter0 }}">
+                            <span>{{ experience.title }}<br>{{ experience.from_date|date:"Y M" }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
+                <!-- Adding future dots with lock icons -->
+                <div class="timeline-point future">
+                    <svg class="icon lock" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"/>
+                    </svg>
+                    <div class="tooltip">Research to unlock</div>
+                </div>
+                <div class="timeline-point future">
+                    <svg class="icon lock" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"/>
+                    </svg>
+                    <div class="tooltip">Research to unlock</div>
+                </div>
+                <div class="timeline-point future">
+                    <svg class="icon lock" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
+                        <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2"/>
+                    </svg>
+                    <div class="tooltip">Research to unlock</div>
+                </div>
+                <!-- Research Button with Arrow -->
+                
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats">
+            <div class="card">
+                <h3>Impressions</h3>
+                <span class="menu-dots">⋮</span>
+                <div class="value">{{ total_impressions }}</div>
+                <hr>
+                <div class="change-container">
+                    <span class="change {% if avg_daily_impressions_change < 0 %}negative{% endif %}">
+                        {% if avg_daily_impressions_change >= 0 %}+{% endif %}{{ avg_daily_impressions_change }}%
+                    </span>
+                    <span class="secondary-text">Average daily impression {{ avg_daily_impressions }}</span>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Courses Taken</h3>
+                <span class="menu-dots">⋮</span>
+                <div class="value">{{ total_courses }}</div>
+                <hr>
+                <div class="change-container">
+                    <span class="change {% if completed_courses_change < 0 %}negative{% endif %}">
+                        {% if completed_courses_change >= 0 %}+{% endif %}{{ completed_courses_change }}%
+                    </span>
+                    <span class="secondary-text">Total Courses completed {{ completed_courses }}</span>
+                </div>
+            </div>
+            <div class="card project-status">
+                <h3>Project Status</h3>
+                <span class="menu-dots">⋮</span>
+                {% if project_deadline %}
+                    <div class="remaining">{{ project_deadline.project.submission_date|timeuntil }} remaining</div>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: {{ project_percentage }}%"></div>
+                    </div>
+                    <hr>
+                    <div class="project-details">
+                        <div class="project-name">
+                            <span class="status-dot"></span>
+                            {% if project_percentage > 0 %}
+                                {{ project_deadline.project.title }} (Pending)
+                            {% else %}
+                                {{ project_deadline.project.title }} (Not Started)
+                            {% endif %}
+                        </div>
+                        <div class="due-date">{{ project_deadline.project.submission_date|date:"d M Y" }}</div>
+                    </div>
+                {% else %}
+                    <div>No active projects</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Conversations -->
+        <div class="conversations">
+            <h3>Conversations</h3>
+            {% for conversation in conversations %}
+                <div class="message">
+                    <img src="{{ conversation.sender.userprofile.profile_image.url|default:'/static/images/default_profile.png' }}" alt="Profile">
+                    <div>
+                        <strong>{{ conversation.sender.get_full_name|default:conversation.sender.username }}</strong>
+                        <p>{{ conversation.content|truncatechars:50 }}</p>
+                        <small>{{ conversation.timestamp|date:"d M Y" }}</small>
+                    </div>
+                </div>
+            {% empty %}
+                <p>No new conversations.</p>
+            {% endfor %}
+        </div>
+
+        <!-- Activity and Time Spent -->
+        <div class="stats">
+            <div class="card activity-card">
+                <h3>Your Activity</h3>
+                <div class="activity-chart-container">
+                    <div class="activity-chart">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="card time-spent">
+                <h3>Time spent learning</h3>
+                <div class="value">{{ time_spent_hours }} hours {{ time_spent_minutes }} minutes</div>
+                <canvas id="timeSpentChart"></canvas>
+            </div>
+            <div class="followed-pages">
+                <h3>Followed Pages</h3>
+                {% for follow in followed_users %}
+                    <div class="page">
+                        <img src="{{ follow.to_user.userprofile.profile_image.url|default:'/static/images/default_profile.png' }}" alt="Profile">
+                        <div>
+                            <strong>{{ follow.to_user.get_full_name|default:follow.to_user.username }}</strong>
+                            <p>{{ follow.to_user.userprofile.bio|truncatechars:50|default:"No bio available" }}</p>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p>You are not following any pages.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Charts and Animations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Ensure data is properly defined with defaults
+        const certifications = {{ certifications|default:0 }};
+        const whitepapers = {{ whitepapers|default:0 }};
+        const blogs = {{ blogs|default:0 }};
+        const projects = {{ projects|default:0 }};
+
+        // Log the values to debug
+        console.log('Chart Data:', {
+            certifications: certifications,
+            whitepapers: whitepapers,
+            blogs: blogs,
+            projects: projects
+        });
+
+        // Activity Chart (Doughnut)
+        const activityChart = new Chart(document.getElementById('activityChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Certifications', 'Whitepapers', 'Blogs', 'Projects'],
+                datasets: [{
+                    data: [certifications, whitepapers, blogs, projects],
+                    backgroundColor: [
+                        '#2d2d2d', // Black
+                        '#a3cffa', // Light Blue
+                        '#b3e5be', // Light Green
+                        '#d3d3d3'  // Gray
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff',
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '50%', // Thinner ring to match screenshot
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        labels: {
+                            font: {
+                                size: 14,
+                                weight: '500'
+                            },
+                            color: '#333',
+                            padding: 10,
+                            boxWidth: 12,
+                            boxHeight: 12,
+                            usePointStyle: true,
+                            generateLabels: (chart) => {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map((label, i) => {
+                                        const value = data.datasets[0].data[i];
+                                        return {
+                                            text: `${label} ${value}`,
+                                            fillStyle: data.datasets[0].backgroundColor[i],
+                                            strokeStyle: data.datasets[0].backgroundColor[i],
+                                            lineWidth: 0,
+                                            hidden: isNaN(value) || value <= 0,
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleFont: {
+                            size: 14
+                        },
+                        bodyFont: {
+                            size: 12
+                        },
+                        padding: 10,
+                        cornerRadius: 5
+                    }
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                }
+            }
+        });
+
+        // Time Spent Chart (Line)
+        const timeSpentChart = new Chart(document.getElementById('timeSpentChart'), {
+            type: 'line',
+            data: {
+                labels: ['10', '11', '12', '13', '14', '15', '16'],
+                datasets: [{
+                    label: 'Last 6 days',
+                    data: [120, 90, 150, 80, 110, 130, 200],
+                    borderColor: '#007bff',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.5,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#007bff'
+                }, {
+                    label: 'Last week',
+                    data: [100, 80, 120, 70, 90, 110, 180],
+                    borderColor: '#d3d3d3',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.5,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#d3d3d3'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f0f0f0'
+                        },
+                        ticks: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    x: {
+                        display: false
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        align: 'end',
+                        labels: {
+                            font: {
+                                size: 10
+                            },
+                            usePointStyle: true,
+                            padding: 10
+                        }
+                    }
+                }
+            }
+        });
+
+        // Intersection Observer for triggering animations on scroll
+        document.addEventListener('DOMContentLoaded', () => {
+            const timeline = document.querySelector('.timeline');
+            const timelineLine = document.querySelector('.timeline-line');
+            const timelinePoints = document.querySelectorAll('.timeline-point:not(.future)');
+            const futurePoints = document.querySelectorAll('.timeline-point.future');
+            const timelineItems = document.querySelectorAll('.timeline-item');
+            const userIcon = document.querySelector('.user-icon');
+            const researchButton = document.querySelector('.research-container');
+
+            if (!timeline || !timelineLine || !timelinePoints.length || !userIcon) {
+                console.error('Timeline elements not found:', { timeline, timelineLine, timelinePoints, userIcon });
+                return;
+            }
+
+            // Set the width of the timeline-line to accommodate all points and the research button
+            const totalPoints = timelinePoints.length + futurePoints.length;
+            const pointWidth = 416;
+            const researchButtonWidth = 250;
+            timelineLine.style.width = `${(totalPoints * pointWidth) + researchButtonWidth}px`;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        console.log('Timeline is intersecting, starting animation...');
+
+                        const totalPoints = timelinePoints.length;
+                        const segmentDuration = 1500;
+                        const cardAnimationDuration = 500;
+                        const totalDuration = totalPoints * (segmentDuration + cardAnimationDuration);
+
+                        const pointPositions = Array.from(timelinePoints).map(point => {
+                            const rect = point.getBoundingClientRect();
+                            const parentRect = timelineLine.getBoundingClientRect();
+                            const position = ((rect.left + rect.width / 2) - parentRect.left) / parentRect.width * 100;
+                            return Math.max(0, Math.min(100, position));
+                        });
+
+                        console.log('Point positions:', pointPositions);
+
+                        const lastNonFuturePosition = pointPositions[pointPositions.length - 1];
+
+                        let lineKeyframes = '';
+                        let iconKeyframes = '';
+                        let currentTime = 0;
+
+                        pointPositions.forEach((position, index) => {
+                            const startTime = currentTime;
+                            lineKeyframes += `${startTime}% { transform: scaleX(${position / 100}); }\n`;
+                            iconKeyframes += `${startTime}% { left: ${position}%; }\n`;
+                            currentTime += (segmentDuration / totalDuration) * 100;
+                            lineKeyframes += `${currentTime}% { transform: scaleX(${position / 100}); }\n`;
+                            iconKeyframes += `${currentTime}% { left: ${position}%; }\n`;
+                            currentTime += (cardAnimationDuration / totalDuration) * 100;
+
+                            setTimeout(() => {
+                                if (timelinePoints[index]) {
+                                    timelinePoints[index].classList.add('visible');
+                                    console.log(`Point ${index} made visible`);
+                                }
+                                if (timelineItems[index]) {
+                                    timelineItems[index].classList.add('active');
+                                    console.log(`Item ${index} made active`);
+                                }
+                                if (timelinePoints[index]) {
+                                    timelinePoints[index].classList.remove('locked');
+                                    timelinePoints[index].classList.add('unlocked');
+                                    console.log(`Point ${index} unlocked`);
+                                }
+                            }, (index * (segmentDuration + cardAnimationDuration)));
+                        });
+
+                        lineKeyframes += `100% { transform: scaleX(1); }`;
+                        iconKeyframes += `100% { left: ${lastNonFuturePosition}%; }`;
+
+                        setTimeout(() => {
+                            futurePoints.forEach((point, idx) => {
+                                point.classList.add('visible');
+                                console.log(`Future point ${idx} made visible`);
+                            });
+                        }, totalDuration);
+
+                        const styleSheet = document.createElement('style');
+                        styleSheet.innerHTML = `
+                            .timeline-line::before {
+                                animation: drawLineCustom ${totalDuration}ms ease-in-out forwards;
+                                transform-origin: left;
+                            }
+                            @keyframes drawLineCustom {
+                                ${lineKeyframes}
+                            }
+                            .user-icon {
+                                animation: moveIcon ${totalDuration}ms ease-in-out forwards;
+                            }
+                            @keyframes moveIcon {
+                                ${iconKeyframes}
+                            }
+                        `;
+                        document.head.appendChild(styleSheet);
+                        console.log('Animations applied:', styleSheet.innerHTML);
+
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            observer.observe(timeline);
+            console.log('Intersection Observer set up for timeline');
+        });
+    </script>
+</body>
+</html>
+{% endblock %}
