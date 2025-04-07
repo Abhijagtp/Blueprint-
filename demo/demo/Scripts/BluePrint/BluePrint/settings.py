@@ -46,8 +46,9 @@ INSTALLED_APPS = [
     'Social',
     'WorkListing',
     'DigitalAssets',
-    
-    
+    #'AdminDashboard.apps.AdminConfig',
+    'AdminDashboard',
+
 
 ]
 
