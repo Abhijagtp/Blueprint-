@@ -619,21 +619,68 @@ from .models import Post  # Assuming your Post model is here
 from Users.models import CustomUser, UserProfile
 
 def load_posts(request):
-    username = request.GET.get('username')  # Get username from request
+    username = request.GET.get('username')
     if not username:
         return JsonResponse({"error": "Username is required"}, status=400)
 
-    user_obj = get_object_or_404(CustomUser, username=username)  # Get user object
-    user_profile = get_object_or_404(UserProfile, user=user_obj)  # Get user profile
+    user_obj = get_object_or_404(CustomUser, username=username)
+    user_profile = get_object_or_404(UserProfile, user=user_obj)
 
-    # Fetch only posts belonging to the viewed profile
+    # Fetch all posts for the user, ordered by creation date
     posts = Post.objects.filter(user_profile=user_profile).order_by('-created_at')
 
+    # Enrich posts with related content for blogs, whitepapers, and insights
+    enriched_posts = []
+    for post in posts:
+        post_data = {
+            'id': post.id,
+            'content_type': post.content_type,
+            'created_at': post.created_at,
+            'caption': post.caption,
+            'image_url': post.image.url if post.image else None,
+            'likes_count': post.likes.count() if hasattr(post, 'likes') else 0,
+            'comments_count': post.comments.count() if hasattr(post, 'comments') else 0,
+        }
 
+        # Fetch related content for non-normal posts, only if not a draft
+        if post.content_type != 'normal' and post.content_id:
+            try:
+                if post.content_type == 'blog':
+                    content = Blog.objects.get(id=post.content_id, is_draft=False)
+                    post_data['title'] = content.title
+                    post_data['content'] = content.content[:100]  # Truncated content for preview
+                    post_data['language'] = content.language
+                    post_data['categories'] = content.categories
+                    post_data['media_files'] = content.media_files
+                    post_data['thumbnail_url'] = content.thumbnail.url if content.thumbnail else None
+                elif post.content_type == 'whitepaper':
+                    content = Whitepaper.objects.get(id=post.content_id, is_draft=False)
+                    post_data['title'] = content.title
+                    post_data['summary'] = content.summary or content.content[:100]
+                    post_data['content'] = content.content[:100]
+                    post_data['sources'] = content.sources
+                    post_data['categories'] = content.categories
+                    post_data['thumbnail_url'] = None  # Whitepapers don’t have thumbnails
+                elif post.content_type == 'insight':
+                    content = Insight.objects.get(id=post.content_id, is_draft=False)
+                    post_data['title'] = content.title
+                    post_data['summary'] = content.summary or content.content[:100]
+                    post_data['content'] = content.content[:100]
+                    post_data['sources'] = content.sources
+                    post_data['language'] = content.language
+                    post_data['categories'] = content.categories
+                    post_data['thumbnail_url'] = None  # Insights don’t have thumbnails
+            except (Blog.DoesNotExist, Whitepaper.DoesNotExist, Insight.DoesNotExist):
+                # Skip posts where the related content is a draft or doesn't exist
+                continue
 
-    return render(request, 'tabs/posts.html', {'posts': posts})
+        enriched_posts.append(post_data)
 
-
+    return render(request, 'tabs/posts.html', {
+        'posts': posts,
+        'enriched_posts': enriched_posts,
+        'is_own_profile': request.user.is_authenticated and request.user == user_obj
+    })
 
 
 
@@ -1376,7 +1423,25 @@ from .models import Post
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    return render(request, 'post_detail.html', {'post': post})
+    content = None
+
+    if post.content_type != 'normal' and post.content_id:
+        try:
+            if post.content_type == 'blog':
+                content = Blog.objects.get(id=post.content_id)
+            elif post.content_type == 'whitepaper':
+                content = Whitepaper.objects.get(id=post.content_id)
+            elif post.content_type == 'insight':
+                content = Insight.objects.get(id=post.content_id)
+        except (Blog.DoesNotExist, Whitepaper.DoesNotExist, Insight.DoesNotExist):
+            content = None
+
+    return render(request, 'post_detail.html', {
+        'post': post,
+        'content': content,
+        'likes_count': post.likes.count() if hasattr(post, 'likes') else 0,
+        'comments_count': post.comments.count() if hasattr(post, 'comments') else 0,
+    })
 
 #======================================ENd =================================== 
 

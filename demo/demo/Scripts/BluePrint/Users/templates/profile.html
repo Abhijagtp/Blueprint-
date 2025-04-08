@@ -963,33 +963,37 @@
     }
 
     function initializeSubTabs() {
-        const subNav = dynamicContent.querySelector('.sub-nav');
-        if (!subNav) return;
+    const subNavLinks = dynamicContent.querySelectorAll('.sub-nav a');
+    const postsGrid = dynamicContent.querySelector('.posts-grid');
+    const postItems = postsGrid?.querySelectorAll('.post-link') || [];
 
-        subNav.replaceWith(subNav.cloneNode(true));
-        const newSubNav = dynamicContent.querySelector('.sub-nav');
+    subNavLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const contentType = this.getAttribute('data-target');
 
-        newSubNav.addEventListener('click', function (e) {
-            const tab = e.target.closest('a');
-            if (tab) {
-                e.preventDefault();
-                newSubNav.querySelectorAll('li').forEach(li => li.classList.remove('active'));
-                tab.parentElement.classList.add('active');
+            // Update active class
+            subNavLinks.forEach(l => l.parentElement.classList.remove('active'));
+            this.parentElement.classList.add('active');
 
-                const subTarget = tab.getAttribute('data-target');
-                fetch(`/load_posts_content/?section=${subTarget}`)
-                    .then(response => response.text())
-                    .then(data => {
-                        dynamicContent.innerHTML = data;
-                        initializeSubTabs();
-                    })
-                    .catch(error => {
-                        console.error('Error loading sub-tab content:', error);
-                        dynamicContent.innerHTML = '<p>Error loading content. Please try again.</p>';
-                    });
-            }
+            // Filter posts client-side
+            postItems.forEach(item => {
+                const itemType = item.getAttribute('data-type');
+                item.style.display = (itemType === contentType) ? 'block' : 'none';
+            });
+        });
+    });
+
+    // Set initial active sub-tab to "Posts" and show only normal posts
+    const activeSubTab = subNavLinks[0]; // "Posts" tab
+    if (activeSubTab) {
+        activeSubTab.click();
+        postItems.forEach(item => {
+            const itemType = item.getAttribute('data-type');
+            item.style.display = (itemType === 'normal') ? 'block' : 'none';
         });
     }
+}
 
     mainTabs.forEach(tab => {
         tab.addEventListener('click', function (e) {

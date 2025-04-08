@@ -121,221 +121,419 @@
       height: 20px; 
       cursor: pointer; 
     }
-    .editor-container { 
-      padding: 0; 
-      border-radius: 12px; 
-      background: #ffffff; 
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); 
-      border: 1px solid #e2e8f0; 
-      transition: all 0.3s ease; 
-      display: flex; 
-      flex-direction: column; 
-      height: calc(100vh - 100px); 
-    }
-    .editor-container:hover { 
-      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08); 
-      transform: translateY(-2px); 
-    }
-    .toolbar-wrapper {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: #ffffff;
-      border-bottom: 1px solid #e2e8f0;
-      border-radius: 12px 12px 0 0;
-      padding: 8px 12px;
-    }
-    .ql-toolbar.ql-snow { 
-      background: transparent; 
-      border: none; 
-      padding: 0; 
-      display: flex; 
-      flex-wrap: nowrap; 
-      overflow-x: auto; 
-      white-space: nowrap; 
-      align-items: center; 
-    }
-    .ql-toolbar.ql-snow::-webkit-scrollbar { 
-      height: 6px; 
-    }
-    .ql-toolbar.ql-snow::-webkit-scrollbar-thumb { 
-      background: #e2e8f0; 
-      border-radius: 6px; 
-    }
-    .ql-toolbar.ql-snow::-webkit-scrollbar-track { 
-      background: #ffffff; 
-    }
-    .ql-toolbar.ql-snow .ql-formats { 
-      margin-right: 4px; 
-      display: inline-flex; 
-      align-items: center; 
-      padding-right: 4px; 
-      border-right: 1px solid #e2e8f0; 
-    }
-    .ql-toolbar.ql-snow .ql-formats:last-child { 
-      border-right: none; 
-    }
-    .ql-toolbar.ql-snow button, 
-    .ql-toolbar.ql-snow .ql-picker { 
-      background: transparent; 
-      border: none; 
-      border-radius: 50%; 
-      padding: 6px; 
-      min-width: 32px; 
-      height: 32px; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
-      transition: background 0.2s ease; 
-    }
-    .ql-toolbar.ql-snow button:hover, 
-    .ql-toolbar.ql-snow .ql-picker:hover { 
-      background: #e2e8f0; 
-    }
-    .ql-toolbar.ql-snow .ql-picker-label { 
-      padding: 0; 
-      font-size: 0; 
-    }
-    .ql-toolbar.ql-snow .ql-picker-label::before { 
-      font-family: 'bootstrap-icons'; 
-      font-size: 16px; 
-      line-height: 1; 
-    }
-    .ql-header .ql-picker-label::before { 
-      content: '\f3f2'; 
-    }
-    .ql-align .ql-picker-label::before { 
-      content: '\f3e5'; 
-    }
-    .ql-align .ql-picker-item[data-value="center"]::before { 
-      content: '\f3e6'; 
-    }
-    .ql-align .ql-picker-item[data-value="right"]::before { 
-      content: '\f3e7'; 
-    }
-    .ql-align .ql-picker-item[data-value="justify"]::before { 
-      content: '\f3e8'; 
-    }
-    .ql-list .ql-picker-label::before { 
-      content: '\f3ed'; 
-    }
-    .ql-list .ql-picker-item[data-value="ordered"]::before { 
-      content: '\f3ee'; 
-    }
-    .ql-list .ql-picker-item[data-value="bullet"]::before { 
-      content: '\f3ed'; 
-    }
-    .ql-toolbar.ql-snow .ql-color .ql-picker-label::before { 
-      content: '\f5a0'; 
-    }
-    .ql-toolbar.ql-snow .ql-color .ql-picker-options { 
-      padding: 8px; 
-      display: grid; 
-      grid-template-columns: repeat(3, 1fr); 
-      gap: 4px; 
-      width: 100px; 
-      position: absolute; 
-      top: 100%; 
-      left: 0; 
-      z-index: 1001; 
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
-      border: 1px solid #e2e8f0; 
-      background: #ffffff; 
-      border-radius: 6px; 
-    }
-    .ql-toolbar.ql-snow .ql-color .ql-picker-item { 
-      width: 24px; 
-      height: 24px; 
-      border-radius: 50%; 
-      padding: 0; 
-      margin: 0; 
-      position: relative; 
-    }
-    .ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value=""] { 
-      background: #ffffff; 
-      border: 1px solid #e2e8f0; 
-    }
-    .ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#ffffff"] { 
-      background: #ffffff; 
-      border: 1px solid #e2e8f0; 
-    }
-    .ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#000000"] { 
-      background: #000000; 
-    }
-    .ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#00ff00"] { 
-      background: #00ff00; 
-    }
-    .ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#00ffff"] { 
-      background: #00ffff; 
-    }
-    .ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#0000ff"] { 
-      background: #0000ff; 
-    }
-    .ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#ff00ff"] { 
-      background: #ff00ff; 
-    }
-    .ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#ff0000"] { 
-      background: #ff0000; 
-    }
-    .ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#ffff00"] { 
-      background: #ffff00; 
-    }
-    .ql-toolbar.ql-snow .ql-picker-options { 
-      border-radius: 6px; 
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
-      border: 1px solid #e2e8f0; 
-      background: #ffffff; 
-      padding: 4px 0; 
-      position: absolute; 
-      top: 100%; 
-      left: 0; 
-      z-index: 1001; 
-      min-width: 120px; 
-    }
-    .ql-toolbar.ql-snow .ql-picker-item { 
-      padding: 6px 12px; 
-      font-size: 13px; 
-      color: #1e293b; 
-      transition: background 0.2s ease; 
-      text-align: left; 
-    }
-    .ql-toolbar.ql-snow .ql-picker-item:hover { 
-      background: #f1f5f9; 
-    }
-    #editor { 
-      flex: 1; 
-      border: none; 
-      background: #ffffff; 
-      border-radius: 0; 
-      font-size: 15px; 
-      color: #1e293b; 
-      padding: 20px; 
-      line-height: 1.6; 
-      overflow-y: auto; 
-    }
-    .ql-container.ql-snow { 
-      border: none; 
-      border-radius: 0; 
-      background: #ffffff; 
-      flex: 1; 
-    }
-    .ql-editor { 
-      padding: 20px; 
-      min-height: 200px; 
-    }
-    .ql-editor::before { 
-      color: #94a3b8; 
-      font-style: normal; 
-      font-size: 15px; 
-    }
-    .post-section { 
-      text-align: right; 
-      padding: 12px 16px; 
-      background: #f8fafc; 
-      border-radius: 0 0 12px 12px; 
-      box-shadow: 0 -1px 6px rgba(0, 0, 0, 0.03); 
-      border-top: 1px solid #e2e8f0; 
-    }
+    .editor-container {
+  padding: 0;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 100px);
+  position: relative;
+  overflow: hidden; /* Prevent overflow issues */
+}
+
+.editor-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Toggle Button */
+.toolbar-toggle-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 101; /* Above the toolbar */
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 6px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.toolbar-toggle-btn:hover {
+  background: #e2e8f0;
+  transform: scale(1.05);
+}
+
+.toolbar-toggle-btn i {
+  font-size: 16px;
+  color: #1e293b;
+}
+
+/* Toolbar Wrapper (Slides in from the right) */
+.toolbar-wrapper {
+  position: absolute;
+  top: 0;
+  right: -300px; /* Start off-screen to the right */
+  width: 280px; /* Fixed width for the toolbar */
+  height: 100%;
+  background: #ffffff;
+  border-left: 1px solid #e2e8f0;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
+  transition: right 0.3s ease-in-out; /* Slide animation */
+  z-index: 100;
+  overflow-y: auto; /* Allow vertical scrolling if needed */
+  padding: 12px;
+}
+
+.toolbar-wrapper.active {
+  right: 0; /* Slide in when active */
+}
+
+/* Quill Toolbar */
+.ql-toolbar.ql-snow {
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  gap: 8px;
+}
+
+.ql-toolbar.ql-snow .ql-formats {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.ql-toolbar.ql-snow .ql-formats:last-child {
+  border-bottom: none;
+}
+
+.ql-toolbar.ql-snow button,
+.ql-toolbar.ql-snow .ql-picker {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 8px;
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
+  position: relative;
+}
+
+.ql-toolbar.ql-snow button:hover,
+.ql-toolbar.ql-snow .ql-picker:hover {
+  background: #e2e8f0;
+  color: #3b82f6;
+}
+
+.ql-toolbar.ql-snow button.ql-active,
+.ql-toolbar.ql-snow .ql-picker.ql-active {
+  background: #3b82f6;
+  color: #ffffff;
+}
+
+/* Tooltip Styling */
+.ql-toolbar.ql-snow button::after,
+.ql-toolbar.ql-snow .ql-picker::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: -100px; /* Position to the left of the button */
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1e293b;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 1002;
+}
+
+.ql-toolbar.ql-snow button:hover::after,
+.ql-toolbar.ql-snow .ql-picker:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Picker Label Styling */
+.ql-toolbar.ql-snow .ql-picker-label {
+  padding: 0;
+  font-size: 0;
+}
+
+.ql-toolbar.ql-snow .ql-picker-label::before {
+  font-family: 'bootstrap-icons';
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Picker Icons */
+.ql-header .ql-picker-label::before {
+  content: '\f3f2';
+}
+
+.ql-align .ql-picker-label::before {
+  content: '\f3e5';
+}
+
+.ql-align .ql-picker-item[data-value="center"]::before {
+  content: '\f3e6';
+}
+
+.ql-align .ql-picker-item[data-value="right"]::before {
+  content: '\f3e7';
+}
+
+.ql-align .ql-picker-item[data-value="justify"]::before {
+  content: '\f3e8';
+}
+
+.ql-list .ql-picker-label::before {
+  content: '\f3ed';
+}
+
+.ql-list .ql-picker-item[data-value="ordered"]::before {
+  content: '\f3ee';
+}
+
+.ql-list .ql-picker-item[data-value="bullet"]::before {
+  content: '\f3ed';
+}
+
+.ql-toolbar.ql-snow .ql-color .ql-picker-label::before {
+  content: '\f5a0';
+}
+
+/* Color Picker Options */
+.ql-toolbar.ql-snow .ql-color .ql-picker-options {
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  width: 100px;
+  position: absolute;
+  top: 50%;
+  left: -110px; /* Position to the left of the toolbar */
+  transform: translateY(-50%);
+  z-index: 1001;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  border-radius: 6px;
+}
+
+.ql-toolbar.ql-snow .ql-color .ql-picker-item {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+
+.ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value=""] {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#ffffff"] {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#000000"] {
+  background: #000000;
+}
+
+.ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#00ff00"] {
+  background: #00ff00;
+}
+
+.ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#00ffff"] {
+  background: #00ffff;
+}
+
+.ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#0000ff"] {
+  background: #0000ff;
+}
+
+.ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#ff00ff"] {
+  background: #ff00ff;
+}
+
+.ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#ff0000"] {
+  background: #ff0000;
+}
+
+.ql-toolbar.ql-snow .ql-color .ql-picker-item[data-value="#ffff00"] {
+  background: #ffff00;
+}
+
+/* General Picker Options */
+.ql-toolbar.ql-snow .ql-picker-options {
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  padding: 4px 0;
+  position: absolute;
+  top: 50%;
+  left: -130px; /* Position to the left of the toolbar */
+  transform: translateY(-50%);
+  z-index: 1001;
+  min-width: 120px;
+}
+
+.ql-toolbar.ql-snow .ql-picker-item {
+  padding: 6px 12px;
+  font-size: 13px;
+  color: #1e293b;
+  transition: background 0.2s ease;
+  text-align: left;
+}
+
+.ql-toolbar.ql-snow .ql-picker-item:hover {
+  background: #f1f5f9;
+}
+
+#editor {
+  flex: 1;
+  border: none;
+  background: #ffffff;
+  border-radius: 0;
+  font-size: 15px;
+  color: #1e293b;
+  padding: 20px;
+  line-height: 1.6;
+  overflow-y: auto;
+}
+
+.ql-container.ql-snow {
+  border: none;
+  border-radius: 0;
+  background: #ffffff;
+  flex: 1;
+  overflow: visible;
+}
+
+.ql-editor {
+  padding: 20px;
+  min-height: 200px;
+}
+
+.ql-editor::before {
+  color: #94a3b8;
+  font-style: normal;
+  font-size: 15px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .editor-container {
+    height: auto;
+    min-height: 400px;
+  }
+
+  .toolbar-toggle-btn {
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+  }
+
+  .toolbar-toggle-btn i {
+    font-size: 14px;
+  }
+
+  .toolbar-wrapper {
+    width: 240px; /* Smaller width on mobile */
+    right: -240px; /* Adjust for smaller width */
+  }
+
+  .ql-toolbar.ql-snow button,
+  .ql-toolbar.ql-snow .ql-picker {
+    min-width: 32px;
+    height: 32px;
+    padding: 6px;
+  }
+
+  .ql-toolbar.ql-snow button::after,
+  .ql-toolbar.ql-snow .ql-picker::after {
+    font-size: 11px;
+    padding: 3px 6px;
+    left: -90px;
+  }
+
+  .ql-toolbar.ql-snow .ql-picker-label::before {
+    font-size: 14px;
+  }
+
+  .ql-toolbar.ql-snow .ql-picker-options {
+    left: -110px;
+  }
+
+  .ql-toolbar.ql-snow .ql-color .ql-picker-options {
+    left: -100px;
+  }
+}
+
+@media (max-width: 576px) {
+  .toolbar-toggle-btn {
+    top: 6px;
+    right: 6px;
+    width: 28px;
+    height: 28px;
+    padding: 3px;
+  }
+
+  .toolbar-toggle-btn i {
+    font-size: 12px;
+  }
+
+  .toolbar-wrapper {
+    width: 200px;
+    right: -200px;
+  }
+
+  .ql-toolbar.ql-snow button,
+  .ql-toolbar.ql-snow .ql-picker {
+    min-width: 28px;
+    height: 28px;
+    padding: 4px;
+  }
+
+  .ql-toolbar.ql-snow button::after,
+  .ql-toolbar.ql-snow .ql-picker::after {
+    font-size: 10px;
+    padding: 2px 4px;
+    left: -80px;
+  }
+
+  .ql-toolbar.ql-snow .ql-picker-label::before {
+    font-size: 12px;
+  }
+
+  .ql-toolbar.ql-snow .ql-picker-options {
+    left: -100px;
+  }
+
+  .ql-toolbar.ql-snow .ql-color .ql-picker-options {
+    left: -90px;
+  }
+}
     .btn-primary { 
       background-color: #064C89; 
       border-color: #064C89;  
@@ -685,66 +883,77 @@
     </div>
     <div class="right col-6 p-3">
       <div class="editor-container">
-        <div class="toolbar-wrapper">
-          <div id="toolbar">
-            <span class="ql-formats">
-              <button class="ql-magic" title="Magic/AI"><i class="bi bi-stars"></i></button>
-            </span>
-            <span class="ql-formats">
-              <select class="ql-header" title="Paragraph Style">
-                <option value="1">Heading 1</option>
-                <option value="2">Heading 2</option>
-                <option value="3">Heading 3</option>
-                <option selected>Paragraph</option>
-              </select>
-            </span>
-            <span class="ql-formats">
-              <button class="ql-bold" title="Bold"><i class="bi bi-type-bold"></i></button>
-              <button class="ql-italic" title="Italic"><i class="bi bi-type-italic"></i></button>
-              <button class="ql-underline" title="Underline"><i class="bi bi-type-underline"></i></button>
-            </span>
-            <span class="ql-formats">
-              <select class="ql-color" title="Text Color">
-                <option selected value=""></option>
-                <option value="#ffffff"></option>
-                <option value="#000000"></option>
-                <option value="#00ff00"></option>
-                <option value="#00ffff"></option>
-                <option value="#0000ff"></option>
-                <option value="#ff00ff"></option>
-                <option value="#ff0000"></option>
-                <option value="#ffff00"></option>
-              </select>
-            </span>
-            <span class="ql-formats">
-              <select class="ql-align" title="Text Alignment">
-                <option selected value=""></option>
-                <option value="center"></option>
-                <option value="right"></option>
-                <option value="justify"></option>
-              </select>
-            </span>
-            <span class="ql-formats">
-              <select class="ql-list" title="List">
-                <option selected value=""></option>
-                <option value="ordered"></option>
-                <option value="bullet"></option>
-              </select>
-            </span>
-            <span class="ql-formats">
-              <button class="ql-link" title="Insert Link"><i class="bi bi-link-45deg"></i></button>
-              <button class="ql-image" title="Insert Image"><i class="bi bi-image"></i></button>
-              <button class="ql-video" title="Insert Video"><i class="bi bi-camera-video"></i></button>
-            </span>
-            <span class="ql-formats">
-              <button class="ql-more" title="More Options"><i class="bi bi-three-dots"></i></button>
-            </span>
-            <span class="ql-formats">
-              <button class="ql-code-block" title="Code Block"><i class="bi bi-code-slash"></i></button>
-            </span>
+        <div class="editor-content-wrapper">
+          <!-- Toggle Button for Toolbar -->
+          <button class="toolbar-toggle-btn" id="toolbarToggleBtn" aria-label="Toggle Toolbar">
+            <i class="bi bi-gear"></i>
+          </button>
+    
+          <!-- Toolbar (Slides in from the right) -->
+          <div class="toolbar-wrapper" id="toolbarWrapper">
+            <div id="toolbar" class="ql-toolbar ql-snow">
+              <!-- AI/Magic Tool -->
+              <span class="ql-formats">
+                <button class="ql-magic" data-tooltip="Magic/AI"><i class="bi bi-stars"></i></button>
+              </span>
+              <!-- Text Style -->
+              <span class="ql-formats">
+                <select class="ql-header" data-tooltip="Paragraph Style">
+                  <option value="1">Heading 1</option>
+                  <option value="2">Heading 2</option>
+                  <option value="3">Heading 3</option>
+                  <option selected>Paragraph</option>
+                </select>
+              </span>
+              <!-- Text Formatting -->
+              <span class="ql-formats">
+                <button class="ql-bold" data-tooltip="Bold"><i class="bi bi-type-bold"></i></button>
+                <button class="ql-italic" data-tooltip="Italic"><i class="bi bi-type-italic"></i></button>
+                <button class="ql-underline" data-tooltip="Underline"><i class="bi bi-type-underline"></i></button>
+              </span>
+              <!-- Color and Alignment -->
+              <span class="ql-formats">
+                <select class="ql-color" data-tooltip="Text Color">
+                  <option selected value=""></option>
+                  <option value="#ffffff"></option>
+                  <option value="#000000"></option>
+                  <option value="#00ff00"></option>
+                  <option value="#00ffff"></option>
+                  <option value="#0000ff"></option>
+                  <option value="#ff00ff"></option>
+                  <option value="#ff0000"></option>
+                  <option value="#ffff00"></option>
+                </select>
+                <select class="ql-align" data-tooltip="Text Alignment">
+                  <option selected value=""></option>
+                  <option value="center"></option>
+                  <option value="right"></option>
+                  <option value="justify"></option>
+                </select>
+              </span>
+              <!-- Lists -->
+              <span class="ql-formats">
+                <select class="ql-list" data-tooltip="List">
+                  <option selected value=""></option>
+                  <option value="ordered"></option>
+                  <option value="bullet"></option>
+                </select>
+              </span>
+              <!-- Media and Links -->
+              <span class="ql-formats">
+                <button class="ql-link" data-tooltip="Insert Link"><i class="bi bi-link-45deg"></i></button>
+                <button class="ql-image" data-tooltip="Insert Image"><i class="bi bi-image"></i></button>
+                <button class="ql-video" data-tooltip="Insert Video"><i class="bi bi-camera-video"></i></button>
+              </span>
+              <!-- Code and More -->
+              <span class="ql-formats">
+                <button class="ql-code-block" data-tooltip="Code Block"><i class="bi bi-code-slash"></i></button>
+                <button class="ql-more" data-tooltip="More Options"><i class="bi bi-three-dots"></i></button>
+              </span>
+            </div>
           </div>
+          <div id="editor"></div>
         </div>
-        <div id="editor"></div>
         <div class="post-section d-flex justify-content-end align-items-center gap-2">
           <button class="btn btn-outline-secondary" id="save-draft-button">Save as Draft</button>
           <span id="post-status" class="ms-2"></span>
@@ -1240,6 +1449,11 @@
         alert('Please enter a category.');
       }
     });
+    document.getElementById('toolbarToggleBtn').addEventListener('click', () => {
+  const toolbarWrapper = document.getElementById('toolbarWrapper');
+  const isExpanded = toolbarWrapper.classList.toggle('active');
+  document.getElementById('toolbarToggleBtn').setAttribute('aria-expanded', isExpanded);
+});
   </script>
 </body>
 </html>

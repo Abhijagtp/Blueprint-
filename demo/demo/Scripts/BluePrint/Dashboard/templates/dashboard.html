@@ -1,5 +1,3 @@
-
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
@@ -11,14 +9,11 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <!-- Toastify CSS -->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-
-<!-- Toastify JS -->
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-<!-- Bootstrap Bundle (includes Popper.js) -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <!-- Toastify JS -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <!-- Bootstrap Bundle (includes Popper.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <style>
     .navbar {
@@ -45,6 +40,11 @@
       justify-content: center;
     }
 
+    .navbar-nav {
+      display: flex;
+      align-items: center;
+    }
+
     .nav-link {
       color: #555;
       font-weight: 500;
@@ -56,7 +56,6 @@
 
     .nav-link:hover {
       background-color: blueviolet;
-      /* color: white; */
       color: #10b981;
     }
 
@@ -135,6 +134,131 @@
       margin-right: 10px;
       color: #555;
     }
+
+    /* Responsive CSS for Small Devices */
+    @media (max-width: 991.98px) {
+      .navbar-brand img {
+        width: 120px; /* Reduce logo size on smaller screens */
+      }
+
+      .nav-center {
+        justify-content: flex-start; /* Align nav links to the start in collapsed mode */
+      }
+
+      .navbar-nav {
+        flex-direction: column; /* Stack nav links vertically in collapsed mode */
+        align-items: flex-start;
+        padding: 10px 0;
+      }
+
+      .nav-link {
+        margin-right: 0; /* Remove right margin for vertical stacking */
+        margin-bottom: 10px; /* Add spacing between stacked links */
+        padding: 8px 20px; /* Adjust padding for better touch targets */
+        width: 100%; /* Full width for better tap area */
+        text-align: left; /* Align text to the left */
+        border-radius: 10px; /* Slightly smaller border-radius for mobile */
+      }
+
+      .nav-link:hover {
+        background-color: blueviolet;
+        color: #10b981;
+      }
+
+      .active-link {
+        background-color: #043959;
+        color: #ffffff !important;
+      }
+
+      .icon-container {
+        margin-right: 10px; /* Reduce spacing between icons */
+      }
+
+      .icon-container i {
+        font-size: 1.1rem; /* Slightly smaller icons for mobile */
+      }
+
+      .icon-container .badge {
+        font-size: 0.5rem; /* Smaller badge for mobile */
+        padding: 1px 4px;
+      }
+
+      .profile-section {
+        flex-direction: row; /* Keep profile section horizontal */
+        align-items: center;
+      }
+
+      .profile-icon {
+        width: 32px; /* Slightly smaller profile icon */
+        height: 32px;
+      }
+
+      .profile-section .dropdown-toggle {
+        font-size: 0.9rem; /* Smaller font size for profile name */
+      }
+
+      .apps-window {
+        top: 40px; /* Adjust position for smaller screens */
+        width: 180px; /* Slightly smaller apps window */
+        right: -10px; /* Adjust positioning */
+      }
+
+      .apps-window .apps-item {
+        font-size: 0.85rem; /* Smaller font size for apps items */
+        padding: 8px; /* Smaller padding */
+      }
+
+      .apps-window .apps-item i {
+        font-size: 1.1rem; /* Smaller icons in apps window */
+      }
+
+      /* Ensure the navbar toggler (hamburger) is styled properly */
+      .navbar-toggler {
+        border: none;
+        padding: 5px 10px;
+      }
+
+      .navbar-toggler-icon {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(4, 57, 89, 0.75)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      }
+
+      .navbar-collapse {
+        background-color: #ffffff; /* White background for collapsed menu */
+        border-top: 1px solid #ddd; /* Separator between navbar and collapsed menu */
+        margin-top: 10px; /* Space between navbar and collapsed menu */
+        padding: 10px; /* Padding for collapsed menu */
+        border-radius: 0 0 8px 8px; /* Rounded bottom corners */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .navbar-brand img {
+        width: 100px; /* Further reduce logo size for very small screens */
+      }
+
+      .profile-section .dropdown-toggle {
+        font-size: 0.85rem; /* Even smaller font size for very small screens */
+      }
+
+      .profile-icon {
+        width: 28px; /* Smaller profile icon */
+        height: 28px;
+      }
+
+      .icon-container {
+        margin-right: 8px; /* Further reduce spacing */
+      }
+
+      .icon-container i {
+        font-size: 1rem; /* Smaller icons */
+      }
+
+      .apps-window {
+        width: 160px; /* Smaller apps window for very small screens */
+        right: -5px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -142,86 +266,90 @@
     <div class="container-fluid">
       <!-- Brand -->
       <a class="navbar-brand" href="#">
-        <img src="{% static 'images/logo.png'%}" alt="Logo"> 
+        <img src="{% static 'images/logo.png' %}" alt="Logo"> 
       </a>
 
-      <!-- Center Nav Links -->
-      <div class="nav-center">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link active-link" href="{%url 'dashboard_new'%}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Research</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{%url 'digitalassets'%}">Digital Assets</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{%url 'traning'%}">Training</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{%url 'timeline'%}">Social</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% if user.user_type == 'organizational' %}{% url 'search_talent' %}{% else %}{% url 'work_listing' %}{% endif %}">
+      <!-- Toggler for Mobile -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Collapsible Content -->
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <!-- Center Nav Links -->
+        <div class="nav-center">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active-link" href="{% url 'dashboard_new' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Research</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'digitalassets' %}">Digital Assets</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'traning' %}">Training</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'timeline' %}">Social</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% if user.user_type == 'organizational' %}{% url 'search_talent' %}{% else %}{% url 'work_listing' %}{% endif %}">
                 {% if user.user_type == 'organizational' %}Search Talent{% else %}Work Listing{% endif %}
-            </a>
-        </li>
-        
-        </ul>
-      </div>
-
-      <!-- Right Section -->
-      <div class="d-flex align-items-center">
-        <!-- Notification Icon -->
-        <div class="icon-container">
-          <i class="bi bi-bell"></i>
-          <span class="badge">3</span>
-        </div>
-
-        <!-- Apps Icon -->
-        <div class="icon-container">
-          <i class="bi bi-grid" id="appsToggle"></i>
-          <!-- Apps Window -->
-          <div class="apps-window" id="appsWindow">
-            <div class="apps-item">
-              <a href="{%url 'inbox'%}"><i class="bi bi-envelope"></i> Email</a>
-            </div>
-            <div class="apps-item">
-              <i class="bi bi-chat-dots"></i> ChatApp
-            </div>
-          </div>
-        </div>
-
-        <!-- Profile Section -->
-        <div class="profile-section dropdown">
-          <div class="profile-icon">
-            <i class="bi bi-person fs-5"></i>
-          </div>
-          <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-            {{ user.first_name }} {{ user.last_name }}
-        </span>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{% url 'logout'%}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+              </a>
+            </li>
           </ul>
+        </div>
+
+        <!-- Right Section -->
+        <div class="d-flex align-items-center">
+          <!-- Notification Icon -->
+          <div class="icon-container">
+            <i class="bi bi-bell"></i>
+            <span class="badge">3</span>
+          </div>
+
+          <!-- Apps Icon -->
+          <div class="icon-container">
+            <i class="bi bi-grid" id="appsToggle"></i>
+            <!-- Apps Window -->
+            <div class="apps-window" id="appsWindow">
+              <div class="apps-item">
+                <a href="{% url 'inbox' %}"><i class="bi bi-envelope"></i> Email</a>
+              </div>
+              <div class="apps-item">
+                <i class="bi bi-chat-dots"></i> ChatApp
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Section -->
+          <div class="profile-section dropdown">
+            <div class="profile-icon">
+              <i class="bi bi-person fs-5"></i>
+            </div>
+            <span class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ user.first_name }} {{ user.last_name }}
+            </span>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
+              <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
   </nav>
+
   {% for message in messages %}
-        <div class="toast-message" data-type="{{ message.tags }}" data-text="{{ message }}"></div>
-    {% endfor %}
+    <div class="toast-message" data-type="{{ message.tags }}" data-text="{{ message }}"></div>
+  {% endfor %}
 
   <div class="container my-4">
     {% block content %}
-    
-        
-
-      
     {% endblock %}
   </div>
 
@@ -242,54 +370,23 @@
       }
     });
   </script>
-   <script>
+
+  <script>
     // Check if there are any messages from Django
     document.querySelectorAll('.toast-message').forEach(function(messageElement) {
-        let messageType = messageElement.getAttribute('data-type');
-        let messageText = messageElement.getAttribute('data-text');
+      let messageType = messageElement.getAttribute('data-type');
+      let messageText = messageElement.getAttribute('data-text');
 
-        // Use Toastify to display the message
-        Toastify({
-            text: messageText,
-            duration: 3000, // Duration for the toast to show
-            gravity: 'top', // Position of the toast
-            position: 'right',
-            backgroundColor: messageType === 'success' ? 'green' : 'red', // Different color based on message type
-        }).showToast();
+      // Use Toastify to display the message
+      Toastify({
+        text: messageText,
+        duration: 3000,
+        gravity: 'top',
+        position: 'right',
+        backgroundColor: messageType === 'success' ? 'green' : 'red',
+      }).showToast();
     });
-</script>
-<!-- <script>
-  let lastMessageId = null;  // Store last seen message in memory
-
-  function checkNewMessages() {
-      fetch("{% url 'get_unread_messages' %}")  
-          .then(response => response.json())
-          .then(data => {
-              let latestMessage = data.latest_message;
-
-              if (latestMessage && latestMessage.id !== lastMessageId) {
-                  // Show toast only if the message is new
-                  Toastify({
-                      text: `New message from ${latestMessage.sender}: ${latestMessage.text}`,
-                      duration: 3000,
-                      gravity: "top",
-                      position: "right",
-                      backgroundColor: "green",
-                  }).showToast();
-
-                  lastMessageId = latestMessage.id;  // Update last seen message
-              }
-          })
-          .catch(error => console.error("Error fetching messages:", error));
-  }
-
-  // Check for new messages every 10 seconds
-  setInterval(checkNewMessages, 5000);
-</script> -->
-
-
-
-
+  </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
