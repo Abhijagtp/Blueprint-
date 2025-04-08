@@ -1,4 +1,4 @@
-{% extends 'dashboard.html'%}
+{% extends 'dashboardheader.html'%}
 {% load static %}
 
 {% block content %}
@@ -103,9 +103,9 @@
         <div class="row">
             <div class="col-md-3 col-12 col-lg-2 bg-light d-flex flex-column min-vh-90 p-3">
                 <nav class="nav flex-column flex-grow-1">
-                    <a class="nav-link active-link" href="#"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
-                    <a class="nav-link " href="#"><i class="fa-solid fa-chart-simple me-2"></i>Analytics</a>
-                    <a class="nav-link" href="#"><i class="fa-solid fa-user-group me-2"></i>User Management</a>
+                    <a class="nav-link" href="{% url 'admin_dashboard' %}"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
+                    <a class="nav-link active-link" href="{% url 'analytics' %}"><i class="fa-solid fa-chart-simple me-2"></i>Analytics</a>
+                    <a class="nav-link" href="{% url 'user_management' %}"><i class="fa-solid fa-user-group me-2"></i>User Management</a>
                     <a class="nav-link" href="#"><i class="fa-solid fa-diagram-project me-2"></i>Project Moderation</a>
                     <a class="nav-link" href="#"><i class="fa-solid fa-list-check me-2"></i>Content Moderation</a>
                     <hr class="sm-none">
