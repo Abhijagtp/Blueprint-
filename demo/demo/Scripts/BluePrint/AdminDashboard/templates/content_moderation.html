@@ -1,0 +1,204 @@
+{% extends 'dashboardheader.html'%}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Moderation sort</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <scrip src="https://kit.fontawesome.com/9e539bc9e3.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .nav-link {
+            color: black;
+            transition: background 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: #dbeafe; /* light blue */
+            color: #1d4ed8; /* text blue */
+            border-radius: 8px;
+        }
+
+        .dropdown-opt {
+            background-color: #064c89;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+         
+        }
+
+        .active-link {
+
+            background: rgb(49, 112, 222);
+            color: white;
+        }
+
+        .dropdown-opt option {
+            background: lightgray;
+            color: black;
+        }
+
+
+        @media (max-width:768px) {
+            .sm-none {
+                display: none;
+            }
+            .mg_left{
+                width: 30%;
+        }
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+        .mg_left{
+            margin-left: 60%;
+            width: 100px;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 col-12 col-lg-2 bg-light d-flex flex-column min-vh-90 p-3">
+                <nav class="nav flex-column flex-grow-1">
+                    <a class="nav-link {% if request.path == '/AdminDashboard/admin_dashboard/' %}active-link{% endif %}" href="{% url 'admin_dashboard' %}">
+                        <i class="fa-solid fa-gauge me-2"></i>Dashboard
+                    </a>
+
+                    <a class="nav-link {% if request.path == '/AdminDashboard/analytics/' %}active-link{% endif %}" href="{% url 'analytics' %}">
+                        <i class="fa-solid fa-chart-simple me-2"></i>Analytics
+                    </a>
+
+                    <a class="nav-link {% if request.path == '/AdminDashboard/user_management/' %}active-link{% endif %}" href="{% url 'user_management' %}">
+                        <i class="fa-solid fa-user-group me-2"></i>User Management
+                    </a>
+
+                    <a class="nav-link {% if request.path == '/AdminDashboard/project_moderation/' %}active-link{% endif %}" href="{% url 'project_moderation' %}">
+                        <i class="fa-solid fa-diagram-project me-2"></i>Project Moderation
+                    </a>
+
+                    <a class="nav-link {% if request.path == '/AdminDashboard/content_moderation/' %}active-link{% endif %}" href="{% url 'content_moderation' %}">
+                        <i class="fa-solid fa-list-check me-2"></i>Content Moderation
+                    </a>
+                    <hr class="sm-none">
+                    <a class="nav-link" href="#"><i class="fa-solid fa-inbox me-2"></i>Inbox</a>
+
+                    <!-- Space for larger screens only -->
+                    <div class="d-none d-md-block flex-grow-1"></div>
+
+                    <hr class="sm-none">
+                    <a class="nav-link" href="#"><i class="fa-solid fa-gear me-2"></i>Settings</a>
+                    <a class="nav-link" href="#"><i class="fa-solid fa-power-off me-2"></i>Logout</a>
+                </nav>
+            </div>
+
+            <!-- right section -->
+            <div class="col-12 col-md-9 col-lg-10 p-3 mt-4 ">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <select class="dropdown-opt ms-3">  
+                        <option>Sort by</option>
+                        <option>Whitepaper</option>
+                        <option>Media</option>
+                        <option>Project</option>
+                    </select>
+                </div>
+
+             
+                    <div class=" mt-3">
+                        <!-- course section -->
+                        <div id="course" class="content-section active p-3 col-lg-8">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover ">
+                                    <thead class="table-primary">
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Account Owner</th>
+                                            <th>Published On</th>
+                                            <th class="text-center">Selet All</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Film Making for beg</td>
+                                            <td>Christine Brooks</td>
+                                            <td>26 Feb,2025</td>
+                                            <td class="text-center"><input type="checkbox"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Essential skills</td>
+                                            <td>Rosie Pearson</td>
+                                            <td>25 Feb,2025</td>
+                                            <td class="text-center" ><input type="checkbox"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>career path</td>
+                                            <td>Darrell Caldwell</td>
+                                            <td>13 Feb,2025</td>
+                                            <td class="text-center"><input type="checkbox"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>How to become..</td>
+                                            <td>Gilbert Johnston</td>
+                                            <td>27 Feb,2025</td>
+                                            <td class="text-center"><input type="checkbox"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Python Foundations</td>
+                                            <td>Alan Cain</td>
+                                            <td>22 Feb,2025</td>
+                                            <td class="text-center"><input type="checkbox"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Benifits of learning</td>
+                                            <td>Alfred Murray</td>
+                                            <td>17 Feb,2025</td>
+                                            <td class="text-center"><input type="checkbox"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Spring Boot </td>
+                                            <td>Maggie Sullivan</td>
+                                            <td>16 Feb,2025</td>
+                                            <td class="text-center"><input type="checkbox"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Figma Template</td>
+                                            <td>Rosie Todd</td>
+                                            <td>21 Feb,2025</td>
+                                            <td class="text-center"><input type="checkbox"></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Web Design</td>
+                                            <td>Dollie Hines</td>
+                                            <td>22 Feb,2025</td>
+                                            <td class="text-center"><input type="checkbox"></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                <button class="dropdown-opt  mg_left">Remove</button>
+            </div>
+        </div>
+
+    
+</body>
+
+</html>
+{% endblock %}

@@ -8,16 +8,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>usermangement user Detail</title>
+    <title>usermangement Switch</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://kit.fontawesome.com/9e539bc9e3.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         .nav-link {
             color: black;
         }
 
-        .dropdown-opt, .add_accBtn{
+        .dropdown-opt,
+        .add_accBtn {
 
             background-color: #064c89;
             color: white;
@@ -39,25 +41,31 @@
             background: lightgray;
             color: black;
         }
-        .add_accBtn{
-            width:30%;
-        }
+
 
         @media (max-width:768px) {
             .sm-none {
                 display: none;
             }
-           
-            .add_accBtn{
+
+            #addAccountBtn {
                 width: 100%;
             }
 
+            .action-select {
+                width: 130px;
+                padding: 6px 10px;
+                font-size: 15px;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
         }
+
         #addAccountBtn {
-          
-            margin-top: 8px;  /* Add space between input and button */
+            margin-top: 8px;
+            /* Add space between input and button */
         }
-        
+
 
         .content-section {
             display: none;
@@ -72,6 +80,25 @@
             background: rgb(49, 112, 222);
             color: white;
         }
+
+        .action-btn {
+            /* width: 120px; */
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Optional: Increase padding and spacing for dropdown items */
+
+        .action-select {
+
+            padding: 6px 10px;
+            font-size: 15px;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            text-align: left;
+        }
     </style>
 </head>
 
@@ -80,11 +107,25 @@
         <div class="row">
             <div class="col-md-3 col-12 col-lg-2 bg-light d-flex flex-column min-vh-90 p-3">
                 <nav class="nav flex-column flex-grow-1">
-                    <a class="nav-link" href="{% url 'admin_dashboard' %}"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
-                    <a class="nav-link active-link" href="{% url 'analytics' %}"><i class="fa-solid fa-chart-simple me-2"></i>Analytics</a>
-                    <a class="nav-link" href="{% url 'user_management' %}"><i class="fa-solid fa-user-group me-2"></i>User Management</a>
-                    <a class="nav-link" href="#"><i class="fa-solid fa-diagram-project me-2"></i>Project Moderation</a>
-                    <a class="nav-link" href="#"><i class="fa-solid fa-list-check me-2"></i>Content Moderation</a>
+                    <a class="nav-link {% if request.path == '/AdminDashboard/admin_dashboard/' %}active-link{% endif %}" href="{% url 'admin_dashboard' %}">
+                        <i class="fa-solid fa-gauge me-2"></i>Dashboard
+                    </a>
+
+                    <a class="nav-link {% if request.path == '/AdminDashboard/analytics/' %}active-link{% endif %}" href="{% url 'analytics' %}">
+                        <i class="fa-solid fa-chart-simple me-2"></i>Analytics
+                    </a>
+
+                    <a class="nav-link {% if request.path == '/AdminDashboard/user_management/' %}active-link{% endif %}" href="{% url 'user_management' %}">
+                        <i class="fa-solid fa-user-group me-2"></i>User Management
+                    </a>
+
+                    <a class="nav-link {% if request.path == '/AdminDashboard/project_moderation/' %}active-link{% endif %}" href="{% url 'project_moderation' %}">
+                        <i class="fa-solid fa-diagram-project me-2"></i>Project Moderation
+                    </a>
+
+                    <a class="nav-link {% if request.path == '/AdminDashboard/content_moderation/' %}active-link{% endif %}" href="{% url 'content_moderation' %}">
+                        <i class="fa-solid fa-list-check me-2"></i>Content Moderation
+                    </a>
                     <hr class="sm-none">
                     <a class="nav-link" href="#"><i class="fa-solid fa-inbox me-2"></i>Inbox</a>
 
@@ -115,23 +156,29 @@
                     <div class="card-header d-flex">
                         <button class="btn btn-outline-primary me-2 px-4 py-3"
                             onclick="showSection('User')">Users</button>
-                        <button class="btn btn-outline-secondary px-5 py-3" onclick="showSection('ServiveDesk')">Servive Desk</button>
+                        <button class="btn btn-outline-secondary px-5 py-3" onclick="showSection('ServiveDesk')">Servive
+                            Desk</button>
                     </div>
 
                     <!-- input box -->
                     <div class=" mt-3 mx-3">
                         <div class="position-relative me-3">
                             <div class="input-group ">
-                                <div class="col-md-8 col-12"> 
-                                <div class="position-relative  ">
-                                    <input type="text" class="form-control demo  ps-5 " placeholder="Search users">
-                                    <i class="fa-solid fa-magnifying-glass position-absolute top-50 start-0 translate-middle-y ms-3  text-secondary"></i>
+                                <div class="col-md-6 col-12">
+                                    <div class="position-relative  ">
+                                        <input type="text" class="form-control demo  ps-5 " placeholder="Search users">
+                                        <i
+                                            class="fa-solid fa-magnifying-glass position-absolute top-50 start-0 translate-middle-y ms-3  text-secondary"></i>
+                                    </div>
                                 </div>
-                            </div>
+                                <a href="{% url 'service_desk_add' %}" class="rounded-2 add_accBtn mx-2 mt-md-0 ms-md-2 btn btn-primary">
+                                    + Add Account
+                                </a>
+
+
                             </div>
                         </div>
                     </div>
-                    
 
                     <div class=" mt-3 col-md-8">
                         <!-- searched section -->
@@ -143,39 +190,73 @@
                                             <th>User Name </th>
                                             <th>Sign up on</th>
                                             <th>Account Status</th>
-                                            <th>Email Address</th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Jerom Bell</td>
+                                            <td>Christine Brooks</td>
                                             <td>17 March 2025</td>
-                                            <td>Open <i class="fa-solid fa-chevron-down ms-3"></i> </td> 
-                                            <td>Jerom12@gmail.com</td> 
-                                        </tr>  
+                                            <td>
+                                                <select class="form-select action-select ">
+                                                    <option value="Open" selected>Open</option>
+                                                    <option value="Deactivate">Deactivate</option>
+                                                    <option value="Suspend">Suspend</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Rosie Pearson</td>
+                                            <td>14 March 2025</td>
+                                            <td>
+                                                <select class="form-select action-select">
+                                                    <option value="Open" selected>Open</option>
+                                                    <option value="Deactivate">Deactivate</option>
+                                                    <option value="Suspend">Suspend</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Darrell Caldwell</td>
+                                            <td>15 March 2025</td>
+                                            <td>
+                                                <select class="form-select action-select">
+                                                    <option value="Open" selected>Open</option>
+                                                    <option value="Deactivate">Deactivate</option>
+                                                    <option value="Suspend">Suspend</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <td>Gilbert Johnston</td>
+                                            <td>5 March 2025</td>
+                                            <td>
+                                                <select class="form-select action-select">
+                                                    <option value="Open" selected>Open</option>
+                                                    <option value="Deactivate">Deactivate</option>
+                                                    <option value="Suspend">Suspend</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+
+
+                                        <tr>
+                                            <td>Alan Cain</td>
+                                            <td>3 March 2025</td>
+                                            <td>
+                                                <select class="form-select action-select">
+                                                    <option value="Open" selected>Open</option>
+                                                    <option value="Deactivate">Deactivate</option>
+                                                    <option value="Suspend">Suspend</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+
                                     </tbody>
                                 </table>
-                            </div>
-
-
-                            <div class="p-2 col-md-8 mt-2 ">
-                                <h4>Password</h4>
-                                <div class="mb-3 mt-3">
-                                    <label for="createPassword" class="form-label">Create Password</label>
-                                    <input type="password" class="form-control bg-light" id="createPassword"
-                                        placeholder="Password">
-                                </div>
-        
-                                <div class="mb-3">
-                                    <label for="confirmPassword" class="form-label">Confirm Password</label>
-                                    <input type="password" class="form-control bg-light" id="confirmPassword"
-                                        placeholder="Confirm Password">
-                                </div>
-        
-                                <div class="d-flex ">
-                                    <button class="add_accBtn  save_Btn mt-2">Save</button>
-                                </div>
-                                
                             </div>
                         </div>
                     </div>
@@ -189,69 +270,82 @@
                                         <th>User Name </th>
                                         <th>Sign up on</th>
                                         <th>Account Status</th>
-                                       
+
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td>Christine Brooks</td>
                                         <td>17 March 2025</td>
-                                        <td>Open <i class="fa-solid fa-chevron-down ms-3"></i> </td>  
+                                        <td>
+                                            <select class="form-select action-select">
+                                                <option value="Open" selected>Open</option>
+                                                <option value="Deactivate">Deactivate</option>
+                                                <option value="Suspend">Suspend</option>
+                                            </select>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Rosie Pearson</td>
                                         <td>14 March 2025</td>
-                                        <td>Open <i class="fa-solid fa-chevron-down ms-3"></i> </td>  
+                                        <td>
+                                            <select class="form-select action-select">
+                                                <option value="Open" selected>Open</option>
+                                                <option value="Deactivate">Deactivate</option>
+                                                <option value="Suspend">Suspend</option>
+                                            </select>
+                                        </td>
                                     </tr>
-                                     
-                                   
+
+
                                     <tr>
                                         <td>Darrell Caldwell</td>
                                         <td>15 March 2025</td>
-                                        <td>Suspend <i class="fa-solid fa-chevron-down ms-3"></i> </td>  
+                                        <td>
+                                            <select class="form-select action-select">
+                                                <option value="Open" selected>Open</option>
+                                                <option value="Deactivate">Deactivate</option>
+                                                <option value="Suspend">Suspend</option>
+                                            </select>
+                                        </td>
                                     </tr>
-                                      
-                                  
+
+
                                     <tr>
                                         <td>Gilbert Johnston</td>
                                         <td>5 March 2025</td>
-                                        <td>Suspend <i class="fa-solid fa-chevron-down ms-3"></i> </td>  
-                                    </tr>
-                                      
-                                   
+                                        <td>
+                                            <select class="form-select action-select">
+                                                <option value="Open" selected>Open</option>
+                                                <option value="Deactivate">Deactivate</option>
+                                                <option value="Suspend">Suspend</option>
+                                            </select>
+                                        </td>
+
                                     <tr>
                                         <td>Alan Cain</td>
                                         <td>3 March 2025</td>
-                                        <td>Open <i class="fa-solid fa-chevron-down ms-3"></i> </td>  
+                                        <td>
+                                            <select class="form-select action-select">
+                                                <option value="Open" selected>Open</option>
+                                                <option value="Deactivate">Deactivate</option>
+                                                <option value="Suspend">Suspend</option>
+                                            </select>
+                                        </td>
                                     </tr>
-                                     
+
                                     <tr>
                                         <td>Alfred Murray</td>
                                         <td>9 March 2025</td>
-                                        <td>Suspend <i class="fa-solid fa-chevron-down ms-3"></i> </td>  
+                                        <td>
+                                            <select class="form-select action-select">
+                                                <option value="Open" selected>Open</option>
+                                                <option value="Deactivate">Deactivate</option>
+                                                <option value="Suspend">Suspend</option>
+                                            </select>
+                                        </td>
                                     </tr>
-                                       
-                               
-                                    <tr>
-                                        <td>Maggie Sullivan</td>
-                                        <td>6 March 2025</td>
-                                        <td>Open <i class="fa-solid fa-chevron-down ms-3"></i> </td>  
-                                    </tr>
-                                      
-                                 
-                                    <tr>
-                                        <td>Rosie Todd</td>
-                                        <td>12 March 2025</td>
-                                        <td>Deactivate <i class="fa-solid fa-chevron-down ms-3"></i> </td>  
-                                    </tr>
-                                        
-                              
-                                    <tr>
-                                        <td>Dollie Hines</td>
-                                        <td>7 March 2025</td>
-                                        <td>Open <i class="fa-solid fa-chevron-down ms-3"></i> </td>  
-                                    </tr>
-                                       
+
                                 </tbody>
                             </table>
                         </div>
@@ -268,17 +362,17 @@
                 document.querySelectorAll('.card-header .btn').forEach(btn => {
                     btn.classList.remove('active');
                 });
-        
+
                 // Activate the clicked button
                 const clickedButton = event.target;
                 clickedButton.classList.add('active');
-        
+
                 // Show the corresponding content section
                 document.querySelectorAll('.content-section').forEach(section => {
                     section.classList.remove('active');
                 });
                 document.getElementById(sectionId).classList.add('active');
-        
+
                 // Toggle visibility of Add Account button
                 const addAccountBtn = document.getElementById('addAccountBtn');
                 if (sectionId === 'ServiveDesk') {
@@ -287,14 +381,15 @@
                     addAccountBtn.style.display = 'none';
                 }
             }
-        
+
             // Initial state: Hide Add Account button by default
             document.getElementById('addAccountBtn').style.display = 'none';
+
+
+
         </script>
-        
-        
-        
-        
+
+
 </body>
 
 </html>

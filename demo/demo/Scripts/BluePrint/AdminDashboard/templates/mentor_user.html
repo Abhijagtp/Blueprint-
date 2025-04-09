@@ -15,6 +15,13 @@
     <style>
         .nav-link {
             color: black;
+            transition: background 0.2s ease;
+        }
+
+        .nav-link:hover {
+            background-color: #dbeafe; /* light blue */
+            color: #1d4ed8; /* text blue */
+            border-radius: 8px;
         }
 
         .dropdown-opt {
@@ -62,11 +69,25 @@
         <div class="row">
             <div class="col-md-3 col-12 col-lg-2 bg-light d-flex flex-column min-vh-90 p-3">
                 <nav class="nav flex-column flex-grow-1">
-                    <a class="nav-link" href="{% url 'admin_dashboard' %}"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
-                    <a class="nav-link active-link" href="{% url 'analytics' %}"><i class="fa-solid fa-chart-simple me-2"></i>Analytics</a>
-                    <a class="nav-link" href="{% url 'user_management' %}"><i class="fa-solid fa-user-group me-2"></i>User Management</a>
-                    <a class="nav-link" href="#"><i class="fa-solid fa-diagram-project me-2"></i>Project Moderation</a>
-                    <a class="nav-link" href="#"><i class="fa-solid fa-list-check me-2"></i>Content Moderation</a>
+                    <a class="nav-link {% if request.path == '/AdminDashboard/admin_dashboard/' %}active-link{% endif %}" href="{% url 'admin_dashboard' %}">
+                        <i class="fa-solid fa-gauge me-2"></i>Dashboard
+                    </a>
+
+                    <a class="nav-link {% if request.path == '/AdminDashboard/analytics/' %}active-link{% endif %}" href="{% url 'analytics' %}">
+                        <i class="fa-solid fa-chart-simple me-2"></i>Analytics
+                    </a>
+
+                    <a class="nav-link {% if request.path == '/AdminDashboard/user_management/' %}active-link{% endif %}" href="{% url 'user_management' %}">
+                        <i class="fa-solid fa-user-group me-2"></i>User Management
+                    </a>
+
+                    <a class="nav-link {% if request.path == '/AdminDashboard/project_moderation/' %}active-link{% endif %}" href="{% url 'project_moderation' %}">
+                        <i class="fa-solid fa-diagram-project me-2"></i>Project Moderation
+                    </a>
+
+                    <a class="nav-link {% if request.path == '/AdminDashboard/content_moderation/' %}active-link{% endif %}" href="{% url 'content_moderation' %}">
+                        <i class="fa-solid fa-list-check me-2"></i>Content Moderation
+                    </a>
                     <hr class="sm-none">
                     <a class="nav-link" href="#"><i class="fa-solid fa-inbox me-2"></i>Inbox</a>
 
