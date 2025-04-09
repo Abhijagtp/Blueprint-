@@ -74,3 +74,7 @@ def project_moderation_view(request):
 @login_required
 def content_moderation_view(request):
     return render(request, 'content_moderation.html')
+
+@login_required
+def service_desk_add_view(request):
+    return render(request, 'service_desk_add.html')
