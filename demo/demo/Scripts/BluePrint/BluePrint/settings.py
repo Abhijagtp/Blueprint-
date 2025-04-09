@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'DigitalAssets',
     #'AdminDashboard.apps.AdminConfig',
     'AdminDashboard',
+    'Notifications',
 
 
 ]

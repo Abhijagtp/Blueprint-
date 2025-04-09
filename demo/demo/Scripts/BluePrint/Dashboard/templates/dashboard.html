@@ -14,17 +14,19 @@
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <!-- Bootstrap Bundle (includes Popper.js) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <style>
     .navbar {
       background-color: #ffffff;
       box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 10px 20px;
     }
 
     .navbar-brand {
       display: flex;
       align-items: center;
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       font-weight: bold;
       color: #043959;
     }
@@ -52,15 +54,61 @@
       padding: 5px 15px;
       border-radius: 20px;
       transition: all 0.3s ease;
+      font-size: 1rem;
+      text-transform: capitalize;
     }
 
+    /* Default hover effect for all nav links */
     .nav-link:hover {
-      background-color: blueviolet;
-      color: #10b981;
+      background-color: #0056b3; /* Darker blue for hover */
+      color: #ffffff !important;
     }
 
-    .active-link {
-      background-color: #043959;
+    /* Specific active classes for each tab */
+    .home-active {
+      background-color: #007bff; /* Blue background for active Home tab */
+      color: #ffffff !important;
+    }
+
+    .research-active {
+      background-color: #007bff;
+      color: #ffffff !important;
+    }
+
+    .digital-assets-active {
+      background-color: #007bff;
+      color: #ffffff !important;
+    }
+
+    .training-active {
+      background-color: #007bff;
+      color: #ffffff !important;
+    }
+
+    .social-active {
+      background-color: #007bff;
+      color: #ffffff !important;
+    }
+
+    .work-listing-active {
+      background-color: #007bff;
+      color: #ffffff !important;
+    }
+
+    .search-talent-active {
+      background-color: #007bff;
+      color: #ffffff !important;
+    }
+
+    /* Ensure active state takes precedence over hover */
+    .home-active:hover,
+    .research-active:hover,
+    .digital-assets-active:hover,
+    .training-active:hover,
+    .social-active:hover,
+    .work-listing-active:hover,
+    .search-talent-active:hover {
+      background-color: #007bff; /* Keep the same color on hover for active state */
       color: #ffffff !important;
     }
 
@@ -86,6 +134,31 @@
       padding: 2px 5px;
     }
 
+    .notification-container {
+      position: relative;
+      display: inline-block;
+      margin-right: 15px;
+    }
+
+    .notification-icon {
+      font-size: 1.2rem;
+      color: #555;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .notification-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ff6200;
+      color: white;
+      font-size: 0.6rem;
+      padding: 2px 5px;
+      border-radius: 50%;
+      display: none; /* Hidden by default */
+    }
+
     .profile-section {
       display: flex;
       align-items: center;
@@ -101,6 +174,16 @@
       justify-content: center;
       align-items: center;
       margin-right: 10px;
+    }
+
+    .profile-section .dropdown-toggle {
+      color: #555;
+      font-weight: 500;
+      font-size: 1rem;
+    }
+
+    .profile-section .dropdown-toggle::after {
+      margin-left: 5px;
     }
 
     .apps-window {
@@ -161,12 +244,18 @@
       }
 
       .nav-link:hover {
-        background-color: blueviolet;
-        color: #10b981;
+        background-color: #0056b3;
+        color: #ffffff !important;
       }
 
-      .active-link {
-        background-color: #043959;
+      .home-active,
+      .research-active,
+      .digital-assets-active,
+      .training-active,
+      .social-active,
+      .work-listing-active,
+      .search-talent-active {
+        background-color: #007bff;
         color: #ffffff !important;
       }
 
@@ -178,8 +267,16 @@
         font-size: 1.1rem; /* Slightly smaller icons for mobile */
       }
 
-      .icon-container .badge {
-        font-size: 0.5rem; /* Smaller badge for mobile */
+      .notification-container {
+        margin-right: 10px;
+      }
+
+      .notification-icon {
+        font-size: 1.1rem;
+      }
+
+      .notification-count {
+        font-size: 0.5rem;
         padding: 1px 4px;
       }
 
@@ -254,6 +351,14 @@
         font-size: 1rem; /* Smaller icons */
       }
 
+      .notification-container {
+        margin-right: 8px;
+      }
+
+      .notification-icon {
+        font-size: 1rem;
+      }
+
       .apps-window {
         width: 160px; /* Smaller apps window for very small screens */
         right: -5px;
@@ -280,22 +385,22 @@
         <div class="nav-center">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link active-link" href="{% url 'dashboard_new' %}">Home</a>
+              <a class="nav-link {% if request.path == '/dashboard/' %}home-active{% endif %}" href="{% url 'dashboard_new' %}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Research</a>
+              <a class="nav-link {% if request.path == '/research/' %}research-active{% endif %}" href="#">Research</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'digitalassets' %}">Digital Assets</a>
+              <a class="nav-link {% if request.path == '/digitalassets/' %}digital-assets-active{% endif %}" href="{% url 'digitalassets' %}">Digital Assets</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'traning' %}">Training</a>
+              <a class="nav-link {% if request.path == '/training/' %}training-active{% endif %}" href="{% url 'traning' %}">Training</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'timeline' %}">Social</a>
+              <a class="nav-link {% if request.path == '/social/' %}social-active{% endif %}" href="{% url 'timeline' %}">Social</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% if user.user_type == 'organizational' %}{% url 'search_talent' %}{% else %}{% url 'work_listing' %}{% endif %}">
+              <a class="nav-link {% if user.user_type == 'organizational' and request.path == '/search-talent/' %}search-talent-active{% elif user.user_type != 'organizational' and request.path == '/work-listing/' %}work-listing-active{% endif %}" href="{% if user.user_type == 'organizational' %}{% url 'search_talent' %}{% else %}{% url 'work_listing' %}{% endif %}">
                 {% if user.user_type == 'organizational' %}Search Talent{% else %}Work Listing{% endif %}
               </a>
             </li>
@@ -305,9 +410,11 @@
         <!-- Right Section -->
         <div class="d-flex align-items-center">
           <!-- Notification Icon -->
-          <div class="icon-container">
-            <i class="bi bi-bell"></i>
-            <span class="badge">3</span>
+          <div class="notification-container">
+            <a href="{% url 'notifications_page' %}">
+              <i class="fas fa-bell notification-icon"></i>
+              <span class="notification-count" id="notification-count">0</span>
+            </a>
           </div>
 
           <!-- Apps Icon -->
@@ -369,15 +476,46 @@
         appsWindow.style.display = "none";
       }
     });
-  </script>
 
-  <script>
-    // Check if there are any messages from Django
+    // JavaScript to update notification count on page load
+    document.addEventListener('DOMContentLoaded', function () {
+      const notificationCount = document.querySelector('#notification-count');
+
+      // Fetch the unseen activity count
+      function updateNotificationCount() {
+        fetch('/notifications/get-count/', {
+          headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+          }
+        })
+          .then(response => response.json())
+          .then(data => {
+            notificationCount.textContent = data.unseen_count;
+            notificationCount.style.display = data.unseen_count > 0 ? 'block' : 'none';
+          })
+          .catch(error => console.error('Error fetching notification count:', error));
+      }
+
+      // Get CSRF token
+      function getCookie(name) {
+        const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+        for (const cookie of cookies) {
+          if (cookie.startsWith(name + '=')) {
+            return decodeURIComponent(cookie.substring(name.length + 1));
+          }
+        }
+        return null;
+      }
+
+      // Update count on page load
+      updateNotificationCount();
+    });
+
+    // Toastify for Django messages
     document.querySelectorAll('.toast-message').forEach(function(messageElement) {
       let messageType = messageElement.getAttribute('data-type');
       let messageText = messageElement.getAttribute('data-text');
 
-      // Use Toastify to display the message
       Toastify({
         text: messageText,
         duration: 3000,

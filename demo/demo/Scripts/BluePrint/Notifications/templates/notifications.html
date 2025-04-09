@@ -1,0 +1,218 @@
+<!-- templates/notifications.html -->
+{% extends 'dashboard.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .notifications-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .notifications-header h1 {
+            font-size: 1.75rem;
+            color: #333;
+        }
+
+        .filter-form {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-form select {
+            padding: 0.5rem;
+            border: 1px solid #e1e1e1;
+            border-radius: 4px;
+            font-size: 0.875rem;
+        }
+
+        .filter-form button {
+            padding: 0.5rem 1rem;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .filter-form button:hover {
+            background: #357abd;
+        }
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            background: #fff;
+            transition: background 0.3s ease;
+        }
+
+        .notification-item.unseen {
+            background: #f0f8ff;
+        }
+
+        .notification-item:hover {
+            background: #f5f5f5;
+        }
+
+        .notification-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-content p {
+            margin: 0;
+            font-size: 0.875rem;
+            color: #333;
+        }
+
+        .notification-time {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .notification-actions button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            color: #4a90e2;
+        }
+
+        .notification-actions button:hover {
+            color: #357abd;
+        }
+
+        .no-notifications {
+            text-align: center;
+            color: #666;
+            font-size: 1rem;
+            padding: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="notifications-container">
+        <div class="notifications-header">
+            <h1>Notifications</h1>
+            <form class="filter-form" method="GET" action="{% url 'notifications_page' %}">
+                <select name="type" id="notification-type">
+                    <option value="">All</option>
+                    <option value="follow_request" {% if request.GET.type == 'follow_request' %}selected{% endif %}>Follow Requests</option>
+                    <option value="message" {% if request.GET.type == 'message' %}selected{% endif %}>Messages</option>
+                    <option value="group_message" {% if request.GET.type == 'group_message' %}selected{% endif %}>Group Messages</option>
+                    <option value="enrollment" {% if request.GET.type == 'enrollment' %}selected{% endif %}>Course Enrollments</option>
+                    <option value="email" {% if request.GET.type == 'email' %}selected{% endif %}>Emails</option>
+                    <option value="like" {% if request.GET.type == 'like' %}selected{% endif %}>Likes</option>
+                    <option value="comment" {% if request.GET.type == 'comment' %}selected{% endif %}>Comments</option>
+                    <option value="follower_post" {% if request.GET.type == 'follower_post' %}selected{% endif %}>Follower Posts</option>
+                    <option value="project_request_accepted" {% if request.GET.type == 'project_request_accepted' %}selected{% endif %}>Project Request Accepted</option>
+                    <option value="project_request_rejected" {% if request.GET.type == 'project_request_rejected' %}selected{% endif %}>Project Request Rejected</option>
+                </select>
+                <button type="submit">Filter</button>
+            </form>
+        </div>
+
+        <div class="notification-list">
+            {% if activities %}
+                {% for activity in activities %}
+                    <div class="notification-item {% if not activity.seen %}unseen{% endif %}" 
+                         data-activity-id="{{ activity.id }}">
+                        <img src="{% if activity.actor.userprofile.profile_image %}{{ activity.actor.userprofile.profile_image.url }}{% else %}{% static 'images/Profile-default.png' %}{% endif %}" 
+                             alt="{{ activity.actor.get_full_name }}">
+                        <div class="notification-content">
+                            <p>{{ activity.content }}</p>
+                            <span class="notification-time">{{ activity.timestamp|timesince }} ago</span>
+                        </div>
+                        {% if not activity.seen %}
+                            <div class="notification-actions">
+                                <button class="mark-as-seen">Mark as Seen</button>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-notifications">No notifications to display.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to handle marking activities as seen
+        document.addEventListener('DOMContentLoaded', function () {
+            const markAsSeenButtons = document.querySelectorAll('.mark-as-seen');
+
+            markAsSeenButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const notificationItem = button.closest('.notification-item');
+                    const activityId = notificationItem.dataset.activityId;
+
+                    fetch(`/notifications/mark-as-seen/${activityId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                notificationItem.classList.remove('unseen');
+                                button.parentElement.remove(); // Remove the "Mark as Seen" button
+                            }
+                        })
+                        .catch(error => console.error('Error marking activity as seen:', error));
+                });
+            });
+
+            // Get CSRF token
+            function getCookie(name) {
+                const cookies = document.cookie.split(';').map(cookie => cookie.trim());
+                for (const cookie of cookies) {
+                    if (cookie.startsWith(name + '=')) {
+                        return decodeURIComponent(cookie.substring(name.length + 1));
+                    }
+                }
+                return null;
+            }
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

@@ -123,25 +123,4 @@ class Attachment(models.Model):
             )
         ]
 
-from django.db import models
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
-
-class Notification(models.Model):
-    NOTIFICATION_TYPES = [
-        ('message', 'Message'),
-        ('follow', 'Follow Request'),
-        ('like', 'Like'),
-        ('comment', 'Comment'),
-    ]
-
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_notifications")
-    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_notifications")
-    notification_type = models.CharField(max_length=10, choices=NOTIFICATION_TYPES)
-    content = models.TextField(blank=True, null=True)  # Optional extra info (e.g., comment text)
-    is_read = models.BooleanField(default=False)
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.sender} {self.get_notification_type_display()} -> {self.receiver}"
