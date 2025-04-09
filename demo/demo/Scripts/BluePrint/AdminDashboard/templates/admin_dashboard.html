@@ -1,0 +1,299 @@
+{% extends 'dashboardheader.html'%}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://kit.fontawesome.com/9e539bc9e3.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .nav-link {
+            color: black;
+        }
+
+        .dropdown-opt {
+
+            background-color: #064c89;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 16px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .active-link {
+
+            background: rgb(49, 112, 222);
+            color: white;
+        }
+
+        .dropdown-opt option {
+            background: lightgray;
+            color: black;
+        }
+
+
+        @media (max-width:768px) {
+            .sm-none {
+                display: none;
+            }
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .card-icon {
+            font-size: 30px;
+            background-color: #f3f4f6;
+            border-radius: 50%;
+            padding: 10px;
+        }
+
+        .chart-container {
+            height: 300px;
+        }
+
+        .ticket-progress-card {
+            background-color: #f9fafb;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .chart-container {
+            width: 120px;
+            height: 120px;
+            position: relative;
+        }
+
+        .ticket-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .hold-ticket{
+            color: #8164FF;
+        }
+        .resol-ticket{
+            color: #DAE9FF;
+        }
+        .total-ticket{
+            color: #3102FF;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 col-12 col-lg-2 bg-light d-flex flex-column min-vh-90 p-3">
+                <nav class="nav flex-column flex-grow-1">
+                    <a class="nav-link" href="{% url 'admin_dashboard' %}"><i class="fa-solid fa-gauge me-2"></i>Dashboard</a>
+                    <a class="nav-link active-link" href="{% url 'analytics' %}"><i class="fa-solid fa-chart-simple me-2"></i>Analytics</a>
+                    <a class="nav-link" href="{% url 'user_management' %}"><i class="fa-solid fa-user-group me-2"></i>User Management</a>
+                    <a class="nav-link" href="#"><i class="fa-solid fa-diagram-project me-2"></i>Project Moderation</a>
+                    <a class="nav-link" href="#"><i class="fa-solid fa-list-check me-2"></i>Content Moderation</a>
+                    <hr class="sm-none">
+                    <a class="nav-link" href="#"><i class="fa-solid fa-inbox me-2"></i>Inbox</a>
+
+                    <!-- Space for larger screens only -->
+                    <div class="d-none d-md-block flex-grow-1"></div>
+
+                    <hr class="sm-none">
+                    <a class="nav-link" href="#"><i class="fa-solid fa-gear me-2"></i>Settings</a>
+                    <a class="nav-link" href="#"><i class="fa-solid fa-power-off me-2"></i>Logout</a>
+                </nav>
+            </div>
+
+            <!-- right section -->
+            <div class="col-md-10">
+                <div class="container my-4">
+                    <h4 class="fw-bold">Welcome Jordi</h4>
+                    <p>This is your Admin Dashboard</p>
+
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <div class="card p-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon me-3"><i class="fa-solid fa-users"></i></div>
+                                    <div>
+                                        <h5>Total Users</h5>
+                                        <h3>40,689</h3>
+                                        <p class="text-success"><i class="fa-solid fa-arrow-up"></i> 8.5% Increased Last
+                                            Week</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="card p-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon me-3"><i class="fa-solid fa-box"></i></div>
+                                    <div>
+                                        <h5>Subscribed Members</h5>
+                                        <h3>29,876</h3>
+                                        <p class="text-success"><i class="fa-solid fa-arrow-up"></i>1.3% Increased Last
+                                            Week</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="card p-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon me-3"><i class="fa-solid fa-ticket"></i></div>
+                                    <div>
+                                        <h5>Total Tickets</h5>
+                                        <h3>6,877</h3>
+                                        <p class="text-danger"><i class="fa-solid fa-arrow-down"></i> 4.3% than Last
+                                            Month</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="card p-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon me-3"><i class="fa-solid fa-signs-post"></i></div>
+                                    <div>
+                                        <h5>Total Posts</h5>
+                                        <h3>2,040</h3>
+                                    </div>
+
+                                    <select class="ms-4 mt-5 form-select w-auto">
+                                        <option>March </option>
+                                        <option>April</option>
+                                        <option>May</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="container my-3 ">
+                        <div class="card shadow-sm p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="fw-bold">Visitors Analysis</h5>
+                                <select class="form-select w-auto">
+                                    <option>March</option>
+                                    <option>April</option>
+                                    <option>May</option>
+                                </select>
+                            </div>
+                            <canvas id="visitorsChart" style="height:250px; width: 100%;"></canvas>
+                        </div>
+                    </div>
+
+
+                    <div class="container my-5">
+                        <div class="card ticket-progress-card">
+                            <div class="row align-items-center">
+                                <div class="col-md-4 text-center">
+                                    <div class="chart-container">
+                                        <canvas id="ticketChart"></canvas>
+                                    </div>
+                                </div>
+                          
+
+                                <div class="col-md-8 ticket-info text-center text-md-start">
+                                    <h5 class="fw-bold">Ticket Progress</h5>
+                                    <div class="d-flex flex-wrap justify-content-center justify-content-md-start">
+                                        <div class="m-2">
+                                            <span class="total-ticket fw-bold"><i class="fa-solid fa-circle"></i> Total Tickets</span> <br><b>6877</b>
+                                        </div>
+                                        <div class="m-2">
+                            
+                                            <span class="text-info fw-bold"><i class="fa-solid fa-circle"></i> Pending Tickets</span> <br><b>2040</b>
+                                        </div>
+                                        <div class="m-2">
+                                            <span class="hold-ticket fw-bold"><i class="fa-solid fa-circle"></i> On Hold Tickets</span> <br><b>1020</b>
+                                        </div>
+                                        <div class="m-2">
+                                            <span class="resol-ticket fw-bold"><i class="fa-solid fa-circle"></i> Resolved Tickets</span> <br><b>3240</b>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <script>
+            const ctx = document.getElementById('visitorsChart').getContext('2d');
+            const visitorsChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ["5k", "10k", "15k", "20k", "25k", "30k", "35k", "40k", "45k", "50k", "55k", "60k"],
+                    datasets: [{
+                        label: 'Visitors',
+                        data: [20, 35, 45, 25, 40, 50, 20, 60, 30, 50, 40, 45],
+                        borderColor: '#4A90E2',
+                        backgroundColor: 'rgba(74, 144, 226, 0.1)',
+                        pointBackgroundColor: '#4A90E2',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#4A90E2',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { callback: (value) => `${value}%` }
+                        }
+                    }
+                }
+            });
+
+            const ctx2 = document.getElementById('ticketChart').getContext('2d');
+        const ticketChart = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Total Tickets', 'Pending Tickets', 'On Hold Tickets', 'Resolved Tickets'],
+                datasets: [{
+                    data: [6877, 2040, 1020, 3240],
+                    backgroundColor: [' #3102FF', '#50E3C2', '#8164FF', '#DAE9FF'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false }
+                },
+                cutout: '70%'
+            }
+        });
+        </script>
+
+
+</body>
+</html>
+{% endblock %}
