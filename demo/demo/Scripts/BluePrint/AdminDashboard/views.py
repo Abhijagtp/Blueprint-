@@ -61,7 +61,7 @@ def analytics_blog_view(request):
 
 @login_required
 def organization_blog_view(request):
-    return render(request, 'organizationpostblog.html')
+    return render(request, 'organaizationpostblog.html')
 
 @login_required
 def organization_invoice_view(request):
