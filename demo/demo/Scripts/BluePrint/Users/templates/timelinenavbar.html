@@ -1,16 +1,19 @@
 {% load static %}
 <header class="header mb-2 shadow-sm bg-white rounded">
     <style>
-        .nav-link { 
+        .nav-link{ 
             color: #6c757d; 
-            padding: 0.75rem 1rem; 
+            /* padding: 0.75rem 1rem;  */
+            padding: 5px 15px;
             font-weight: 500; 
             position: relative; 
             text-decoration: none; 
             display: flex; 
             align-items: center; 
             gap: 0.5rem; 
+            /* background-color:greenyellow; */
         }
+     
         .nav-link:hover { 
             color: #000; 
             background: #D0D5DD; 
@@ -231,7 +234,7 @@
             }
         }
     </style>
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar2 navbar-expand-lg navbar-light">
         <div class="container-fluid">
             <div class="row w-100 align-items-center">
                 <!-- Left: Timeline Button (col-3) -->
@@ -242,8 +245,8 @@
                 </div>
 
                 <!-- Center: Navigation Tabs (col-6) -->
-                <div class="col-6 nav-tabs-wrapper">
-                    <ul class="nav nav-tabs border-0">
+                <div class="col-6 nav-tabs-wrapper ">
+                    <ul class="nav nav-tabs border-0 py-2">
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center {% if request.resolver_match.url_name == 'chat_list' %}active{% endif %}" href="{% url 'chat_list' %}">
                                 <i class="bi bi-chat-left-text me-1"></i> Messages
