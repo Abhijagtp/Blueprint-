@@ -8,20 +8,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics Professional Blog</title>
+    <title>Analytics Mentor Course Detail</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://kit.fontawesome.com/9e539bc9e3.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .nav-link {
             color: black;
-            transition: background 0.2s ease;
-        }
-
-        .nav-link:hover {
-            background-color: #dbeafe; /* light blue */
-            color: #1d4ed8; /* text blue */
-            border-radius: 8px;
         }
 
         .dropdown-opt {
@@ -36,74 +29,66 @@
             cursor: pointer;
         }
 
-        .dropdown-opt option {
-            background: lightgray;
-            color: black;
-        }
-
-        .post-card {
-            width: 40%;
-            margin-top: 30px;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .profile-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-
-        .post-content img {
-            width: 100%;
-            border-radius: 8px;
-        }
-
-        .post-footer {
-            display: flex;
-        }
-
-        .stats {
-            text-align: right;
-            font-size: 14px;
-
-        }
-
-        .stats span {
-            color: black;
-        }
-
         .active-link {
 
             background: rgb(49, 112, 222);
             color: white;
         }
 
-        
-        .btn-back {
-            background: none;
-            border: none;
-            color: gray;
-            font-size: 18px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
+        .dropdown-opt option {
+            background: lightgray;
+            color: black;
         }
 
-        .btn-back a {
-            text-decoration: none;
-            color: #064c89;
-            display: flex;
-            align-items: center;
-        }   
 
         @media (max-width:768px) {
-            .post-card {
-                width: 100%;
+            .sm-none {
+                display: none;
             }
         }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+        .course-name{
+            color: #2B3674;
+
+        }
+       
+        .dots-btn i {
+           color: black;
+        }
+
+        .dots-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgb(49, 112, 222);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .dots-btn:hover{
+            background-color:rgb(19, 87, 164);
+        }
+        .dots-btn i:hover{
+            color: white;
+        }
+        .details-card {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    
     </style>
 </head>
 
@@ -144,7 +129,7 @@
             </div>
 
             <!-- right section -->
-            <div class="col-12 col-lg-10 p-3">
+            <div class="col-12 col-md-9 col-lg-10 p-3">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4>Analytics</h4>
 
@@ -158,79 +143,65 @@
 
                 </div>
 
-                <div class="card ">
+                <div class="card">
                     <div class="card-header d-flex">
-                        <button class="btn btn-outline-primary me-2 px-4 py-3">Searched Profiles</button>
-                        <button class="btn btn-outline-secondary px-5 py-3 active">Post</button>
-                    </div>
-
-                </div>
-
-                <div class="d-flex justify-content-end ">
-                    <button class="btn-back">
-                        <a href=""><i class="fa-solid fa-arrow-left-long me-1"></i>Back</a>
-                    </button>
-                </div>
-
-                <!-- post section -->
-                <div class="post-card  p-3 bg-white">
-                    
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <div class="d-flex align-items-center">
-                            <img src="https://i.pinimg.com/originals/07/33/ba/0733ba760b29378474dea0fdbcb97107.png"
-                                alt="Profile" class="profile-img me-2">
-                            <div>
-                                <strong>David Bend</strong> <span class="text-muted ms-2">3h</span>
-                            </div>
-                        </div>
-
-                        <button class="btn btn-light ">
-                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                        </button>
-                    </div>
-
-
-                    <!-- Text Content -->
-                    <div class="post-content  mb-3">
-                        <p>
-                            Woody Harrison, "I can’t wonder, in spite of all the criticism Bobby Kennedy Junior,
-                            received for encouraging us to be somewhat skeptical about these careers ahead in the AI
-                            era."
-                        </p>
-                        <p>What if he’s right?</p>
-
-                        <!-- Post Image -->
-                        <img src="post_image.png" alt="Post Image">
-                    </div>
-
-                    <!-- Footer Buttons -->
-                    <div class="post-footer border-top ">
-                        <div class="me-4">
-                            <i class="fa-regular fa-heart me-1"></i>Like
-                        </div>
-                        <div class="me-4">
-                            <i class="fa-regular fa-comment me-1"></i>Comment
-                        </div>
-                        <div class="me-4">
-                            <i class="fa-solid fa-share me-1"></i>Share
-                        </div>
-                    </div>
-
-                    <!-- Stats -->
-                    <div class=" stats mt-3 d-flex text-muted gap-2 justify-content-end  ">
-                        <!-- 125 Likes  22 Comments  4 Shares -->
-                        <span>125 Likes</span>
-                        <span>22 Comments</span>
-                        <span>4 Share</span>
+                        <button class="btn btn-outline-primary me-2 px-4 py-3"
+                            onclick="showSection('course')">courses</button>
+                        <button class="btn btn-outline-secondary px-5 py-3" onclick="showSection('mentee')">Mentee</button>
                     </div>
                 </div>
 
+                <!-- course Detail -->
+               
+                <div class="mt-5 col-lg-8">
+                <div>
+                    <img src="CourseDetImg.png" alt="Thumbnail" class="img-fluid">
+                   
+                </div>
+        
+                <div class="details-card p-4 position-relative mt-3 bg-light rounded-4 mt-5">
+                    <div class="d-flex justify-content-between">
+
+                        <h5 class="fw-bold course-name">Course Details</h5>
+                        <button class="dots-btn">
+                            <i class="fa-solid fa-ellipsis"></i>
+                        </button>   
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-12">
+                            <p><strong class="course-name">Course Title:</strong> Film-Making for beginners within 5 hours</p>
+                            <p><strong class="course-name">Published on:</strong> 26 February 2025</p>
+                            <p><strong class="course-name">Category:</strong> Entertainment</p>
+                            <p><strong class="course-name">Mentor Name:</strong> Shubham Patil</p>
+                            <p><strong class="course-name">Type:</strong> Free</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+            </div>
+        </div>
+    </div>
 
+        <!-- script js-->
+        <script>
+                 const showSection = (sectionId) => {
+                // Remove 'active' class from all buttons
+                document.querySelectorAll('.card-header .btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
 
+                // Activate the clicked button
+                const clickedButton = event.target;
+                clickedButton.classList.add('active');
 
-            <!-- script -->
-
+                // Show the corresponding content section
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(sectionId).classList.add('active');
+            }
+        </script>
 </body>
 
 </html>

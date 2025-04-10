@@ -1,1 +1,6 @@
 demo/demo/Scripts/BluePrint/db.sqlite3
+# Ignore Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.cpython-*

@@ -56,16 +56,36 @@ def analytics_view(request):
     return render(request, 'analytics.html')
 
 @login_required
+def analytics_blog_view(request):
+    return render(request, 'analyticspostblog.html')
+
+@login_required
+def organization_blog_view(request):
+    return render(request, 'organaizationpostblog.html')
+
+@login_required
+def organization_invoice_view(request):
+    return render(request, 'organization_invoice.html')
+
+@login_required
 def user_management_view(request):
     return render(request, 'user_management.html')
 
 @login_required
 def organization_view(request):
-    return render(request, 'organization_user.html') 
+    return render(request, 'organization_user.html')
+
+@login_required
+def organization_project_view(request):
+    return render(request, 'organization_project_details.html')
 
 @login_required
 def mentor_user_view(request):
     return render(request, 'mentor_user.html')
+
+@login_required
+def mentor_course_details_view(request):
+    return render(request, 'mentor_course_details.html')
 
 @login_required
 def project_moderation_view(request):
