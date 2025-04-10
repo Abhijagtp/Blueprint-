@@ -98,3 +98,39 @@ def content_moderation_view(request):
 @login_required
 def service_desk_add_view(request):
     return render(request, 'service_desk_add.html')
+
+
+def admin_login(request):
+    return render(request, 'admin_login.html')
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
+from django.views import View
+class AdminLoginView(View):
+    template_name = 'admin_login.html'
+    
+    def get(self, request):
+        if request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser):
+            return redirect('admin_dashboard')
+        return render(request, self.template_name)
+    
+    def post(self, request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None:
+            if user.is_staff or user.is_superuser:
+                login(request, user)
+                return redirect('admin_dashboard')
+            else:
+                messages.error(request, "This login is for admin and staff only.")
+        else:
+            messages.error(request, "Invalid username or password.")
+        
+        return render(request, self.template_name)
