@@ -5,3 +5,4 @@ from .models import CustomUser, UserProfile, Experience, Education, Skill, Certi
 
 admin.site.register(ChatGroup)
 admin.site.register(Post)
+admin.site.register(UserProfile)

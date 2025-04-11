@@ -1,4 +1,4 @@
-{% extends 'sidebar.html'%}
+{% extends 'sidebar.html' %}
 {% load static %}
 
 {% block content %}
@@ -13,10 +13,7 @@
     <script src="https://kit.fontawesome.com/9e539bc9e3.js" crossorigin="anonymous"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-       
-
-
-        @media (max-width:768px) {
+        @media (max-width: 768px) {
             .sm-none {
                 display: none;
             }
@@ -31,9 +28,58 @@
         }
 
         .active-link {
-
             background: rgb(49, 112, 222);
             color: white;
+        }
+
+        /* Styling for the first dropdown (Filter Data on Same Page) */
+        .filter-dropdown {
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 2px solid #007bff;
+            background-color: #e7f1ff;
+            color: #007bff;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-dropdown:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            background-color: #fff;
+        }
+
+        /* Styling for the second dropdown (Redirect to Other Pages) */
+        .redirect-dropdown {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: 2px solid #ff6f61;
+            background-color: #fff5f5;
+            color: #ff6f61;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .redirect-dropdown:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 111, 97, 0.5);
+            background-color: #fff;
+        }
+
+        /* Ensure dropdowns are spaced properly */
+        .filter-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .filter-group {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -41,33 +87,36 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-      
-
             <!-- right section -->
             <div class="col-12 col-md-9 col-lg-10 p-3">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4>Analytics</h4>
+                    <div class="filter-group">
+                        <!-- First Dropdown: Filter by User Type on Same Page -->
+                        <select class="filter-dropdown" onchange="window.location.href=this.value;">
+                            <option value="{% url 'analytics' %}" {% if not selected_user_type %}selected{% endif %}>All Users</option>
+                            <option value="{% url 'analytics' %}?user_type=professional" {% if selected_user_type == 'professional' %}selected{% endif %}>Professional User</option>
+                            <option value="{% url 'analytics' %}?user_type=organizational" {% if selected_user_type == 'organizational' %}selected{% endif %}>Organization User</option>
+                            <option value="{% url 'analytics' %}?user_type=instructor" {% if selected_user_type == 'instructor' %}selected{% endif %}>Mentor</option>
+                        </select>
 
-                    
-                    <select class="dropdown-opt" onchange="window.location.href=this.value;">
-                        <option value="">Select User Type</option>
-                        <option value="{% url 'analytics' %}">Professional User</option>
-                        <option value="{% url 'organization' %}">Organization User</option>
-                        <option value="{% url 'mentor_user' %}">Mentor</option>
-                    </select>
-
-
-
+                        <!-- Second Dropdown: Redirect to Other Pages -->
+                        <select class="redirect-dropdown" onchange="window.location.href=this.value;">
+                            <option value="">Select User Type</option>
+                            <option value="{% url 'analytics' %}" {% if request.path == analytics_url %}selected{% endif %}>Professional User</option>
+                            <option value="{% url 'organization' %}" {% if request.path == organization_url %}selected{% endif %}>Organization User</option>
+                            <option value="{% url 'mentor_user' %}" {% if request.path == mentor_url %}selected{% endif %}>Mentor</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="card">
                     <div class="card-header d-flex">
-                        <button class="btn btn-outline-primary me-2 px-4 py-3"
-                            onclick="showSection('searchedProfiles')">Searched Profiles</button>
+                        <button class="btn btn-outline-primary me-2 px-4 py-3 active" onclick="showSection('searchedProfiles')">Searched Profiles</button>
                         <button class="btn btn-outline-secondary px-5 py-3" onclick="showSection('post')">Post</button>
                     </div>
-                    <div class=" mt-3">
-                        <!-- searched section -->
+                    <div class="mt-3">
+                        <!-- Searched Profiles Section -->
                         <div id="searchedProfiles" class="content-section active p-3">
                             <div class="table-responsive">
                                 <table class="table table-bordered table-hover">
@@ -81,184 +130,94 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {% for profile in searched_profiles %}
                                         <tr>
-                                            <td>12000</td>
-                                            <td>Christine Brooks</td>
-                                            <td>37999</td>
-                                            <td>32</td>
-                                            <td>22</td>
+                                            <td>{{ profile.impressions }}</td>
+                                            <td>{{ profile.user.get_full_name }}</td>
+                                            <td>{{ profile.total_likes }}</td>
+                                            <td>{{ profile.digital_assets }}</td>
+                                            <td>{{ profile.projects_completed }}</td>
                                         </tr>
+                                        {% empty %}
                                         <tr>
-                                            <td>11200</td>
-                                            <td>Rosie Pearson</td>
-                                            <td>29333</td>
-                                            <td>27</td>
-                                            <td>12</td>
+                                            <td colspan="5" class="text-center">No data available</td>
                                         </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Post Section -->
+                        <div id="post" class="content-section p-3">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover">
+                                    <thead class="table-primary">
                                         <tr>
-                                            <td>10228</td>
-                                            <td>Darrell Caldwell</td>
-                                            <td>27465</td>
-                                            <td>22</td>
-                                            <td>12</td>
+                                            <th>NAME</th>
+                                            <th>Post</th>
+                                            <th>Likes</th>
+                                            <th>Comments</th>
+                                            <th>Category</th>
                                         </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for post in posts %}
                                         <tr>
-                                            <td>9299</td>
-                                            <td>Gilbert Johnston</td>
-                                            <td>26884</td>
-                                            <td>20</td>
-                                            <td>10</td>
+                                            <td><a href="{% url 'analytics_blog' post.id %}" class="text-decoration-none text-dark">{{ post.user_profile.user.get_full_name }}</a></td>
+                                            <td>
+                                                <a href="{% url 'analytics_blog' post.id %}" class="text-decoration-none text-dark">
+                                                    {% if post.content_type == 'normal' %}
+                                                        {{ post.caption|truncatechars:20 }}
+                                                    {% elif post.content_type == 'blog' %}
+                                                        {{ post.blog_title|truncatechars:20 }}
+                                                    {% elif post.content_type == 'whitepaper' %}
+                                                        {{ post.whitepaper_title|truncatechars:20 }}
+                                                    {% elif post.content_type == 'insight' %}
+                                                        {{ post.insight_title|truncatechars:20 }}
+                                                    {% else %}
+                                                        (Untitled)
+                                                    {% endif %}
+                                                </a>
+                                            </td>
+                                            <td>{{ post.likes_count }}</td>
+                                            <td>{{ post.comments_count }}</td>
+                                            <td>{{ post.content_type|capfirst }}</td>
                                         </tr>
+                                        {% empty %}
                                         <tr>
-                                            <td>9002</td>
-                                            <td>Alan Cain</td>
-                                            <td>25647</td>
-                                            <td>19</td>
-                                            <td>9</td>
+                                            <td colspan="5" class="text-center">No posts available</td>
                                         </tr>
-                                        <tr>
-                                            <td>8272</td>
-                                            <td>Alfred Murray</td>
-                                            <td>24555</td>
-                                            <td>19</td>
-                                            <td>9</td>
-                                        </tr>
-                                        <tr>
-                                            <td>8222</td>
-                                            <td>Maggie Sullivan</td>
-                                            <td>19003</td>
-                                            <td>17</td>
-                                            <td>8</td>
-                                        </tr>
-                                        <tr>
-                                            <td>7821</td>
-                                            <td>Rosie Todd</td>
-                                            <td>15837</td>
-                                            <td>16</td>
-                                            <td>7</td>
-                                        </tr>
-                                        <tr>
-                                            <td>7220</td>
-                                            <td>Dollie Hines</td>
-                                            <td>12039</td>
-                                            <td>10</td>
-                                            <td>6</td>
-                                        </tr>
+                                        {% endfor %}
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-
-                    <!-- post section -->
-                    <div id="post" class="content-section p-3 ">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover">
-                                <thead class="table-primary">
-                                    <tr>
-
-                                        <th>NAME</th>
-                                        <th>Post</th>
-                                        <th>Likes</th>
-                                        <th>Comments</th>
-                                        <th>Category</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">Christine Brooks</a></td>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">How the world nees</a></td>
-                                        <td>37999</td> <!--Likes-->
-                                        <td>32</td>
-                                        <td>Media</td> <!--Category-->
-                                    </tr>
-                                    <tr>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">Rosie Pearson</a></td>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">Hello connection</a></td>
-                                        <td>29333</td>
-                                        <td>27</td>
-                                        <td>WhitePaper</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">Darrell Caldwell</a></td>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">my experience of us</a></td>
-                                        <td>27465</td>
-                                        <td>22</td>
-                                        <td>WhitePaper</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">Gilbert Johnston</a></td>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">licious has change</a></td>
-                                        <td>26884</td>
-                                        <td>20</td>
-                                        <td>Media</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">Alan Cain</a></td>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">Linkdin vs BluePrint </a></td>
-                                        <td>25647</td>
-                                        <td>19</td>
-                                        <td>Media</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">Alfred Murray</a></td>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">BluePrint has evolved</a></td>
-                                        <td>24555</td>
-                                        <td>19</td>
-                                        <td>Blog</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">Maggie Sullivan</a></td>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">new things may no</a></td>
-                                        <td>19003</td>
-                                        <td>17</td>
-                                        <td>Media</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">Rosie Todd</a></td>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">philipines has deve..</a></td>
-                                        <td>15837</td>
-                                        <td>16</td>
-                                        <td>Media</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">Dollie Hines</a></td>
-                                        <td><a href="{% url 'analytics_blog' %}" class="text-decoration-none text-dark">Maggie sullivan has...</a></td>
-                                        <td>12039</td>
-                                        <td>10</td>
-                                        <td>Blog</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- script js-->
-        <script>
+    <!-- Script JS -->
+    <script>
+        const showSection = (sectionId) => {
+            // Remove 'active' class from all buttons
+            document.querySelectorAll('.card-header .btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
 
+            // Activate the clicked button
+            const clickedButton = event.target;
+            clickedButton.classList.add('active');
 
-            const showSection = (sectionId) => {
-                // Remove 'active' class from all buttons
-                document.querySelectorAll('.card-header .btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-
-                // Activate the clicked button
-                const clickedButton = event.target;
-                clickedButton.classList.add('active');
-
-                // Show the corresponding content section
-                document.querySelectorAll('.content-section').forEach(section => {
-                    section.classList.remove('active');
-                });
-                document.getElementById(sectionId).classList.add('active');
-            }
-        </script>
+            // Show the corresponding content section
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+    </script>
 </body>
 
 </html>
