@@ -23,6 +23,30 @@
             color: white;
         }
 
+        .nav-link:hover {
+            background-color: #dbeafe; /* light blue */
+            color: #1d4ed8; /* text blue */
+            border-radius: 8px;
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            color: gray;
+            font-size: 18px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+        }
+
+        .btn-back a {
+            text-decoration: none;
+            color: #064c89;
+            display: flex;
+            align-items: center;
+        }   
+
         .dropdown-opt {
 
             background-color: #064c89;
@@ -41,6 +65,10 @@
             color: black;
         }
 
+        .active-link {
+            background: rgb(49, 112, 222);
+            color: white;
+        }
 
 
         .content-section {
@@ -182,6 +210,13 @@
                         <button class="btn btn-outline-primary me-2 px-4 py-3">Projects</button>
                         <button class="btn btn-outline-secondary px-5 py-3 me-2 ">Post</button>
                         <button class="btn btn-outline-secondary px-5 py-3 ">Invoices</button>
+                    </div>
+                    <div class="d-flex justify-content-end ">
+                        <button class="btn-back">
+                        <a class="nav-link {% if request.path == '/AdminDashboard/organization/' %}active-link{% endif %}" href="{% url 'organization' %}">
+                            <i class="fa-solid fa-arrow-left-long me-1"></i>Back
+                        </a>
+                        </button>
                     </div>
 
                     <!-- input bar -->

@@ -168,7 +168,9 @@
 
                 <div class="d-flex justify-content-end ">
                     <button class="btn-back">
-                        <a href=""><i class="fa-solid fa-arrow-left-long me-1"></i>Back</a>
+                    <a class="nav-link {% if request.path == '/AdminDashboard/organization/' %}active-link{% endif %}" href="{% url 'organization' %}">
+                        <i class="fa-solid fa-arrow-left-long me-1"></i>Back
+                    </a>
                     </button>
                 </div>
 

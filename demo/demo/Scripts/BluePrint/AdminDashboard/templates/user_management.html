@@ -171,10 +171,12 @@
                                             class="fa-solid fa-magnifying-glass position-absolute top-50 start-0 translate-middle-y ms-3  text-secondary"></i>
                                     </div>
                                 </div>
-                                <a href="{% url 'service_desk_add' %}" class="rounded-2 add_accBtn mx-2 mt-md-0 ms-md-2 btn btn-primary">
+                                <button
+                                    id="addAccountBtn"
+                                    class="rounded-2 add_accBtn mx-2 mt-md-0 ms-md-2"
+                                    onclick="location.href='{% url 'service_desk_add' %}'">
                                     + Add Account
-                                </a>
-
+                                </button>
 
                             </div>
                         </div>
@@ -195,7 +197,7 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td>Christine Brooks</td>
+                                            <td><a href="{% url 'user_manage_user_details' %}" class="text-decoration-none text-dark">Christine Brooks</td>
                                             <td>17 March 2025</td>
                                             <td>
                                                 <select class="form-select action-select ">
@@ -206,7 +208,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Rosie Pearson</td>
+                                            <td><a href="{% url 'user_manage_user_details' %}" class="text-decoration-none text-dark">Rosie Pearson</td>
                                             <td>14 March 2025</td>
                                             <td>
                                                 <select class="form-select action-select">
@@ -218,7 +220,7 @@
                                         </tr>
 
                                         <tr>
-                                            <td>Darrell Caldwell</td>
+                                            <td><a href="{% url 'user_manage_user_details' %}" class="text-decoration-none text-dark">Darrell Caldwell</td>
                                             <td>15 March 2025</td>
                                             <td>
                                                 <select class="form-select action-select">
@@ -231,7 +233,7 @@
 
 
                                         <tr>
-                                            <td>Gilbert Johnston</td>
+                                            <td><a href="{% url 'user_manage_user_details' %}" class="text-decoration-none text-dark">Gilbert Johnston</td>
                                             <td>5 March 2025</td>
                                             <td>
                                                 <select class="form-select action-select">
@@ -244,7 +246,7 @@
 
 
                                         <tr>
-                                            <td>Alan Cain</td>
+                                            <td><a href="{% url 'user_manage_user_details' %}" class="text-decoration-none text-dark">Alan Cain</td>
                                             <td>3 March 2025</td>
                                             <td>
                                                 <select class="form-select action-select">
@@ -388,6 +390,8 @@
 
 
         </script>
+
+
 
 
 </body>

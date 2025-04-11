@@ -10,6 +10,7 @@ urlpatterns = [
    path('organization_post_blog', views.organization_blog_view, name='organization_post_blog'),
    path('organization_invoice/', views.organization_invoice_view, name='organization_invoice'),
    path('user_management/', views.user_management_view, name='user_management'),
+   path('user_manage_user_details/', views.user_manage_user_details_view, name='user_manage_user_details'),
    path('organization/', views.organization_view, name='organization'),
    path('organization_project_details/', views.organization_project_view, name='organization_project_details'),
    path('mentor_user/', views.mentor_user_view, name='mentor_user'),

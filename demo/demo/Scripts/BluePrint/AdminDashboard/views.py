@@ -72,6 +72,10 @@ def user_management_view(request):
     return render(request, 'user_management.html')
 
 @login_required
+def user_manage_user_details_view(request):
+    return render(request, 'user_manage_user_details.html')
+
+@login_required
 def organization_view(request):
     return render(request, 'organization_user.html')
 
