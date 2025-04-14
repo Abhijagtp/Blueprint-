@@ -48,7 +48,11 @@ urlpatterns = [
     path('load_skills/', views.load_skills, name='load_skills'),
     path('load_certifications/', views.load_certifications, name='load_certifications'),
     path('load_projects/', views.load_projects, name='load_projects'),
+    path('load_courses/', views.load_courses, name='load_courses'),
+    path('update_organization/<int:org_id>/', views.update_organization, name='update_organization'),
     path('load_posts/', views.load_posts, name='load_posts'),
+    path('load_about/', views.load_about, name='load_about'),
+
     path('post/<int:post_id>/', views.post_detail, name='post_detail'),
     
 

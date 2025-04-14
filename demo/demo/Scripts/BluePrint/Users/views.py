@@ -423,7 +423,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 
 def load_tab_content(request):
-    section = request.GET.get('section', 'posts')  # Default to 'posts' if no section is provided
+    section = request.GET.get('section', 'posts')  # Default to 'posts'
     username = request.GET.get('username', '')
 
     # Render the appropriate template based on the section
@@ -439,9 +439,12 @@ def load_tab_content(request):
         return load_projects(request)
     elif section == 'certifications':
         return load_certifications(request)
+    elif section == 'courses':
+        return load_courses(request)
+    elif section == 'about':
+        return load_about(request)
     else:
         return JsonResponse({'error': 'Invalid section'}, status=400)
-    
 
 
 from django.shortcuts import render
@@ -611,7 +614,48 @@ def load_projects(request):
     })
 
 
+from Training.models import Course
+@login_required
+def load_courses(request):
+    username = request.GET.get('username')
+    if not username:
+        return JsonResponse({"error": "Username is required"}, status=400)
 
+    user_obj = get_object_or_404(CustomUser, username=username)
+    user_profile = get_object_or_404(UserProfile, user=user_obj)
+
+    # Restrict to instructors only
+    if user_obj.user_type != 'instructor':
+        return JsonResponse({"error": "Unauthorized access"}, status=403)
+
+    courses = Course.objects.filter(instructor=user_obj)
+    is_owner = request.user == user_obj  # Check if the logged-in user is the profile owner
+
+    return render(request, 'tabs/courses.html', {
+        'courses': courses,
+        'is_owner': is_owner
+    })
+
+@login_required
+def load_about(request):
+    username = request.GET.get('username')
+    if not username:
+        return JsonResponse({"error": "Username is required"}, status=400)
+
+    user_obj = get_object_or_404(CustomUser, username=username)
+    user_profile = get_object_or_404(UserProfile, user=user_obj)
+
+    # Restrict to organizational users only
+    if user_obj.user_type != 'organizational':
+        return JsonResponse({"error": "Unauthorized access"}, status=403)
+
+    organization = get_object_or_404(Organization, user=user_obj)
+    is_owner = request.user == user_obj  # Check if the logged-in user is the profile owner
+
+    return render(request, 'tabs/about.html', {
+        'organization': organization,
+        'is_owner': is_owner
+    })
 
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -683,7 +727,44 @@ def load_posts(request):
     })
 
 
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import Organization
+import json
 
+@login_required
+def update_organization(request, org_id):
+    organization = get_object_or_404(Organization, id=org_id, user=request.user)
+
+    if request.method == 'POST':
+        # Basic validation
+        organization_name = request.POST.get('organization_name')
+        start_year = request.POST.get('start_year')
+
+        if not organization_name:
+            messages.error(request, "Organization name is required.")
+            return redirect(f'/profile/?section=about&username={request.user.username}')
+        
+        if start_year and not start_year.isdigit():
+            messages.error(request, "Start year must be a valid number.")
+            return redirect(f'/profile/?section=about&username={request.user.username}')
+
+        # Update fields
+        organization.organization_name = organization_name
+        organization.description = request.POST.get('description', organization.description)
+        organization.website_link = request.POST.get('website_link', organization.website_link)
+        organization.start_year = int(start_year) if start_year else organization.start_year
+        organization.locations = request.POST.get('locations', organization.locations)
+        organization.industry_type = request.POST.get('industry_type', organization.industry_type)
+        organization.business_type = request.POST.get('business_type', organization.business_type)
+        organization.business_nature = request.POST.get('business_nature', organization.business_nature)
+        organization.save()
+
+        messages.success(request, "Organization updated successfully.")
+        return redirect(f'/profile/?section=about&username={request.user.username}&edit=true')
+    
+    return redirect(f'/profile/?section=about&username={request.user.username}')
 
 import json
 from datetime import datetime

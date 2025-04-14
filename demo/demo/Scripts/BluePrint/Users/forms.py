@@ -46,3 +46,31 @@ class ProjectForm(forms.ModelForm):
             'technologies': forms.TextInput(attrs={'placeholder': 'Enter technologies, separated by commas'})
         }
 
+
+
+from django import forms
+from .models import Organization
+
+class OrganizationForm(forms.ModelForm):
+    class Meta:
+        model = Organization
+        fields = [
+            'organization_name',  # Updated from 'name'
+            'description',
+            'website_link',      # Updated from 'website'
+            'start_year',        # Updated from 'founded_date'
+            'locations',         # Updated from 'location'
+            'industry_type',
+            'business_type',
+            'business_nature',
+        ]
+        widgets = {
+            'organization_name': forms.TextInput(attrs={'required': True}),
+            'description': forms.Textarea(attrs={'rows': 4}),
+            'website_link': forms.URLInput(),
+            'start_year': forms.NumberInput(attrs={'type': 'number'}),
+            'locations': forms.TextInput(attrs={'placeholder': 'e.g., New York, London'}),
+            'industry_type': forms.Select(),
+            'business_type': forms.Select(),
+            'business_nature': forms.Select(),
+        }

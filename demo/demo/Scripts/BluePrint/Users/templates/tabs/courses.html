@@ -1,0 +1,97 @@
+{% load static %}
+
+<div class="courses-container">
+    {% if courses %}
+        <div class="course-grid">
+            {% for course in courses %}
+                <div class="course-card">
+                    <!-- Thumbnail -->
+                    {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }} Thumbnail" class="course-thumbnail">
+                    {% else %}
+                        <img src="{% static 'images/default_thumbnail.jpg' %}" alt="Default Thumbnail" class="course-thumbnail">
+                    {% endif %}
+
+                    <!-- Course Details -->
+                    <div class="course-details">
+                        <h3 class="course-title">{{ course.title }}</h3>
+                        <p class="instructor-name">{{ course.instructor.get_full_name|default:course.instructor.username }}</p>
+                        <!-- Rating (Placeholder, as the model doesn't have this field) -->
+                        <p class="course-rating">Ratings: {% if course.rating %}{{ course.rating }}{% else %}Not Rated{% endif %}</p>
+
+                        <!-- Edit Link for Owner -->
+                       
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No courses available.</p>
+    {% endif %}
+</div>
+
+<style>
+    .courses-container {
+        padding: 20px;
+    }
+
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .course-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .course-thumbnail {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+    }
+
+    .course-details {
+        padding: 15px;
+    }
+
+    .course-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0 0 5px;
+        color: #333;
+    }
+
+    .instructor-name {
+        font-size: 14px;
+        color: #666;
+        margin: 0 0 5px;
+    }
+
+    .course-rating {
+        font-size: 14px;
+        color: #f5a623;
+        margin: 0;
+    }
+
+    .edit-link {
+        display: inline-block;
+        margin-top: 10px;
+        font-size: 14px;
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .edit-link:hover {
+        text-decoration: underline;
+    }
+</style>

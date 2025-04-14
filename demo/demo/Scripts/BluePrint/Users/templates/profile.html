@@ -153,10 +153,75 @@
         }
 
         .profile-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 2.5rem;
-        }
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .edit-profile-btn, .follow-btn, .unfollow-btn, .message-btn, .mentorship-btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .edit-profile-btn {
+        background-color: var(--primary-color, #4a90e2);
+        color: #0f325a;
+    }
+
+    .edit-profile-btn:hover {
+        background-color: #3a80d2;
+    }
+
+    .follow-btn {
+        background-color: var(--primary-color, #4a90e2);
+        color: #fff;
+    }
+
+    .follow-btn:hover {
+        background-color: #3a80d2;
+    }
+
+    .follow-btn.disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .unfollow-btn {
+        background-color: #e74c3c;
+        color: #fff;
+    }
+
+    .unfollow-btn:hover {
+        background-color: #c0392b;
+    }
+
+    .message-btn {
+        background-color: var(--secondary-color, #7f8c8d);
+        color: #fff;
+    }
+
+    .message-btn:hover {
+        background-color: #6c757d;
+    }
+
+    .mentorship-btn {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: var(--accent-color, #27ae60);
+        color: #fff;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+    }
+
+    .mentorship-btn:hover {
+        background-color: #219653;
+    }
 
         .btn {
             padding: 0.5rem 1rem;
@@ -742,11 +807,18 @@
                                     <button type="submit" class="follow-btn">Follow</button>
                                 </form>
                             {% endif %}
-                            <button class="message-btn">Message</button>
+                    
+                            <!-- Show Message button only if following and user is not an instructor or organization -->
+                            {% if follow_request_status == 'accepted' and not user_obj.is_instructor and not user_obj.is_organization %}
+                                <button class="message-btn">Message</button>
+                            {% endif %}
+                    
+                            <!-- Add Book Mentorship button for instructors -->
+                            {% if user_obj.is_instructor %}
+                                <a href="{% url 'book_mentorship' user_obj.id %}" class="mentorship-btn">Book Mentorship</a>
+                            {% endif %}
                         {% endif %}
                     </div>
-                    
-                    
                     
                   </div>
                   <div class="profile-stats">
@@ -798,12 +870,21 @@
           <!-- Navigation Tabs -->
           <nav class="profile-nav">
             <ul class="nav-tabs">
-                <li class="active"><a href="#posts" data-target="posts" data-username="{{ searched_user_profile.user.username }}">Posts</a></li>
-                <li><a href="#projects" data-target="projects">Projects</a></li>
-                <li><a href="#experience" data-target="experience">Experience</a></li>
-                <li><a href="#education" data-target="education">Education</a></li>
-                <li><a href="#skills" data-target="skills">Skills</a></li>
-                <li><a href="#certifications" data-target="certifications">Certifications</a></li>
+                {% if user_obj.user_type == 'organizational' %}
+                    <li class="active"><a href="#about" data-target="about">About</a></li>
+                    <li><a href="#posts" data-target="posts" data-username="{{ user_obj.username }}">Posts</a></li>
+                {% else %}
+                    <li class="active"><a href="#posts" data-target="posts" data-username="{{ user_obj.username }}">Posts</a></li>
+                    {% if user_obj.user_type == 'instructor' %}
+                        <li><a href="#courses" data-target="courses">Courses</a></li>
+                    {% else %}
+                        <li><a href="#projects" data-target="projects">Projects</a></li>
+                    {% endif %}
+                    <li><a href="#experience" data-target="experience">Experience</a></li>
+                    <li><a href="#education" data-target="education">Education</a></li>
+                    <li><a href="#skills" data-target="skills">Skills</a></li>
+                    <li><a href="#certifications" data-target="certifications">Certifications</a></li>
+                {% endif %}
             </ul>
         </nav>
   
@@ -887,14 +968,13 @@
     handleModal('coverImageModal', '#openCoverModal', '#coverImageClose');
 
     handleFormSubmission('editProfileForm', '/save_profile/', 'POST', {
-    'Content-Type': 'application/json'
-}, (form) => JSON.stringify({
-    fname: form.querySelector('#fname').value,
-    lname: form.querySelector('#lname').value,
-    bio: form.querySelector('#bio').value,
-    website: form.querySelector('#website').value
-}));
-
+        'Content-Type': 'application/json'
+    }, (form) => JSON.stringify({
+        fname: form.querySelector('#fname').value,
+        lname: form.querySelector('#lname').value,
+        bio: form.querySelector('#bio').value,
+        website: form.querySelector('#website').value
+    }));
 
     handleFormSubmission('profilePicForm', '/update_profile_image/', 'POST', {}, (form) => new FormData(form));
     handleFormSubmission('coverImageForm', '/update_cover_image/', 'POST', {}, (form) => new FormData(form));
@@ -933,19 +1013,16 @@
         const username = document.getElementById('profile-username')?.dataset.username || '';
         let url = `/load_tab_content/?section=${target}`;
 
-        // Append username to the URL for sections that require it
-        if (['experience', 'education', 'skills', 'certifications', 'projects', 'posts'].includes(target)) {
+        if (['experience', 'education', 'skills', 'certifications', 'projects', 'posts', 'courses', 'about'].includes(target)) {
             url += `&username=${username}`;
         }
 
-        fetch(url, {
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
+        fetch(url)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+                    });
                 }
                 return response.text();
             })
@@ -957,43 +1034,40 @@
                 }
             })
             .catch(error => {
-                console.error('Error loading content:', error);
-                dynamicContent.innerHTML = '<p>Error loading content. Please try again.</p>';
+                console.error('Error loading content:', error.message);
+                dynamicContent.innerHTML = `<p>Error: ${error.message}</p>`;
             });
     }
 
     function initializeSubTabs() {
-    const subNavLinks = dynamicContent.querySelectorAll('.sub-nav a');
-    const postsGrid = dynamicContent.querySelector('.posts-grid');
-    const postItems = postsGrid?.querySelectorAll('.post-link') || [];
+        const subNavLinks = dynamicContent.querySelectorAll('.sub-nav a');
+        const postsGrid = dynamicContent.querySelector('.posts-grid');
+        const postItems = postsGrid?.querySelectorAll('.post-link') || [];
 
-    subNavLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const contentType = this.getAttribute('data-target');
+        subNavLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const contentType = this.getAttribute('data-target');
 
-            // Update active class
-            subNavLinks.forEach(l => l.parentElement.classList.remove('active'));
-            this.parentElement.classList.add('active');
+                subNavLinks.forEach(l => l.parentElement.classList.remove('active'));
+                this.parentElement.classList.add('active');
 
-            // Filter posts client-side
-            postItems.forEach(item => {
-                const itemType = item.getAttribute('data-type');
-                item.style.display = (itemType === contentType) ? 'block' : 'none';
+                postItems.forEach(item => {
+                    const itemType = item.getAttribute('data-type');
+                    item.style.display = (itemType === contentType) ? 'block' : 'none';
+                });
             });
         });
-    });
 
-    // Set initial active sub-tab to "Posts" and show only normal posts
-    const activeSubTab = subNavLinks[0]; // "Posts" tab
-    if (activeSubTab) {
-        activeSubTab.click();
-        postItems.forEach(item => {
-            const itemType = item.getAttribute('data-type');
-            item.style.display = (itemType === 'normal') ? 'block' : 'none';
-        });
+        const activeSubTab = subNavLinks[0];
+        if (activeSubTab) {
+            activeSubTab.click();
+            postItems.forEach(item => {
+                const itemType = item.getAttribute('data-type');
+                item.style.display = (itemType === 'normal') ? 'block' : 'none';
+            });
+        }
     }
-}
 
     mainTabs.forEach(tab => {
         tab.addEventListener('click', function (e) {

@@ -1,0 +1,300 @@
+{% load static %}
+
+<div class="about-container">
+    {% if organization %}
+        <!-- Organization Details -->
+        <div class="organization-details">
+            <h2>{{ organization.organization_name }}</h2>
+            <p class="description">{{ organization.description|default:"No description available." }}</p>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">Website:</span>
+                    {% if organization.website_link %}
+                        <a href="{{ organization.website_link }}" target="_blank" class="website-link">{{ organization.website_link }}</a>
+                    {% else %}
+                        <span>Not provided</span>
+                    {% endif %}
+                </div>
+                <div class="info-item">
+                    <span class="label">Start Year:</span>
+                    <span>{{ organization.start_year|default:"Not provided" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Locations:</span>
+                    <span>{{ organization.locations|default:"Not provided" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Industry Type:</span>
+                    <span>{{ organization.get_industry_type_display|default:"Not provided" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Business Type:</span>
+                    <span>{{ organization.get_business_type_display|default:"Not provided" }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Business Nature:</span>
+                    <span>{{ organization.get_business_nature_display|default:"Not provided" }}</span>
+                </div>
+            </div>
+
+            <!-- Edit Button for Owner -->
+            {% if is_owner %}
+                <a href="#editOrgModal" class="edit-btn">Edit Organization</a>
+            {% endif %}
+        </div>
+
+        <!-- Modal: Edit Organization -->
+        {% if is_owner %}
+        <div id="editOrgModal" class="modal">
+            <div class="modal-content">
+                <a href="#" class="close">×</a>
+                <h2>Edit Organization</h2>
+                <form id="editOrgForm" method="POST" action="/update_organization/{{ organization.id }}/">
+                    {% csrf_token %}
+                    <label for="org_name">Organization Name</label>
+                    <input type="text" id="org_name" name="organization_name" value="{{ organization.organization_name }}" required>
+
+                    <label for="org_description">Description</label>
+                    <textarea id="org_description" name="description">{{ organization.description }}</textarea>
+
+                    <label for="org_website">Website</label>
+                    <input type="url" id="org_website" name="website_link" value="{{ organization.website_link }}">
+
+                    <label for="org_start_year">Start Year</label>
+                    <input type="number" id="org_start_year" name="start_year" value="{{ organization.start_year }}">
+
+                    <label for="org_locations">Locations (comma-separated)</label>
+                    <input type="text" id="org_locations" name="locations" value="{{ organization.locations }}" placeholder="e.g., New York, London">
+
+                    <label for="org_industry_type">Industry Type</label>
+                    <select id="org_industry_type" name="industry_type">
+                        {% for value, label in organization.INDUSTRY_CHOICES %}
+                            <option value="{{ value }}" {% if organization.industry_type == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="org_business_type">Business Type</label>
+                    <select id="org_business_type" name="business_type">
+                        {% for value, label in organization.BUSINESS_TYPE_CHOICES %}
+                            <option value="{{ value }}" {% if organization.business_type == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="org_business_nature">Business Nature</label>
+                    <select id="org_business_nature" name="business_nature">
+                        {% for value, label in organization.NATURE_CHOICES %}
+                            <option value="{{ value }}" {% if organization.business_nature == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">Save Changes</button>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    {% else %}
+        <p>No organization details available.</p>
+    {% endif %}
+</div>
+
+<style>
+    .about-container {
+        padding: 20px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .organization-details {
+        background: #fff;
+        border: 1px solid var(--border-color, #e1e1e1);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .organization-details h2 {
+        font-size: 24px;
+        color: var(--text-color, #333);
+        margin-bottom: 10px;
+    }
+
+    .description {
+        font-size: 16px;
+        color: var(--muted-text, #666);
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .info-item .label {
+        font-weight: bold;
+        color: var(--text-color, #333);
+        min-width: 100px;
+    }
+
+    .info-item span, .info-item a {
+        font-size: 16px;
+        color: var(--muted-text, #666);
+    }
+
+    .website-link {
+        color: var(--primary-color, #4a90e2);
+        text-decoration: none;
+    }
+
+    .website-link:hover {
+        text-decoration: underline;
+    }
+
+    .edit-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 8px 16px;
+        background: var(--primary-color, #4a90e2);
+        color: #fff;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background 0.3s ease;
+    }
+
+    .edit-btn:hover {
+        background: #3a80d2;
+    }
+
+    /* Modal Styling (Using :target) */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+        padding: 40px 0;
+    }
+
+    .modal:target {
+        display: block;
+    }
+
+    .modal-content {
+        background: #fff;
+        margin: auto;
+        border-radius: 8px;
+        padding: 30px;
+        width: 90%;
+        max-width: 600px;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .close {
+        color: #aaa;
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 28px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+    }
+
+    .modal-content h2 {
+        font-size: 24px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    #editOrgForm {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #editOrgForm label {
+        margin: 10px 0 5px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    #editOrgForm input[type="text"],
+    #editOrgForm input[type="url"],
+    #editOrgForm input[type="number"],
+    #editOrgForm textarea,
+    #editOrgForm select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    #editOrgForm input[type="text"]:focus,
+    #editOrgForm input[type="url"]:focus,
+    #editOrgForm input[type="number"]:focus,
+    #editOrgForm textarea:focus,
+    #editOrgForm select:focus {
+        border-color: #007BFF;
+        outline: none;
+    }
+
+    #editOrgForm textarea {
+        resize: vertical;
+        min-height: 80px;
+    }
+
+    #editOrgForm button[type="submit"] {
+        margin-top: 20px;
+        padding: 12px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #editOrgForm button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (min-width: 768px) {
+        .info-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
