@@ -219,11 +219,11 @@
                                             <td>
                                                 <form method="POST" action="{% url 'update_account_status' %}">
                                                     {% csrf_token %}
-                                                    <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                    <input type="hidden" name="user_id" value="{{ sd_user.id }}">
                                                     <select name="account_status" class="form-select action-select" onchange="this.form.submit()">
-                                                        <option value="Open" {% if user.account_status == "Open" %}selected{% endif %}>Open</option>
-                                                        <option value="Deactivate" {% if user.account_status == "Deactivate" %}selected{% endif %}>Deactivate</option>
-                                                        <option value="Suspend" {% if user.account_status == "Suspend" %}selected{% endif %}>Suspend</option>
+                                                        <option value="Open" {% if sd_user.account_status == "Open" %}selected{% endif %}>Open</option>
+                                                        <option value="Deactivate" {% if sd_user.account_status == "Deactivate" %}selected{% endif %}>Deactivate</option>
+                                                        <option value="Suspend" {% if sd_user.account_status == "Suspend" %}selected{% endif %}>Suspend</option>
                                                     </select>
                                                 </form>
                                             </td>
