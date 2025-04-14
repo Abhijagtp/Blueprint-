@@ -78,7 +78,7 @@
                 <div class="container my-4">
                     <h4 class="fw-bold">Welcome Jordi</h4>
                     <p>This is your Admin Dashboard</p>
-
+                    
                     <div class="row g-3">
                         <div class="col-md-3">
                             <div class="card p-3">
@@ -132,13 +132,21 @@
                                         <h5>Total Posts</h5>
                                         <h3>2,040</h3>
                                     </div>
-
-                                    <select id="monthSelect" class="ms-4 mt-5 form-select w-auto">
-                                        {% for month in months %}
-                                            <option value="{{ month.value }}" {% if month.value == selected_month %}selected{% endif %}>{{ month.label }}</option>
-                                        {% endfor %}
-                                    </select>
-
+                                </div>
+                            </div>
+                            <!-- Month Selector Dropdown (aligned under cards) -->
+                                    <div class="col-md-12 d-flex justify-content-end mt-3">
+                                        <div>
+                                            <label for="monthSelect" class="form-label fw-semibold me-2">Filter by Month:</label>
+                                            <select id="monthSelect" class="form-select d-inline-block w-auto">
+                                                {% for month in months %}
+                                                    <option value="{{ month.value }}" {% if month.value == selected_month %}selected{% endif %}>
+                                                        {{ month.label }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
                                     <script>
                                         document.getElementById('monthSelect').addEventListener('change', function () {
                                             const selectedMonth = this.value;
@@ -147,9 +155,6 @@
                                             window.location.href = url.toString();
                                         });
                                     </script>
-
-                                </div>
-                            </div>
                         </div>
                     </div>
 

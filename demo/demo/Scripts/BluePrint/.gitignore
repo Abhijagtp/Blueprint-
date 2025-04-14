@@ -1,5 +1,15 @@
-# Ignore Python bytecode
-__pycache__/
-*.py[cod]
+# Ignore Python bytecode files
+*.pyc
 *.pyo
-*.cpython-*
+__pycache__/
+
+# Ignore cpython folders
+cpython/
+
+# Ignore IDE/editor specific files
+.vscode/
+.idea/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
