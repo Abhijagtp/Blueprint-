@@ -1,153 +1,1411 @@
 
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BluePrint Landing Page</title>
-  {% load static %}
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    .hero-section {
-      background: url("{% static 'images/landing-bg.jpg' %}") no-repeat center center fixed;
-      padding: 60px 0;
-     
-      height: 100vh;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-    }
-    .hero-section-content{
-        position: absolute;
-        text-align: center;
-        left: -10%;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>final Landing Home Page</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=subscriptions"
+    />
+    <script
+      src="https://kit.fontawesome.com/9e539bc9e3.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        overflow-x: hidden;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .hero-section {
+        /* background: linear-gradient(#a1c4fd, #c2e9fb); */
+    
+        min-height: 80vh;
+        /* Ensures it takes up most of the screen */
+        display: flex;
+        align-items: center;
+        /* background-size: cover;
+        background-repeat: repeat;
+        background-position: right; */
+        transition: background-image 0.5s ease-in-out;
+      }
+
+      .carousel-item {
+        transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+      }
+
+      .hero-text {
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+        margin-left: 10%;
+      }
+
+      .hero-text h1 {
+        font-size: 2.7rem;
+        font-weight: bold;
+      }
+
+      .hero-text h1 span {
+        /* color: rgb(184, 64, 120); */
+        color:rgb(243, 253, 252)
+      }
+
+      .btn-dark-blue {
+        background-color: #064c89;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 18px;
+        border: none;
+        font-weight: 500;
+        width: 120px;
+      }
+
+      .btn-light-blue {
+        background-color: white;
+        color: #064c89;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 18px;
+        border: 1px solid #064c89;
+        font-weight: 500;
+        width: 120px;
+      }
+
+      .active {
+        color: #064c89;
+      }
+
+      /* Responsive Image Stacking */
+      .hero-images1 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* Center images on small screens */
+        gap: 10px;
+        height: 90vh;
+        margin-top: 60px;
+      }
+
+      .hero-images1 img {
+        width: 100%;
+        max-width: 400px;
+        /* Prevents images from being too large */
+        border-radius: 10px;
+      }
+
+      .hero-images2 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* Center images on small screens */
+        gap: 80px;
+        height: 90vh;
+        margin-top: 50px;
+      }
+
+      .hero-images2 img {
+        width: 100%;
+        max-width: 400px;
+        /* Prevents images from being too large */
+        border-radius: 10px;
+      }
+
+      .hero-images3 {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* Center images on small screens */
+        gap: 50px;
+        height: 90vh;
+        margin-top: 50px;
+      }
+
+      .hero-images3 img {
+        width: 100%;
+        max-width: 400px;
+        /* Prevents images from being too large */
+        border-radius: 10px;
+      }
+
+      /* About Section Layout */
+      .about-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        /* width: 100%; */
         /* background: #000; */
-        top: 30%;
-    }
-    .hero-section h1 {
-      font-size: 3.5rem;
-      font-weight: bold;
-    }
-    .hero-section p {
-      font-size: 1.5rem;
-      margin: 20px 0;
-    }
-    .btn-primary {
-      margin-right: 10px;
-    }
-    .features-section {
-      padding: 40px 0;
-    }
-    .features-section h2 {
-      font-size: 2rem;
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    .feature {
-      text-align: center;
-      padding: 20px;
-    }
-    .cta-section {
-      text-align: center;
-      background-color: #eaf7ff;
-      padding: 40px 0;
-    }
-    .cta-section h3 {
-      font-size: 2rem;
-    }
-    .cta-section p {
-      font-size: 1.2rem;
-      margin: 10px 0;
-    }
-    .btn{
-        width: 150px;
-        background: #200A58;
+        padding: 10%;
+        /* flex-wrap: wrap; */
+      }
+
+      .about-section h3 {
+        width: -50%;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #064c89;
+      }
+
+      .about-section p {
+        width: -50%;
+        font-size: 1rem;
+        line-height: 1.6;
+      }
+
+      /* footer */
+      .footer {
+        background-color: #f8f9fa;
+        padding: 40px 0;
+        font-size: 16px;
+      }
+
+      .footer a {
+        text-decoration: none;
+        color: #064c89;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
+      .footer hr {
+        border-top: 1px solid #064c89;
+        margin: 20px 0;
+      }
+
+      .footer-logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .footer-bottom {
+        font-size: 14px;
+        text-align: left;
+        margin-top: 15px;
+      }
+
+      /* card */
+      .feature-card {
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .icon-container {
+        width: 80px;
+        height: 80px;
+        background-color: #eef2ff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .icon-container img {
+        width: 60px;
+      }
+
+      .feature-title {
+        font-weight: bold;
+        color: #212529;
+      }
+
+      .bg-light-blue {
+        background-color: #edf2ff;
+      }
+
+      .bg-light-yellow {
+        background-color: #fff9db;
+      }
+
+      .bg-light-gray {
+        background-color: #f8f9fa;
+      }
+
+      .left-image-container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .left-image-container img {
+        display: none;
+      }
+
+      .list-item-box {
+        background-color: #f7f8fa;
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+      }
+
+      .btn-primary {
+        background-color: #004aad;
         border: none;
-    }
-    .btn1{
-        background-color: transparent;
-        border: 1px solid #200A58;
-        color: #200A58;
-    }
-    .btn1:hover{
-        background-color: #200A58;
+        border-radius: 8px;
+      }
+
+      .highlight-text {
+        color: #007bff;
+        font-weight: bold;
+      }
+
+      /* subcription */
+      .pricing-section {
+        padding: 50px 20px;
+        text-align: center;
+      }
+
+      .pricing-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a1443;
+      }
+
+      .pricing-subtitle {
+        color: #7a7a7a;
+        margin-bottom: 50px;
+      }
+
+      .card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      }
+
+      .bg-highlight {
+        background-color: #fff8e1;
+      }
+
+      .feature-icon {
+        color: #2e7dff;
+        margin-right: 10px;
+      }
+
+      .btn-subscribe {
+        background-color: #6a4df4;
         color: #fff;
+        border-radius: 8px;
+        font-weight: 500;
+      }
+
+      .btn-subscribe:hover {
+        background-color: #5b3ee5;
+      }
+
+      .plan-header {
+        font-weight: 700;
+        font-size: 1.2rem;
+      }
+
+      .plan-desc {
+        background-color: #f1f4ff;
+        padding: 6px 12px;
+        font-size: 0.85rem;
+        border-radius: 8px;
+        margin: 10px 0;
+        display: inline-block;
+      }
+
+      .plan-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a1443;
+      }
+
+      .feature-list {
+        text-align: left;
+        padding: 0;
+      }
+
+      .feature-list li {
+        margin-bottom: 10px;
+        font-size: 0.95rem;
+      }
+
+      .col_gray {
+        background: #f6f7f9;
+      }
+
+      /* testmonial css */
+      .testimonials-section {
+        background: #101566;
+        /* Dark blue bg */
+        color: white;
+      }
+
+      .testimonials-section h2 {
+        color: white;
+      }
+
+      .testimonial-card {
+        background-color: white;
+        color: #333;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .testimonial-card h6 {
+        color: #0d1b49;
+      }
+
+      .btn-outline-primary {
+        border-color: #fff;
+        color: #fff;
+      }
+
+      .btn-outline-primary:hover {
+        background-color: white;
+        color: #0d1b49;
+      }
+
+      .join_btn {
+        background-color: transparent;
+        color: white;
+        border: 1px solid white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: 500;
+      }
+
+      .join_btn:hover {
+        background-color: white;
+        color: #101566;
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 18px;
+      }
+
+      .text-Blueprint {
+        color: #2e7dff;
+      }
+
+      /* cards8 */
+
+      .container2 {
+        padding: 50px 20px;
+        text-align: center;
+      }
+
+      .feature-box {
+        background: #f6f7f9;
+        padding: 15px;
+        border-radius: 10px;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+      }
+
+      .feature-box:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .feature-box img {
+        width: 50px;
+        height: 50px;
+        margin-right: 15px;
+      }
+
+      .feature-text h5 {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      /* carasouel */
+
+      .carousel-indicators {
+        position: absolute;
+        bottom: 10px;
+      }
+
+      .carousel-indicators .active {
+        background-color: black !important;
+      }
+
+      .carousel-indicators button {
+        background-color: gray !important;
+        width: 10px;
+        height: 10px;
         border: none;
+        margin: 0 5px;
+        position: relative;
+        bottom: -5rem;
+      }
+
+      /* Responsive for Small Screens */
+
+      @media (min-width: 768px) {
+        .hero-section {
+          display: flex;
+          align-items: center;
+          justify-content: start;
+          padding: 0;
+        }
+
+        .hero-text {
+          width: 70%;
+          /* background: #000; */
+          text-align: start;
+        }
+
+        .hero-text p {
+          text-align: justify;
+        }
+        .hero-images1,
+        .hero-images2,
+        .hero-images3 {
+          display: none;
+        }
+
+        .hero-images1 img {
+          width: 80%;
+          /* Reduce image size for smaller screens */
+        }
+
+        /* Adjust Navbar for Small Screens */
+
+        .about-section {
+          flex-direction: column;
+          text-align: center;
+          padding: 3%;
+        }
+
+        .about-section h3,
+        .about-section p {
+          width: 100%;
+        }
+
+        .about-section h3 {
+          margin-bottom: 10px;
+        }
+
+        .pos-center {
+          margin-left: 40%;
+        }
+
+        /* navbar */
+        .navbar-collapse {
+          text-align: center;
+        }
+
+        .navbar-nav {
+          width: 100%;
+        }
+
+        .mobile-menu {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 10px;
+        }
+
+        /* carasouel */
+
+        .carousel-indicators button {
+          background-color: gray !important;
+          width: 10px;
+          height: 10px;
+          border: none;
+          margin: 0 5px;
+          position: relative;
+
+          bottom: -5em;
+          left: -15em;
+        }
+
+        .carousel-indicators .active {
+          background-color: black !important;
+        }
+        .left-image-container img {
+          display: block;
+        }
+      }
+      /* Remove background on small screens */
+    </style>
+  </head>
+
+  <body>
+    <nav
+      class="navbar navbar-expand-md navbar-light bg-white container mt-3 mb-3"
+    >
+      <div class="container-fluid">
+        <!-- Left: Logo -->
+        <a class="navbar-brand" href="#">
+          <img src="{% static 'images/logo.png'%}" alt="Logo" height="40" />
+        </a>
+
+        <!-- Large Screen Menu -->
+        <div class="d-none d-md-flex ms-3">
+          <a class="nav-link fw-bold me-3 active" href="#">Home</a>
+          <a class="nav-link fw-bolder" href="#">Dashboard</a>
+        </div>
+
+        <!-- Right: Toggle button for mobile -->
+        <button
+          class="navbar-toggler d-md-none ms-auto"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Collapsible Menu (for small screens) -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto mobile-menu d-md-none">
+            <li class="nav-item">
+              <a class="nav-link active" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <button class="btn-dark-blue mt-2">Sign Up</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <section class="hero-section container mb-4">
+      <div
+        id="carouselExampleIndicators"
+        class="carousel"
+        data-bs-ride="carousel"
+      >
+        <div class="carousel-indicators">
+          <button
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="0"
+            class="active"
+            aria-current="true"
+            aria-label="Slide 1"
+          ></button>
+          <button
+            class=""
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="1"
+            aria-label="Slide 2"
+          ></button>
+          <button
+            class="bg-danger"
+            type="button"
+            data-bs-target="#carouselExampleIndicators"
+            data-bs-slide-to="2"
+            aria-label="Slide 3"
+          ></button>
+        </div>
+        <div class="carousel-inner">
+          <!-- caraouel1 -->
+          <div class="carousel-item active">
+            <div class="row w-100 align-items-center">
+              <div class="col-md-10 hero-text text-md-start">
+                <h1 class="heading">
+                  <span>SKILL TODAY,</span><br/> CAREER 
+                  TOMORROW
+                </h1>
+                <p class="">
+                  Narrowing down the gap between Aspiring Professionals and
+                  Industry Standards by supercharging the research process
+                </p>
+                <div class="hero-buttons mt-2 d-flex gap-3">
+                  <a href="{%url 'login'%}"><button class="btn-dark-blue">Login</button></a>
+                  <a href="{%url 'register'%}"><button class="btn-light-blue">Register</button></a>
+                </div>
+              </div>
+            
+            </div>
+          </div>
+
+          <!-- carousel 2 -->
+          <div class="carousel-item">
+            <div class="row w-100 align-items-center">
+              <div class="col-md-12 hero-text text-md-start">
+                <h1 class="heading">
+                  <span>POST PROJECTS,</span> <br />
+                  COLLABORATE, Achieve!
+                
+                </h1>
+                <p>
+                  Companies can register themselves and can post their work and
+                  get it done by the various talent out their on the platform.
+                </p>
+                <div class="hero-buttons mt-2 d-flex gap-3">
+                  <button class="btn-dark-blue">Login</button>
+                  <button class="btn-light-blue">Register</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- caraouel3 -->
+          <div class="carousel-item">
+            <div class="row w-100 align-items-center">
+              <div class="col-md-12 hero-text text-md-start">
+                <h1 class="heading">
+                  <span>Educate, Mentor,</span> <br/>Thrive, Succeed! 
+                
+                </h1>
+                <p>
+                  Mentors can create and publish courses while also offering
+                  consultations to guide users in their careers, all within our
+                  platform.
+                </p>
+                <div class="hero-buttons mt-2 d-flex gap-3">
+                  <button class="btn-dark-blue">Login</button>
+                  <button class="btn-light-blue">Register</button>
+                </div>
+              </div>
+           
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section container my-1">
+      <h3><strong>What do you get at BluePrint?</strong></h3>
+      <p class="text-secondary">
+        BluePrint is a complete ecosystem that empowers users to research
+        domains of interest, explore industry trends, and analyze company-wise
+        challenges. Users can develop their own assets, publish them.
+        Additionally, they can take courses to enhance their skills and acquire
+        paid projects that match their expertise. Companies can also create
+        accounts, post projects, and hire candidates, ensuring a seamless
+        workflow from research to execution, all within a single platform.
+      </p>
+    </section>
+
+    <div class="container py-5">
+      <div class="row g-4">
+        <!-- Card 1 -->
+        <div class="col-md-4">
+          <div class="feature-card p-4 bg-light-blue">
+            <div class="icon-container">
+              <img src="research_Img.png" alt="Research" />
+            </div>
+            <h5 class="feature-title">Research</h5>
+            <p>
+              Supercharge your research with our research tool and find what
+              suits you best.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-md-4">
+          <div class="feature-card p-4">
+            <div class="icon-container">
+              <img src="post_projImg.png" alt="Post Projects" />
+            </div>
+            <h5 class="feature-title">Post Projects</h5>
+            <p>
+              After registering, organizations can post projects and hire
+              candidates to complete them.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-md-4">
+          <div class="feature-card p-4 bg-light-gray">
+            <div class="icon-container">
+              <img src="blogsImg.png" alt="Insights" />
+            </div>
+            <h5 class="feature-title">Insights Blogs Whitepaper</h5>
+            <p>
+              You can write blogs, publish whitepapers, and share insights to
+              contribute.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="col-md-6">
+          <div class="feature-card p-4">
+            <div class="icon-container">
+              <img src="LearningMate_Img.png" alt="Learning Materials" />
+            </div>
+            <h5 class="feature-title">Learning Materials</h5>
+            <p>
+              Access comprehensive learning materials, including notes,
+              diagrams, and a glossary.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="col-md-6">
+          <div class="feature-card p-4 bg-light-yellow">
+            <div class="icon-container">
+              <img src="mentorImg.png" alt="Guidance" />
+            </div>
+            <h5 class="feature-title">Guidance from Experienced Mentors</h5>
+            <p>
+              Our mentors are ready to help answer your questions and provide
+              the guidance you need.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row align-items-center flex-md-row flex-column-reverse">
+        <!-- Left Image -->
+        <div class="col-md-6 p-3">
+          <div class="left-image-container">
+            <img src="JoinImg.png" alt="Blueprint Image" />
+          </div>
+        </div>
+
+        <!-- Right Content -->
+        <div class="col-md-6 px-4 px-md-5 py-4">
+          <h2>
+            Why should you use <span class="highlight-text">BluePrint</span> ?
+          </h2>
+          <p class="text-muted">
+            BluePrint is an online ecosystem specifically designed to help
+            students, aspiring professionals to get equipped with relevant
+            industry skills and to know what industry demands using the research
+            tool.
+          </p>
+          <div class="list-item-box">
+            1. Students who want to know which domain suits them can use our
+            research tool.
+          </div>
+          <div class="list-item-box">
+            2. Professionals who want to explore opportunity to open their own
+            company can take benefit of our research tool.
+          </div>
+          <div class="list-item-box">
+            3. Students who want to gain hands-on experience by acquiring
+            projects.
+          </div>
+          <div class="list-item-box">
+            4. Professionals who want to publish their Insights, Blogs and
+            Whitepaper with their peers.
+          </div>
+          <div class="list-item-box">
+            5. Those who wants to build their profile.
+          </div>
+          <div class="mt-3 text-center text-lg-start">
+            <button class="btn-dark-blue">Join Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- cards -->
+    <div class="container2">
+      <div class="text-center mb-4">
+        <h2 class="fw-bold">What We Got</h2>
+        <p class="mb-5">
+          We are here to reduce the unemployment rate by providing the relevant
+          skills which industry demands from their ideal employee.
+        </p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-box">
+            <img src="ResearchToolImg.png" alt="Icon" />
+            <div class="feature-text">
+              <h5>Research Tool</h5>
+              <p>Understanding market gaps</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-box">
+            <img src="digitalAssImg.png" alt="Icon" />
+            <div class="feature-text">
+              <h5>Digital Assets</h5>
+              <p>Write about your research & post it</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-box">
+            <img src="SocialImg.png" alt="Icon" />
+            <div class="feature-text">
+              <h5>Social</h5>
+              <p>Know what your peers are doing</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-box">
+            <img src="EmailImg.png" alt="Icon" />
+            <div class="feature-text">
+              <h5>Email & Chatroom</h5>
+              <p>Building bonds</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-box">
+            <img src="networkImg.png" alt="Icon" />
+            <div class="feature-text">
+              <h5>Build Network</h5>
+              <p>Interaction between peers</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-box">
+            <img src="mentorImg.png" alt="Icon" />
+            <div class="feature-text">
+              <h5>Experienced Mentors</h5>
+              <p>Get guidance by paying little</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-box">
+            <img src="TrainingCourseImg.png" alt="Icon" />
+            <div class="feature-text">
+              <h5>Training Courses</h5>
+              <p>Learn from experienced mentors</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="feature-box">
+            <img src="ProjectImg.png" alt="Icon" />
+            <div class="feature-text">
+              <h5>Projects</h5>
+              <p>Gain the experience</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- subscription plan -->
+    <section class="pricing-section">
+      <h2 class="pricing-title">Choose The Perfect Plan For Your Needs</h2>
+      <p class="pricing-subtitle">
+        We offer a variety of plans designed to optimally meet your needs.
+      </p>
+
+      <div class="container">
+        <div class="row g-4 justify-content-center">
+          <!-- Optimal Plan -->
+          <div class="col-md-4">
+            <div class="card bg-highlight p-4 h-100">
+              <h5 class="plan-header">Optimal Plan</h5>
+              <div
+                class="plan-desc d-flex justify-content-center align-items-center"
+              >
+                <span class="material-symbols-outlined me-2">
+                  subscriptions
+                </span>
+                Suitable for students and aspiring professionals.
+              </div>
+              <div class="plan-price">
+                ₹ 100 <span class="fs-6 fw-normal">/month</span>
+              </div>
+              <hr />
+              <ul class="feature-list list-unstyled">
+                <li>
+                  <i class="bi bi-check-circle-fill feature-icon"></i>Can
+                  publish 3 Insights, 2 Whitepapers.
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill feature-icon"></i>Can
+                  acquire 1 project.
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill feature-icon"></i>Free
+                  consultation with mentor for 3 hour.
+                </li>
+              </ul>
+              <button class="btn btn-subscribe mt-auto w-100">
+                Subscribe Now
+              </button>
+            </div>
+          </div>
+
+          <!-- Pro Plan -->
+          <div class="col-md-4">
+            <div class="card bg-light p-4 h-100">
+              <h5 class="plan-header">Pro Plan</h5>
+              <div class="plan-desc">
+                <div class="d-flex justify-content-center align-items-center">
+                  <span class="material-symbols-outlined me-2"
+                    >subscriptions</span
+                  >Suitable for small scale organizations and startups.
+                </div>
+              </div>
+              <div class="plan-price">
+                ₹ 499 <span class="fs-6 fw-normal">/month</span>
+              </div>
+              <hr />
+              <ul class="feature-list list-unstyled">
+                <li>
+                  <i class="bi bi-check-circle-fill feature-icon"></i>Benefit 1.
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill feature-icon"></i>Can
+                  publish 10 Insights, 10 Whitepapers.
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill feature-icon"></i>Can
+                  acquire 3 projects.
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill feature-icon"></i>Free
+                  consultation with a mentor for 6 hours.
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill feature-icon"></i>Intensive
+                  coaching to face the PTN entrance exam.
+                </li>
+              </ul>
+              <button class="btn btn-subscribe mt-auto w-100">
+                Subscribe Now
+              </button>
+            </div>
+          </div>
+
+          <!-- Elite Plan -->
+          <div class="col-md-4">
+            <div class="card col_gray p-4 h-100">
+              <h5 class="plan-header">Elite Plan</h5>
+              <div
+                class="plan-desc text-capitalize d-flex justify-content-center align-items-center"
+              >
+                <span class="material-symbols-outlined me-2"
+                  >subscriptions</span
+                >
+                Suitable for large organizations and startups.
+              </div>
+              <div class="plan-price">
+                ₹ 1299 <span class="fs-6 fw-normal">/month</span>
+              </div>
+              <hr />
+              <ul class="feature-list list-unstyled">
+                <li>
+                  <i class="bi bi-check-circle-fill feature-icon"></i>Can
+                  publish 15 Insights, 15 Whitepapers.
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill feature-icon"></i>Can float
+                  10 projects.
+                </li>
+                <li>
+                  <i class="bi bi-check-circle-fill feature-icon"></i>Free
+                  Consultation with mentor for 6 hours.
+                </li>
+              </ul>
+              <button class="btn btn-subscribe mt-auto w-100">
+                Subscribe Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section py-5">
+      <div class="container">
+        <div class="row align-items-center">
+          <!-- Left Content -->
+          <div class="col-md-4 mb-4 mb-md-0">
+            <h2 class="fw-bold mb-3">
+              What do they say about
+              <span class="text-Blueprint">BluePrint ?</span>
+            </h2>
+            <p class="text-white">
+              Don't hesitate to join BluePrint and experience a different
+              experience!
+            </p>
+            <div class="d-flex d-md-block justify-content-center">
+              <button class="join_btn mt-3 mb-3">Join Now</button>
+            </div>
+          </div>
+
+          <!-- Right Content -->
+          <div class="col-md-8">
+            <div class="row g-3">
+              <!-- Testimonial Card -->
+              <div class="col-sm-6">
+                <div class="testimonial-card p-3 rounded-4 bg-white h-100">
+                  <h6 class="fw-bold">Aryan Kushwaha</h6>
+                  <p class="mb-0">
+                    “BluePrint has helped me in my professional career to build
+                    a strong network and met the best mentors who guided me
+                    during my research about the domain.”
+                  </p>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="testimonial-card p-3 rounded-4 bg-white h-100">
+                  <h6 class="fw-bold">Jayesh Deshmane</h6>
+                  <p class="mb-0">
+                    “Thanks to BluePrint, I’ve enhanced my abilities, gained new
+                    perspectives, and unlocked better career opportunities.”
+                  </p>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="testimonial-card p-3 rounded-4 bg-white h-100">
+                  <h6 class="fw-bold">Abhishek Jagtap</h6>
+                  <p class="mb-0">
+                    “BluePrint has helped me by elevating my skills through
+                    structured learning, expert guidance, and hands-on industry
+                    insights.”
+                  </p>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="testimonial-card p-3 rounded-4 bg-white h-100">
+                  <h6 class="fw-bold">Shreyas Mohite</h6>
+                  <p class="mb-0">
+                    “Thanks to BluePrint’s research tool, I identified market
+                    gaps, analyzed competitors, and successfully launched my
+                    startup. Highly recommended for entrepreneurs!”
+                  </p>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="testimonial-card p-3 rounded-4 bg-white h-100">
+                  <h6 class="fw-bold">Chaitanya Karade</h6>
+                  <p class="mb-0">
+                    “BluePrint’s research tool guided me in identifying the
+                    perfect career path. The insights were clear, data-driven,
+                    and incredibly helpful in making informed decisions.”
+                  </p>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="testimonial-card p-3 rounded-4 bg-white h-100">
+                  <h6 class="fw-bold">Prathamesh</h6>
+                  <p class="mb-0">
+                    “BluePrint’s courses and mentorship have refined my skills,
+                    making me more confident and industry-ready.”
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- accordian -->
+    <div class="container my-5">
+      <div class="row align-items mt-3">
+        <!-- Left Side: Newsletter -->
+        <div class="col-lg-6 mb-5">
+          <h2 class="fw-bold">Don't miss any information from us!</h2>
+          <p class="text-muted mt-3 mb-4">
+            Sign up to our regular newsletter for news, insights, new product
+            releases & more.
+          </p>
+          <form>
+            <div class="input-group mb-3">
+              <span class="input-group-text"
+                ><i class="fa-solid fa-envelope"></i
+              ></span>
+              <input
+                type="email"
+                class="form-control"
+                placeholder="Input email address"
+                required
+              />
+              <button class="btn-dark-blue" type="submit">Subscribe</button>
+            </div>
+            <small class="text-muted">
+              By subscribing, you agree to our
+              <a href="#">Privacy Policy</a> and consent to receive updates from
+              our company.
+            </small>
+          </form>
+        </div>
+
+        <!-- Right Side: FAQ -->
+        <div class="col-lg-6">
+          <h4 class="fw-bold">About Building Profile with Us!</h4>
+          <p class="text-muted">
+            Have questions about BluePrint? Our team is ready to answer! Here
+            are some frequently asked questions about our website:
+          </p>
+
+          <div class="accordion accordion-flush" id="faqAccordion">
+            <!-- FAQ Item 1 -->
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingOne">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq1"
+                  aria-expanded="true"
+                >
+                  Why BluePrint is right for me?
+                </button>
+              </h2>
+              <div
+                id="faq1"
+                class="accordion-collapse collapse show"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Blueprint shows industry needs, guides your growth, offers
+                  hands-on projects, builds your profile, and helps you become a
+                  professional.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Item 2 -->
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq2"
+                >
+                  Example
+                </button>
+              </h2>
+              <div
+                id="faq2"
+                class="accordion-collapse collapse"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">This is an example FAQ answer.</div>
+              </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq3"
+                >
+                  What is the research section about?
+                </button>
+              </h2>
+              <div
+                id="faq3"
+                class="accordion-collapse collapse"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Research your domain, explore opportunities, get to know
+                  future trend, compare three companies, and decide whether to
+                  start a business or pursue a career.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Item 4 -->
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq4"
+                >
+                  Can we talk with mentor for free?
+                </button>
+              </h2>
+              <div
+                id="faq4"
+                class="accordion-collapse collapse"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  You can't chat with a mentor for free. A small fee is required
+                  to book and speak with them.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Item 5 -->
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq5"
+                >
+                  What would companies do on BluePrint?
+                </button>
+              </h2>
+              <div
+                id="faq5"
+                class="accordion-collapse collapse"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Companies can post projects, create social pages, expand their
+                  network, increase reach, and onboard top talent easily.
+                </div>
+              </div>
+            </div>
+
+            <!-- FAQ Item 6 -->
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq6"
+                >
+                  Can this help me start my own company?
+                </button>
+              </h2>
+              <div
+                id="faq6"
+                class="accordion-collapse collapse"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Yes! Supercharge your research with our platform, gain deep
+                  insights, explore opportunities, and confidently start your
+                  own company.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          <!-- Left Side: Logo & Tagline -->
+          <div class="col-md-4 footer-logo d-flex flex-column mb-4 mb-md-0">
+            <img src="{% static 'images/logo.png'%}" class="mb-3" alt="BluePrint Logo" />
+            <p class="text-muted mb-0">Opening the Door to Fly High</p>
+          </div>
+
+          <!-- Middle: Quick Links -->
+          <div class="col-md-4 text-center mb-4 mb-md-0">
+            <h6 class="text-muted">Quick Links</h6>
+            <a href="#">Home</a> <br />
+            <a href="#">Features</a> <br />
+            <a href="#">Pricing</a> <br />
+            <a href="#">Contact Us</a>
+          </div>
+
+          <!-- Right: Legal & Contact -->
+          <div class="col-md-4">
+            <div class="row">
+              <!-- Legal Information -->
+              <div class="col-12 col-sm-6 mb-3 text-center">
+                <h6 class="text-muted">Legal Information</h6>
+                <a href="#">Terms of Services</a> <br />
+                <a href="#">Privacy Policy</a>
+              </div>
+
+              <!-- Contact Info -->
+              <div class="col-12 col-sm-6 mb-3 text-center">
+                <h6 class="text-muted">Contact Info</h6>
+                <a href="mailto:support@blueprint.com">support@blueprint.com</a>
+                <br />
+                <a href="tel:+11234567890">+91 (123) 456-7890</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Divider Line -->
+        <hr />
+
+        <!-- Bottom Section -->
+        <div
+          class="footer-bottom text-muted d-flex flex-column flex-md-row justify-content-between text-center"
+        >
+          <span>© 2025 BluePrint. All rights reserved.</span>
+          <span><a href="#">Cookies Settings</a></span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS (with Popper.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+    const heroSection = document.querySelector(".hero-section");
+    const carousel = document.getElementById("carouselExampleIndicators");
+
+    const bgImages = ["{% static 'images/student_img.jpg'%}", "{% static 'images/girl_img.jpg'%}", "{% static 'images/mentor_img.jpg'%}"];
+
+    function updateBackground() {
+        const screenWidth = window.innerWidth;
+        const activeSlide = document.querySelector(".carousel-item.active");
+        const allSlides = [...document.querySelectorAll(".carousel-item")];
+        const activeIndex = allSlides.indexOf(activeSlide);
+
+        if (activeIndex >= 0 && activeIndex < bgImages.length) {
+            heroSection.style.backgroundImage = `url(${bgImages[activeIndex]})`;
+            heroSection.style.backgroundSize = "cover";
+            heroSection.style.backgroundRepeat = "no-repeat";
+
+            if (screenWidth < 768) {
+                // Custom background position for small screens
+                heroSection.style.backgroundPosition = "right 55% bottom 10%"; // Adjust as needed
+            } else {
+                // Custom background position for larger screens
+                heroSection.style.backgroundPosition = "right 15%"; 
+            }
+        } else {
+            console.error("Invalid activeIndex:", activeIndex);
+        }
     }
-  </style>
-</head>
-<body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container">
-    <a class="navbar-brand" href="#"><img src="{% static 'images/logo.png' %}" alt=""></a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Research</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Digital Assets</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Training & Development</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Social</a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Worklisting</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
+    carousel.addEventListener("slid.bs.carousel", updateBackground);
 
-<!-- Hero Section -->
-<div class="hero-section">
-  <div class="container hero-section-content">
-    <h1>Skill Today, Career Tomorrow</h1>
-    <p>Narrowing Down the Gap Between the Aspiring Professionals and Industry Standards</p>
-    <div>
-      <a href="{%url 'login'%}" class="btn btn-primary">Login</a>
-      <a href="{%url 'user_selection'%}" class="btn btn1 btn-outline-primary">Register</a>
-    </div>
-  </div>
-</div>
+    // Update on page load and window resize
+    updateBackground();
+    window.addEventListener("resize", updateBackground);
+});
 
-<!-- Features Section -->
-<div class="features-section">
-  <div class="container">
-    <h2>What you will do</h2>
-    <div class="row">
-      <div class="col-md-4 feature">
-        <div class="icon mb-3">
-          <i class="bi bi-search"></i>
-        </div>
-        <h5>Research with us</h5>
-        <p>Research about different industries and organizations of your own interest and understand the gaps between them.</p>
-      </div>
-      <div class="col-md-4 feature">
-        <div class="icon mb-3">
-          <i class="bi bi-pencil-square"></i>
-        </div>
-        <h5>Create your Projects here</h5>
-        <p>You can create your projects here itself, you don’t need to download extra apps.</p>
-      </div>
-      <div class="col-md-4 feature">
-        <div class="icon mb-3">
-          <i class="bi bi-trophy"></i>
-        </div>
-        <h5>Post your Achievements</h5>
-        <p>Let everybody know your achievements and publish your projects and achievements here itself, let your peers know what you have created.</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Call-to-Action Section -->
-<div class="cta-section">
-  <div class="container">
-    <h3>Build Your Career Roadmap</h3>
-    <p>Think Beyond Jobs. Become Professionals.</p>
-  </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    </script>
+  </body>
 </html>
