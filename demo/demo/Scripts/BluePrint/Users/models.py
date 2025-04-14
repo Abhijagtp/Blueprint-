@@ -16,6 +16,13 @@ class CustomUser(AbstractUser):
         (INSTRUCTOR, 'Instructor'),
         (INSTITUTIONAL, 'Institutional'),
     ]
+
+    ACCOUNT_STATUS_CHOICES = [
+        ('Open', 'Open'),
+        ('Deactivate', 'Deactivate'),
+        ('Suspend', 'Suspend'),
+    ]
+    account_status = models.CharField(max_length=20, choices=ACCOUNT_STATUS_CHOICES, default='Open')
     
     user_type = models.CharField(
         max_length=20,

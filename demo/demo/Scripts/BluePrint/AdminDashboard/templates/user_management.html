@@ -165,68 +165,31 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td><a href="{% url 'user_manage_user_details' %}" class="text-decoration-none text-dark">Christine Brooks</td>
-                                            <td>17 March 2025</td>
-                                            <td>
-                                                <select class="form-select action-select ">
-                                                    <option value="Open" selected>Open</option>
-                                                    <option value="Deactivate">Deactivate</option>
-                                                    <option value="Suspend">Suspend</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><a href="{% url 'user_manage_user_details' %}" class="text-decoration-none text-dark">Rosie Pearson</td>
-                                            <td>14 March 2025</td>
-                                            <td>
-                                                <select class="form-select action-select">
-                                                    <option value="Open" selected>Open</option>
-                                                    <option value="Deactivate">Deactivate</option>
-                                                    <option value="Suspend">Suspend</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-
-                                        <tr>
-                                            <td><a href="{% url 'user_manage_user_details' %}" class="text-decoration-none text-dark">Darrell Caldwell</td>
-                                            <td>15 March 2025</td>
-                                            <td>
-                                                <select class="form-select action-select">
-                                                    <option value="Open" selected>Open</option>
-                                                    <option value="Deactivate">Deactivate</option>
-                                                    <option value="Suspend">Suspend</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-
-
-                                        <tr>
-                                            <td><a href="{% url 'user_manage_user_details' %}" class="text-decoration-none text-dark">Gilbert Johnston</td>
-                                            <td>5 March 2025</td>
-                                            <td>
-                                                <select class="form-select action-select">
-                                                    <option value="Open" selected>Open</option>
-                                                    <option value="Deactivate">Deactivate</option>
-                                                    <option value="Suspend">Suspend</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-
-
-                                        <tr>
-                                            <td><a href="{% url 'user_manage_user_details' %}" class="text-decoration-none text-dark">Alan Cain</td>
-                                            <td>3 March 2025</td>
-                                            <td>
-                                                <select class="form-select action-select">
-                                                    <option value="Open" selected>Open</option>
-                                                    <option value="Deactivate">Deactivate</option>
-                                                    <option value="Suspend">Suspend</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-
+                                        {% for user in users %}
+                                            <tr>
+                                                <td>
+                                                    <a href="{% url 'user_manage_user_details' user.id %}" class="text-decoration-none text-dark">
+                                                        {{ user.get_full_name|default:user.username }}
+                                                    </a>
+                                                </td>
+                                                <td>{{ user.date_joined|date:"d M Y" }}</td>
+                                                <td>
+                                                    <form method="POST" action="{% url 'update_account_status' %}">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                                                        <select name="account_status" class="form-select action-select" onchange="this.form.submit()">
+                                                            <option value="Open" {% if user.account_status == "Open" %}selected{% endif %}>Open</option>
+                                                            <option value="Deactivate" {% if user.account_status == "Deactivate" %}selected{% endif %}>Deactivate</option>
+                                                            <option value="Suspend" {% if user.account_status == "Suspend" %}selected{% endif %}>Suspend</option>
+                                                        </select>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr><td colspan="3">No users found.</td></tr>
+                                        {% endfor %}
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>
@@ -245,79 +208,34 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>Christine Brooks</td>
-                                        <td>17 March 2025</td>
-                                        <td>
-                                            <select class="form-select action-select">
-                                                <option value="Open" selected>Open</option>
-                                                <option value="Deactivate">Deactivate</option>
-                                                <option value="Suspend">Suspend</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Rosie Pearson</td>
-                                        <td>14 March 2025</td>
-                                        <td>
-                                            <select class="form-select action-select">
-                                                <option value="Open" selected>Open</option>
-                                                <option value="Deactivate">Deactivate</option>
-                                                <option value="Suspend">Suspend</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-
-
-                                    <tr>
-                                        <td>Darrell Caldwell</td>
-                                        <td>15 March 2025</td>
-                                        <td>
-                                            <select class="form-select action-select">
-                                                <option value="Open" selected>Open</option>
-                                                <option value="Deactivate">Deactivate</option>
-                                                <option value="Suspend">Suspend</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-
-
-                                    <tr>
-                                        <td>Gilbert Johnston</td>
-                                        <td>5 March 2025</td>
-                                        <td>
-                                            <select class="form-select action-select">
-                                                <option value="Open" selected>Open</option>
-                                                <option value="Deactivate">Deactivate</option>
-                                                <option value="Suspend">Suspend</option>
-                                            </select>
-                                        </td>
-
-                                    <tr>
-                                        <td>Alan Cain</td>
-                                        <td>3 March 2025</td>
-                                        <td>
-                                            <select class="form-select action-select">
-                                                <option value="Open" selected>Open</option>
-                                                <option value="Deactivate">Deactivate</option>
-                                                <option value="Suspend">Suspend</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>Alfred Murray</td>
-                                        <td>9 March 2025</td>
-                                        <td>
-                                            <select class="form-select action-select">
-                                                <option value="Open" selected>Open</option>
-                                                <option value="Deactivate">Deactivate</option>
-                                                <option value="Suspend">Suspend</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-
+                                    {% for sd_user in service_desk_users %}
+                                        <tr>
+                                            <td>
+                                                <a href="{% url 'user_manage_user_details' sd_user.id %}" class="text-decoration-none text-dark">
+                                                    {{ sd_user.get_full_name|default:sd_user.username }}
+                                                </a>
+                                            </td>
+                                            <td>{{ sd_user.date_joined|date:"d M Y" }}</td>
+                                            <td>
+                                                <form method="POST" action="{% url 'update_account_status' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="user_id" value="{{ sd_user.id }}">
+                                                    <select name="account_status" class="form-select action-select" onchange="this.form.submit()">
+                                                        <option value="Open" {% if sd_user.account_status == "Open" %}selected{% endif %}>Open</option>
+                                                        <option value="Deactivate" {% if sd_user.account_status == "Deactivate" %}selected{% endif %}>Deactivate</option>
+                                                        <option value="Suspend" {% if sd_user.account_status == "Suspend" %}selected{% endif %}>Suspend</option>
+                                                    </select>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="3">No service desk users found.</td>
+                                        </tr>
+                                    {% endfor %}
                                 </tbody>
+
+
                             </table>
                         </div>
                     </div>

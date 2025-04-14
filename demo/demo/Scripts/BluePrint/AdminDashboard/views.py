@@ -228,10 +228,28 @@ def organization_invoice_view(request):
 
 @login_required
 def user_management_view(request):
-    return render(request, 'user_management.html')
+    users = CustomUser.objects.all().order_by('-date_joined')  # general users
+    service_desk_users = CustomUser.objects.all().order_by('-date_joined')  # assuming this model exists
+    return render(request, 'user_management.html', {
+        'users': users,
+        'service_desk_users': service_desk_users
+    })
 
 @login_required
-def user_manage_user_details_view(request):
+def update_account_status(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        new_status = request.POST.get('account_status')
+
+        user = get_object_or_404(CustomUser, pk=user_id)
+        user.account_status = new_status
+        user.save()
+        messages.success(request, f"Account status for {user.username} updated to {new_status}.")
+    
+    return redirect('user_management')  # make sure this is the correct name in your urls.py
+
+@login_required
+def user_manage_user_details_view(request,user_id):
     return render(request, 'user_manage_user_details.html')
 
 
