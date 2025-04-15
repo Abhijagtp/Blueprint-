@@ -400,7 +400,7 @@
               <a class="nav-link {% if request.path == '/social/' %}social-active{% endif %}" href="{% url 'timeline' %}">Social</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {% if user.user_type == 'organizational' and request.path == '/search-talent/' %}search-talent-active{% elif user.user_type != 'organizational' and request.path == '/work-listing/' %}work-listing-active{% endif %}" href="{% if user.user_type == 'organizational' %}{% url 'search_talent' %}{% else %}{% url 'work_listing' %}{% endif %}">
+              <a class="nav-link {% if user.user_type == 'organizational' and request.path == '/search-talent/' %}search-talent-active{% elif user.user_type != 'organizational' and request.path == '/work-listing/' %}work-listing-active{% endif %}" href="{% if user.user_type == 'organizational' %}{% url 'search_talent' %}{% else %}{% url 'explore_projects' %}{% endif %}">
                 {% if user.user_type == 'organizational' %}Search Talent{% else %}Work Listing{% endif %}
               </a>
             </li>

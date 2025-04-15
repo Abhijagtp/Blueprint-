@@ -113,11 +113,15 @@ def log_follower_post_activity(sender, instance, created, **kwargs):
             sent_requests__status='accepted'
         )
         for follower in followers:
+            # Safely handle caption or fallback to content_type
+            content_preview = (
+                instance.caption[:50] if instance.caption else str(instance.content_type)
+            )
             ActivityLog.objects.create(
                 user=follower,
                 actor=creator,
                 activity_type='follower_post',
-                content=f"{creator.get_full_name()} created a new post: {instance.caption[:50] or instance.content_type}...",
+                content=f"{creator.get_full_name()} created a new post: {content_preview}...",
                 content_type=ContentType.objects.get_for_model(instance),
                 object_id=instance.id
             )

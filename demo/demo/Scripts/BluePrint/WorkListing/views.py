@@ -4,26 +4,72 @@ from django.shortcuts import render
 def work_listing(request):
     return render(request, 'work_listing.html')
 
-from django.shortcuts import render
-from .models import Project
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from .models import Project
+from django.db import models
+from django.db.models import Q
 
 @login_required
 def explore_projects(request):
-    # Fetch all active projects with applications open
-    projects = Project.objects.filter(is_active=True, applications_open=True)
+    # Base queryset with optimization
+    projects = Project.objects.filter(
+        is_active=True,
+        applications_open=True
+    ).select_related('org__userprofile')
 
-    # Preprocess skills for each project
+    # Get search query
+    query = request.GET.get('query', '').strip()
+
+    # Filter based on the search query
+    if query:
+        # Build the filter conditions for non-skills fields
+        filters = models.Q()
+        
+        # Search in company name, domain, and description
+        filters |= models.Q(org__username__icontains=query)
+        filters |= models.Q(org__first_name__icontains=query)
+        filters |= models.Q(org__last_name__icontains=query)
+        filters |= models.Q(domain__icontains=query)
+        filters |= models.Q(description__icontains=query)
+
+        # Apply filters for non-skills fields first
+        projects = projects.filter(filters)
+
+        # Now filter by skills (partial match within skills_required)
+        query_lower = query.lower()
+        filtered_projects = []
+        for project in projects:
+            project_skills = project.skills_required
+            if isinstance(project_skills, str):  # Fallback for old data
+                project_skills = project_skills.split(",")
+            project_skills = [str(skill).lower() for skill in project_skills if skill]
+            # Check if the query matches any skill partially
+            if any(query_lower in skill for skill in project_skills):
+                filtered_projects.append(project)
+            # If the project already matches other fields, include it regardless of skills
+            elif projects.filter(id=project.id).exists():
+                filtered_projects.append(project)
+
+        projects = filtered_projects
+
+    # Preprocess skills for display
     for project in projects:
-        if project.skills_required:
-            project.skills_list = [skill.strip() for skill in project.skills_required.split(',')]
-        else:
-            project.skills_list = []
+        skills_required = project.skills_required
+        if isinstance(skills_required, str):  # Fallback for old data
+            skills_required = skills_required.split(",")
+        project.skills_list = (
+            [str(skill).strip() for skill in skills_required if skill]
+            if skills_required
+            else []
+        )
 
-    return render(request, 'explore_projects.html', {'projects': projects})
+    return render(request, 'explore_projects.html', {
+        'projects': projects,
+    })
+
+
 
 def application_status(request):
     user = request.user
@@ -190,24 +236,47 @@ from datetime import datetime, timezone
 def get_project(request, project_id):
     project = get_object_or_404(Project, id=project_id)
     
+    # Get profile image URL from UserProfile
+    profile_image_url = (
+        project.org.userprofile.profile_image.url
+        if project.org.userprofile and project.org.userprofile.profile_image
+        else None
+    )
+
+    # Get company description from Organization
+    company_bio = (
+        project.org.organization.description
+        if hasattr(project.org, 'organization') and project.org.organization
+        else "No company information available."
+    )
+
     # Get logged-in user's skills
-    user_skills = list(Skill.objects.filter(user_profile=request.user.userprofile).values_list('skill_name', flat=True))
+    user_skills = list(
+        Skill.objects.filter(user_profile=request.user.userprofile)
+        .values_list('skill_name', flat=True)
+    ) if request.user.is_authenticated and hasattr(request.user, 'userprofile') else []
+
+    # Normalize skills_required to a list
+    skills_required = project.skills_required
+    if isinstance(skills_required, str):
+        skills_required = skills_required.split(",")
+    skills_required = skills_required or []
 
     # Compare with project skills
-    matched_skills = [skill for skill in project.skills_required if skill in user_skills]
-    total_skills = len(project.skills_required)
+    matched_skills = [skill for skill in skills_required if skill in user_skills]
+    total_skills = len(skills_required)
     matched_count = len(matched_skills)
 
     # Calculate posted days ago
-    posted_days_ago = (datetime.now(timezone.utc) - project.created_at).days
+    posted_days_ago = (datetime.now(timezone.utc).date() - project.created_at.date()).days
 
     data = {
-        "org": project.org.get_full_name(),
+        "org": project.org.get_full_name() or project.org.username,
+        "profile_image_url": profile_image_url,
         "domain": project.domain,
-        "description": project.description.replace("\n", "<br>"),  # Preserve line breaks
+        "description": project.description.replace("\n", "<br>"),
         "experience_required": project.experience_required,
-        "skills_required": project.skills_required,
-        
+        "skills_required": skills_required,
         "submission_date": project.submission_date.strftime("%d %b, %Y"),
         "payment": str(project.payment),
         "matched_skills": matched_skills,
@@ -215,10 +284,12 @@ def get_project(request, project_id):
         "total_skills": total_skills,
         "posted_days_ago": posted_days_ago,
         "posted_date": project.created_at.strftime("%d %b, %Y"),
+        "company_bio": company_bio,
+        "difficulty": "Not specified",
+        "group_members": "Not specified",
     }
     
     return JsonResponse(data)
-
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
