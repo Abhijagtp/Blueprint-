@@ -162,10 +162,12 @@
                         <div class="card shadow-sm p-3">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h5 class="fw-bold">Visitors Analysis</h5>
-                                <select class="form-select w-auto">
-                                    <option>March</option>
-                                    <option>April</option>
-                                    <option>May</option>
+                                <select id="monthSelect" class="form-select d-inline-block w-auto">
+                                    {% for month in months %}
+                                        <option value="{{ month.value }}" {% if month.value == selected_month %}selected{% endif %}>
+                                            {{ month.label }}
+                                        </option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <canvas id="visitorsChart" style="height:250px; width: 100%;"></canvas>

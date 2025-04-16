@@ -23,6 +23,7 @@ class CustomUser(AbstractUser):
         ('Suspend', 'Suspend'),
     ]
     account_status = models.CharField(max_length=20, choices=ACCOUNT_STATUS_CHOICES, default='Open')
+    suspended_until = models.DateTimeField(null=True, blank=True) 
     
     user_type = models.CharField(
         max_length=20,

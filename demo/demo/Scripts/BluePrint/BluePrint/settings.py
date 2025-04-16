@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     #'AdminDashboard.apps.AdminConfig',
     'AdminDashboard',
     'Notifications',
-
+    'django_celery_beat',
+    'django_apscheduler',
 
 ]
 
@@ -171,3 +172,37 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'ajagtap2210@gmail.com'
 EMAIL_HOST_PASSWORD = 'wuyl lgvl nwms dkyn'
+
+
+# settings.py
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
+
+
+# settings.py
+
+SCHEDULER_AUTOSTART = True  # Automatically start the scheduler
+SCHEDULER_RUN_NOW_AT_STARTUP = False # Don't run scheduled jobs immediately on startup
+
+# Configure the job store (using the default Django ORM-based store)
+APSCHEDULER_DEFAULT_RUNNERS = {
+    'default': {
+        'class': 'django_apscheduler.jobstores:DjangoJobStore',
+    },
+}
+
+APSCHEDULER_SCHEDULER_SETTINGS = {
+    'apscheduler.jobstores.default': {
+        'class': 'django_apscheduler.jobstores.sqlalchemy:SQLAlchemyJobStore',
+        'url': 'sqlite:///mydatabase.sqlite',  # Or your database URL
+    },
+    'apscheduler.executors.default': {
+        'class': 'apscheduler.executors.pool:ThreadPoolExecutor',
+        'max_workers': 20
+    },
+    'apscheduler.job_defaults.coalesce': False,
+    'apscheduler.job_defaults.max_instances': 3
+}

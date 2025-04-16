@@ -228,8 +228,8 @@ def organization_invoice_view(request):
 
 @login_required
 def user_management_view(request):
-    users = CustomUser.objects.all().order_by('-date_joined')  # general users
-    service_desk_users = CustomUser.objects.all().order_by('-date_joined')  # assuming this model exists
+    users = CustomUser.objects.all().order_by('-date_joined') 
+    service_desk_users = CustomUser.objects.all().order_by('-date_joined') 
     return render(request, 'user_management.html', {
         'users': users,
         'service_desk_users': service_desk_users
@@ -243,10 +243,23 @@ def update_account_status(request):
 
         user = get_object_or_404(CustomUser, pk=user_id)
         user.account_status = new_status
+
+        if new_status == "Open":
+            user.is_active = True
+            user.suspended_until = None
+
+        elif new_status == "Suspend":
+            user.is_active = False  # Keep active for now
+            user.suspended_until = timezone.now() + timedelta(day=15)
+
+        elif new_status == "Deactivate":
+            user.is_active = False
+            user.suspended_until = None
+
         user.save()
         messages.success(request, f"Account status for {user.username} updated to {new_status}.")
-    
-    return redirect('user_management')  # make sure this is the correct name in your urls.py
+
+    return redirect('user_management')  
 
 @login_required
 def user_manage_user_details_view(request,user_id):
