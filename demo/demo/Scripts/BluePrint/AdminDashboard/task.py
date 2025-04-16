@@ -1,19 +1,9 @@
-<<<<<<< Updated upstream
-# your_app/tasks.py
-from django.utils import timezone
-from django.contrib.auth import get_user_model
-
-CustomUser = get_user_model()
-
-def reactivate_suspended_users():
-=======
 from django.utils import timezone
 from Users.models import CustomUser
 
 
 def reactivate_suspended_users():
     print("Running reactivation check...")
->>>>>>> Stashed changes
     now = timezone.now()
     suspended_users = CustomUser.objects.filter(
         account_status='Suspend',
@@ -25,9 +15,6 @@ def reactivate_suspended_users():
         user.is_active = True
         user.suspended_until = None
         user.save()
-<<<<<<< Updated upstream
-        print(f"User {user.username} has been automatically re-activated.") # Optional logging
-=======
         print(f"User {user.username} has been automatically re-activated.") 
 
 
@@ -46,4 +33,3 @@ def reactivate_suspended_users():
 #         suspended_until=None,
 #         account_status="Open"
 #     )
->>>>>>> Stashed changes
