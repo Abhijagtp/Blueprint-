@@ -187,7 +187,7 @@
                                                     <form method="POST" action="{% url 'update_account_status' %}">
                                                         {% csrf_token %}
                                                         <input type="hidden" name="user_id" value="{{ user.id }}">
-                                                        <select name="account_status" class="form-select action-select" onchange="this.form.submit()">
+                                                        <select name="account_status" class="form-select action-select" onchange="handleAccountStatusChange(this)">
                                                             <option value="Open" {% if user.account_status == "Open" %}selected{% endif %}>Open</option>
                                                             <option value="Deactivate" {% if user.account_status == "Deactivate" %}selected{% endif %}>Deactivate</option>
                                                             <option value="Suspend" {% if user.account_status == "Suspend" %}selected{% endif %}>Suspend</option>
@@ -287,6 +287,71 @@
 
 
         </script>
+        <!-- Suspend Options Modal -->
+        <div class="modal fade" id="suspendModal" tabindex="-1" aria-labelledby="suspendModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" action="{% url 'update_account_status' %}">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" id="suspendUserId">
+            <input type="hidden" name="account_status" value="Suspend">
+            <input type="hidden" name="suspend_duration_days" id="suspendDuration">
+
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="suspendModalLabel">Suspend Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                <p>Select duration to suspend this account:</p>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="duration" value="15" id="days15" checked>
+                    <label class="form-check-label" for="days15">15 days</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="duration" value="60" id="days60">
+                    <label class="form-check-label" for="days60">60 days</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="duration" value="365" id="days365">
+                    <label class="form-check-label" for="days365">1 year</label>
+                </div>
+                </div>
+
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary" onclick="setSuspendDuration()">Confirm</button>
+                </div>
+            </div>
+            </form>
+        </div>
+        </div>
+        <script>
+            const handleAccountStatusChange = (selectElement) => {
+                const selectedValue = selectElement.value;
+                const form = selectElement.closest('form');
+                const userId = form.querySelector('input[name="user_id"]').value;
+
+                if (selectedValue === "Suspend") {
+                    // Show modal instead of submitting the form
+                    document.getElementById('suspendUserId').value = userId;
+
+                    const suspendModal = new bootstrap.Modal(document.getElementById('suspendModal'));
+                    suspendModal.show();
+
+                    // Reset dropdown back to original selection (optional UX improvement)
+                    selectElement.value = form.querySelector('option[selected]').value;
+                } else {
+                    form.submit();
+                }
+            };
+
+            const setSuspendDuration = () => {
+                const selectedDuration = document.querySelector('input[name="duration"]:checked').value;
+                document.getElementById('suspendDuration').value = selectedDuration;
+            };
+        </script>
+
 
 
 

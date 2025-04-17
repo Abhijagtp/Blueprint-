@@ -240,6 +240,7 @@ def update_account_status(request):
     if request.method == 'POST':
         user_id = request.POST.get('user_id')
         new_status = request.POST.get('account_status')
+        duration_days = request.POST.get('suspend_duration_days')
 
         user = get_object_or_404(CustomUser, pk=user_id)
         user.account_status = new_status
@@ -249,8 +250,9 @@ def update_account_status(request):
             user.suspended_until = None
 
         elif new_status == "Suspend":
-            user.is_active = False  # Keep active for now
-            user.suspended_until = timezone.now() + timedelta(day=15)
+            user.is_active = False
+            if duration_days:
+                user.suspended_until = timezone.now() + timedelta(days=int(duration_days))
 
         elif new_status == "Deactivate":
             user.is_active = False
