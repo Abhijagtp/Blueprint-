@@ -22,113 +22,34 @@
     .timeline li:first-child::after { display: none; }
     .timeline li.active::after { background: blue; }
     .stage { padding-top: 10px; padding-left: 20px; padding-right: 20px; }
-
-    /* Modern styling for skills/certifications display */
-    .skills { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 10px; 
-    }
-    .skill-label { 
-      font-size: 16px; 
-      color: #6c757d; 
-      margin-bottom: 0; 
-    }
-    .skill-display { 
-      display: flex; 
-      flex-wrap: wrap; 
-      gap: 10px; 
-      margin-top: 10px; 
-    }
-    .skill-item { 
-      display: inline-flex; 
-      align-items: center; 
-      justify-content: center; 
-      min-width: 80px; 
-      padding: 8px 15px; 
-      border: 2px dotted #007bff; 
-      border-radius: 50px; 
-      background-color: #e7f1ff; 
-      font-size: 14px; 
-      color: #0056b3; 
-      font-weight: 500; 
-      text-align: center; 
-      transition: all 0.3s ease; 
-    }
-    .skill-item:hover { 
-      background-color: #d0e4ff; 
-      transform: scale(1.05); 
-    }
-
-    /* Modern checkbox styling */
-    .checkbox-group { 
-      display: flex; 
-      flex-direction: column; 
-      gap: 12px; 
-      margin-top: 15px; 
-    }
-    .form-check { 
-      display: flex; 
-      align-items: center; 
-      gap: 10px; 
-    }
-    .form-check-input { 
-      width: 20px; 
-      height: 20px; 
-      border: 2px solid #007bff; 
-      border-radius: 4px; 
-      cursor: pointer; 
-      transition: all 0.3s ease; 
-    }
-    .form-check-input:checked { 
-      background-color: #007bff; 
-      border-color: #007bff; 
-    }
-    .form-check-label { 
-      font-size: 16px; 
-      color: #333; 
-      font-weight: 400; 
-    }
-
-    /* Button styling */
-    .btn-primary { 
-      background-color: #007bff; 
-      border-color: #007bff; 
-      padding: 8px 20px; 
-      font-weight: 500; 
-      transition: all 0.3s ease; 
-    }
-    .btn-primary:hover { 
-      background-color: #0056b3; 
-      border-color: #0056b3; 
-    }
-    .btn-secondary { 
-      background-color: #6c757d; 
-      border-color: #6c757d; 
-      padding: 8px 20px; 
-      font-weight: 500; 
-      transition: all 0.3s ease; 
-    }
-    .btn-secondary:hover { 
-      background-color: #5a6268; 
-      border-color: #5a6268; 
-    }
-    .btn-outline-primary { 
-      border-color: #007bff; 
-      color: #007bff; 
-      font-weight: 500; 
-      transition: all 0.3s ease; 
-    }
-    .btn-outline-primary:hover { 
-      background-color: #007bff; 
-      color: #fff; 
-    }
+    .skills { display: flex; flex-direction: column; gap: 10px; }
+    .skill-label { font-size: 16px; color: #6c757d; margin-bottom: 0; }
+    .skill-display { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .skill-item { display: inline-flex; align-items: center; justify-content: center; min-width: 80px; padding: 8px 15px; border: 2px dotted #007bff; border-radius: 50px; background-color: #e7f1ff; font-size: 14px; color: #0056b3; font-weight: 500; text-align: center; transition: all 0.3s ease; }
+    .skill-item:hover { background-color: #d0e4ff; transform: scale(1.05); }
+    .checkbox-group { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+    .form-check { display: flex; align-items: center; gap: 10px; }
+    .form-check-input { width: 20px; height: 20px; border: 2px solid #007bff; border-radius: 4px; cursor: pointer; transition: all 0.3s ease; }
+    .form-check-input:checked { background-color: #007bff; border-color: #007bff; }
+    .form-check-label { font-size: 16px; color: #333; font-weight: 400; }
+    .btn-primary { background-color: #007bff; border-color: #007bff; padding: 8px 20px; font-weight: 500; transition: all 0.3s ease; }
+    .btn-primary:hover { background-color: #0056b3; border-color: #0056b3; }
+    .btn-secondary { background-color: #6c757d; border-color: #6c757d; padding: 8px 20px; font-weight: 500; transition: all 0.3s ease; }
+    .btn-secondary:hover { background-color: #5a6268; border-color: #5a6268; }
+    .btn-outline-primary { border-color: #007bff; color: #007bff; font-weight: 500; transition: all 0.3s ease; }
+    .btn-outline-primary:hover { background-color: #007bff; color: #fff; }
+    .invalid-field { border-color: red !important; }
+    .error-message { color: red; font-size: 12px; display: none; }
+    .btn-disabled { opacity: 0.5; cursor: not-allowed; }
+    .right img { width: 100%; height: auto; transition: opacity 0.3s ease; }
+    .right img.fade { opacity: 0; }
+    .modal-error { color: red; font-size: 12px; margin-top: 5px; display: none; }
   </style>
 </head>
 
 <body>
   <div class="top">
-    <div><img src="{% static 'images/logo.png' %}" alt="" class="image" /></div>
+    <div><img src="{% static 'images/logo.png' %}" alt="Logo" class="image" /></div>
     <div class="text">Skills Today, Career Tomorrow</div>
   </div>
   
@@ -157,17 +78,20 @@
                 <option value="{{ degree.id }}">{{ degree.name }}</option>
               {% endfor %}
             </select>
+            <div class="error-message" id="highest_degree_error">Please select a degree.</div>
           </div>
           <div class="mb-4">
             <select class="form-select" name="specialization" id="specialization" required>
               <option value="">Select Specialization*</option>
             </select>
+            <div class="error-message" id="specialization_error">Please select a specialization.</div>
           </div>
           <div class="mb-4">
-            <input type="number" name="graduation_year" placeholder="Graduation Year*" required class="form-control" />
+            <input type="number" name="graduation_year" id="graduation_year" placeholder="Graduation Year*" required class="form-control" min="1900" max="{% now 'Y' %}" />
+            <div class="error-message" id="graduation_year_error">Please enter a valid graduation year.</div>
           </div>
           
-          <button type="button" class="btn btn-primary" onclick="nextStage(1)">Next</button>
+          <button type="button" class="btn btn-primary next-btn" id="next-1" onclick="nextStage(1)" disabled>Next</button>
         </div>
 
         <!-- Stage 2: Details -->
@@ -176,26 +100,28 @@
           <div class="desc">Let's have a little closer look!</div>
           <h5>Details</h5>
           <div class="my-4">
-            <input type="text" name="current_occupation" placeholder="Current Occupation*" required class="form-control" />
+            <input type="text" name="current_occupation" id="current_occupation" placeholder="Current Occupation*" required class="form-control" />
+            <div class="error-message" id="current_occupation_error">Please enter your current occupation.</div>
           </div>
           <div class="mb-4">
-            <input type="text" name="current_organization" placeholder="Current Organization Name*" required class="form-control" />
+            <input type="text" name="current_organization" id="current_organization" placeholder="Current Organization Name*" required class="form-control" />
+            <div class="error-message" id="current_organization_error">Please enter your current organization.</div>
           </div>
           <div class="mb-4">
-            <input type="number" name="experience_years" placeholder="Years of Experience*" required class="form-control" />
+            <input type="number" name="experience_years" id="experience_years" placeholder="Years of Experience*" required class="form-control" min="0" />
+            <div class="error-message" id="experience_years_error">Please enter your years of experience.</div>
           </div>
           <div class="mb-4">
             <div class="skills">
               <div class="d-flex align-items-center gap-3">
                 <label class="skill-label">Add your skills gained</label>
                 <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#topSkillsModal">
-                  Add Skills
+                  Add Skill
                 </button>
               </div>
-              <div class="skill-display" id="top-skills-display">
-                <!-- Skills will be displayed here -->
-              </div>
-              <input type="hidden" name="top_skills" id="top-skills-input" />
+              <div class="skill-display" id="top-skills-display"></div>
+              <input type="hidden" name="top_skills" id="top-skills-input" required />
+              <div class="error-message" id="top_skills_error">Please add at least one skill.</div>
             </div>
           </div>
           <div class="mb-4">
@@ -208,11 +134,12 @@
                 <input type="checkbox" name="on_career_break" class="form-check-input" id="on_career_break" />
                 <label class="form-check-label" for="on_career_break">Above is my previous organization - on career break</label>
               </div>
+              <div class="error-message" id="checkbox_error">Please select at least one option if applicable.</div>
             </div>
           </div>
           <div class="d-flex justify-content-between">
             <button type="button" class="btn btn-secondary" onclick="prevStage(2)">Back</button>
-            <button type="button" class="btn btn-primary" onclick="nextStage(2)">Next</button>
+            <button type="button" class="btn btn-primary next-btn" id="next-2" onclick="nextStage(2)" disabled>Next</button>
           </div>
         </div>
 
@@ -222,36 +149,38 @@
           <div class="desc">Wish you a successful career ahead!</div>
           <h5>Career Goal</h5>
           <div class="my-4">
-            <select class="form-select" name="preferred_industry" required>
+            <select class="form-select" name="preferred_industry" id="preferred_industry" required>
               <option value="">Select Preferred Industry*</option>
               {% for industry in industries %}
                 <option value="{{ industry.id }}">{{ industry.name }}</option>
               {% endfor %}
             </select>
+            <div class="error-message" id="preferred_industry_error">Please select an industry.</div>
           </div>
           <div class="mb-4">
-            <input type="text" name="desired_job_role" placeholder="Desired Job Role*" required class="form-control" />
+            <input type="text" name="desired_job_role" id="desired_job_role" placeholder="Desired Job Role*" required class="form-control" />
+            <div class="error-message" id="desired_job_role_error">Please enter your desired job role.</div>
           </div>
           <div class="mb-4">
-            <input type="text" name="specific_position" placeholder="Specific Position*" required class="form-control" />
+            <input type="text" name="specific_position" id="specific_position" placeholder="Specific Position*" required class="form-control" />
+            <div class="error-message" id="specific_position_error">Please enter a specific position.</div>
           </div>
           <div class="mb-4">
             <div class="skills">
               <div class="d-flex align-items-center gap-3">
                 <label class="skill-label">Add your career goal skills</label>
                 <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#careerGoalSkillsModal">
-                  Add Skills
+                  Add Skill
                 </button>
               </div>
-              <div class="skill-display" id="career-goal-skills-display">
-                <!-- Skills will be displayed here -->
-              </div>
-              <input type="hidden" name="career_goal_skills" id="career-goal-skills-input" />
+              <div class="skill-display" id="career-goal-skills-display"></div>
+              <input type="hidden" name="career_goal_skills" id="career-goal-skills-input" required />
+              <div class="error-message" id="career_goal_skills_error">Please add at least one career goal skill.</div>
             </div>
           </div>
           <div class="d-flex justify-content-between">
             <button type="button" class="btn btn-secondary" onclick="prevStage(3)">Back</button>
-            <button type="button" class="btn btn-primary" onclick="nextStage(3)">Next</button>
+            <button type="button" class="btn btn-primary next-btn" id="next-3" onclick="nextStage(3)" disabled>Next</button>
           </div>
         </div>
 
@@ -265,51 +194,53 @@
               <div class="d-flex align-items-center gap-3">
                 <label class="skill-label">Add your certifications</label>
                 <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#certificationsModal">
-                  Add Certifications
+                  Add Certification
                 </button>
               </div>
-              <div class="skill-display" id="certifications-display">
-                <!-- Certifications will be displayed here -->
-              </div>
-              <input type="hidden" name="certifications" id="certifications-input" />
+              <div class="skill-display" id="certifications-display"></div>
+              <input type="hidden" name="certifications" id="certifications-input" required />
+              <div class="error-message" id="certifications_error">Please add at least one certification.</div>
             </div>
           </div>
           <div class="mb-4">
             <p>Looking for career switch</p>
             <div class="form-check">
-              <input type="radio" name="looking_for_career_switch" value="true" class="form-check-input" id="career_switch_yes" />
+              <input type="radio" name="looking_for_career_switch" value="true" class="form-check-input" id="career_switch_yes" required />
               <label class="form-check-label" for="career_switch_yes">Yes</label>
             </div>
             <div class="form-check">
-              <input type="radio" name="looking_for_career_switch" value="false" class="form-check-input" id="career_switch_no" checked />
+              <input type="radio" name="looking_for_career_switch" value="false" class="form-check-input" id="career_switch_no" />
               <label class="form-check-label" for="career_switch_no">No</label>
             </div>
+            <div class="error-message" id="career_switch_error">Please select an option.</div>
           </div>
           <div class="mb-4">
             <p>Willing to take Projects</p>
             <div class="form-check">
-              <input type="radio" name="willing_to_take_projects" value="true" class="form-check-input" id="projects_yes" />
+              <input type="radio" name="willing_to_take_projects" value="true" class="form-check-input" id="projects_yes" required />
               <label class="form-check-label" for="projects_yes">Yes</label>
             </div>
             <div class="form-check">
-              <input type="radio" name="willing_to_take_projects" value="false" class="form-check-input" id="projects_no" checked />
+              <input type="radio" name="willing_to_take_projects" value="false" class="form-check-input" id="projects_no" />
               <label class="form-check-label" for="projects_no">No</label>
             </div>
+            <div class="error-message" id="projects_error">Please select an option.</div>
           </div>
           <div class="mb-4">
             <p>Are you interested in taking new course</p>
             <div class="form-check">
-              <input type="radio" name="interested_in_new_course" value="true" class="form-check-input" id="course_yes" />
+              <input type="radio" name="interested_in_new_course" value="true" class="form-check-input" id="course_yes" required />
               <label class="form-check-label" for="course_yes">Yes</label>
             </div>
             <div class="form-check">
-              <input type="radio" name="interested_in_new_course" value="false" class="form-check-input" id="course_no" checked />
+              <input type="radio" name="interested_in_new_course" value="false" class="form-check-input" id="course_no" />
               <label class="form-check-label" for="course_no">No</label>
             </div>
+            <div class="error-message" id="course_error">Please select an option.</div>
           </div>
           <div class="d-flex justify-content-between">
             <button type="button" class="btn btn-secondary" onclick="prevStage(4)">Back</button>
-            <button type="button" class="btn btn-primary" onclick="nextStage(4)">Next</button>
+            <button type="button" class="btn btn-primary next-btn" id="next-4" onclick="nextStage(4)" disabled>Next</button>
           </div>
         </div>
 
@@ -319,14 +250,16 @@
           <div class="desc">Great, you are one step away now!</div>
           <h5>Almost there</h5>
           <div class="my-4">
-            <input type="url" name="portfolio_link" placeholder="Link to Portfolio*" required class="form-control" />
+            <input type="url" name="portfolio_link" id="portfolio_link" placeholder="Link to Portfolio*" required class="form-control" />
+            <div class="error-message" id="portfolio_link_error">Please enter a valid URL.</div>
           </div>
           <div class="mb-4">
-            <input type="text" name="ideal_organization" placeholder="Ideal Organization To Work*" required class="form-control" />
+            <input type="text" name="ideal_organization" id="ideal_organization" placeholder="Ideal Organization To Work*" required class="form-control" />
+            <div class="error-message" id="ideal_organization_error">Please enter an organization name.</div>
           </div>
           <div class="d-flex justify-content-between">
             <button type="button" class="btn btn-secondary px-3" onclick="prevStage(5)">Back</button>
-            <button type="submit" class="btn btn-success px-3">Submit</button>
+            <button type="submit" class="btn btn-success px-3" id="submit-btn" disabled>Submit</button>
           </div>
         </div>
       </form>
@@ -336,16 +269,16 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="topSkillsModalLabel">Add Top Skills</h5>
+              <h5 class="modal-title" id="topSkillsModalLabel">Add Top Skill</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="top-skills-container">
               <div class="mb-3">
                 <input type="text" class="form-control top-skill-input" placeholder="Enter a skill" />
+                <div class="modal-error" id="top-skills-modal-error">Please enter a skill.</div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline-primary btn-sm" onclick="addSkillInput('top-skills-container')">Add More</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary" onclick="saveTopSkills()">Save</button>
             </div>
@@ -358,16 +291,16 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="careerGoalSkillsModalLabel">Add Career Goal Skills</h5>
+              <h5 class="modal-title" id="careerGoalSkillsModalLabel">Add Career Goal Skill</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="career-goal-skills-container">
               <div class="mb-3">
                 <input type="text" class="form-control career-goal-skill-input" placeholder="Enter a skill" />
+                <div class="modal-error" id="career-goal-skills-modal-error">Please enter a skill.</div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline-primary btn-sm" onclick="addSkillInput('career-goal-skills-container')">Add More</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary" onclick="saveCareerGoalSkills()">Save</button>
             </div>
@@ -380,16 +313,16 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="certificationsModalLabel">Add Certifications</h5>
+              <h5 class="modal-title" id="certificationsModalLabel">Add Certification</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="certifications-container">
               <div class="mb-3">
                 <input type="text" class="form-control certification-input" placeholder="Enter a certification" />
+                <div class="modal-error" id="certifications-modal-error">Please enter a certification.</div>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline-primary btn-sm" onclick="addSkillInput('certifications-container')">Add More</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary" onclick="saveCertifications()">Save</button>
             </div>
@@ -400,19 +333,256 @@
   </div>
   
   <div class="right">
-    <img src="{% static 'images/slide.png' %}" alt="" class="image-1" />
+    <img src="{% static 'images/stage1.jpeg' %}" alt="Stage Image" class="image-1" id="stage-image" />
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     let currentStage = 1;
 
+    // Map stages to image paths
+    const stageImages = {
+      1: "{% static 'images/stage1.jpeg' %}",
+      2: "{% static 'images/stage2.webp' %}",
+      3: "{% static 'images/stage3.webp' %}",
+      4: "{% static 'images/stage4.png' %}",
+      5: "{% static 'images/stage5.png' %}"
+    };
+
+    // Function to update stage image with fade effect
+    function updateStageImage(stage) {
+      const img = document.getElementById('stage-image');
+      img.classList.add('fade');
+      setTimeout(() => {
+        img.src = stageImages[stage] || "{% static 'images/slide.png' %}"; // Fallback image
+        img.classList.remove('fade');
+      }, 300);
+    }
+
+    // Utility to validate URL
+    function isValidURL(string) {
+      try {
+        new URL(string);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    // Toggle button state based on validation
+    function toggleNextButton(stage) {
+      const button = document.getElementById(`next-${stage}`) || document.getElementById('submit-btn');
+      const isValid = validateStage(stage);
+      button.disabled = !isValid;
+      button.classList.toggle('btn-disabled', !isValid);
+    }
+
+    // Validate each stage
+    function validateStage(stage) {
+      let isValid = true;
+
+      if (stage === 1) {
+        const highestDegree = document.getElementById('highest_degree').value;
+        const specialization = document.getElementById('specialization').value;
+        const graduationYear = document.getElementById('graduation_year').value;
+
+        if (!highestDegree) {
+          isValid = false;
+          document.getElementById('highest_degree').classList.add('invalid-field');
+          document.getElementById('highest_degree_error').style.display = 'block';
+        } else {
+          document.getElementById('highest_degree').classList.remove('invalid-field');
+          document.getElementById('highest_degree_error').style.display = 'none';
+        }
+
+        if (!specialization) {
+          isValid = false;
+          document.getElementById('specialization').classList.add('invalid-field');
+          document.getElementById('specialization_error').style.display = 'block';
+        } else {
+          document.getElementById('specialization').classList.remove('invalid-field');
+          document.getElementById('specialization_error').style.display = 'none';
+        }
+
+        if (!graduationYear || graduationYear < 1900 || graduationYear > new Date().getFullYear()) {
+          isValid = false;
+          document.getElementById('graduation_year').classList.add('invalid-field');
+          document.getElementById('graduation_year_error').style.display = 'block';
+        } else {
+          document.getElementById('graduation_year').classList.remove('invalid-field');
+          document.getElementById('graduation_year_error').style.display = 'none';
+        }
+      }
+
+      if (stage === 2) {
+        const currentOccupation = document.getElementById('current_occupation').value.trim();
+        const currentOrganization = document.getElementById('current_organization').value.trim();
+        const experienceYears = document.getElementById('experience_years').value;
+        const topSkills = document.getElementById('top-skills-input').value;
+        const isFresher = document.getElementById('is_fresher').checked;
+        const onCareerBreak = document.getElementById('on_career_break').checked;
+
+        if (!currentOccupation) {
+          isValid = false;
+          document.getElementById('current_occupation').classList.add('invalid-field');
+          document.getElementById('current_occupation_error').style.display = 'block';
+        } else {
+          document.getElementById('current_occupation').classList.remove('invalid-field');
+          document.getElementById('current_occupation_error').style.display = 'none';
+        }
+
+        if (!currentOrganization) {
+          isValid = false;
+          document.getElementById('current_organization').classList.add('invalid-field');
+          document.getElementById('current_organization_error').style.display = 'block';
+        } else {
+          document.getElementById('current_organization').classList.remove('invalid-field');
+          document.getElementById('current_organization_error').style.display = 'none';
+        }
+
+        if (!experienceYears || experienceYears < 0) {
+          isValid = false;
+          document.getElementById('experience_years').classList.add('invalid-field');
+          document.getElementById('experience_years_error').style.display = 'block';
+        } else {
+          document.getElementById('experience_years').classList.remove('invalid-field');
+          document.getElementById('experience_years_error').style.display = 'none';
+        }
+
+        if (!topSkills || JSON.parse(topSkills || '[]').length === 0) {
+          isValid = false;
+          document.getElementById('top-skills-display').classList.add('invalid-field');
+          document.getElementById('top_skills_error').style.display = 'block';
+        } else {
+          document.getElementById('top-skills-display').classList.remove('invalid-field');
+          document.getElementById('top_skills_error').style.display = 'none';
+        }
+
+        if (!isFresher && !onCareerBreak && experienceYears > 0) {
+          isValid = false;
+          document.getElementById('checkbox_error').style.display = 'block';
+        } else {
+          document.getElementById('checkbox_error').style.display = 'none';
+        }
+      }
+
+      if (stage === 3) {
+        const preferredIndustry = document.getElementById('preferred_industry').value;
+        const desiredJobRole = document.getElementById('desired_job_role').value.trim();
+        const specificPosition = document.getElementById('specific_position').value.trim();
+        const careerGoalSkills = document.getElementById('career-goal-skills-input').value;
+
+        if (!preferredIndustry) {
+          isValid = false;
+          document.getElementById('preferred_industry').classList.add('invalid-field');
+          document.getElementById('preferred_industry_error').style.display = 'block';
+        } else {
+          document.getElementById('preferred_industry').classList.remove('invalid-field');
+          document.getElementById('preferred_industry_error').style.display = 'none';
+        }
+
+        if (!desiredJobRole) {
+          isValid = false;
+          document.getElementById('desired_job_role').classList.add('invalid-field');
+          document.getElementById('desired_job_role_error').style.display = 'block';
+        } else {
+          document.getElementById('desired_job_role').classList.remove('invalid-field');
+          document.getElementById('desired_job_role_error').style.display = 'none';
+        }
+
+        if (!specificPosition) {
+          isValid = false;
+          document.getElementById('specific_position').classList.add('invalid-field');
+          document.getElementById('specific_position_error').style.display = 'block';
+        } else {
+          document.getElementById('specific_position').classList.remove('invalid-field');
+          document.getElementById('specific_position_error').style.display = 'none';
+        }
+
+        if (!careerGoalSkills || JSON.parse(careerGoalSkills || '[]').length === 0) {
+          isValid = false;
+          document.getElementById('career-goal-skills-display').classList.add('invalid-field');
+          document.getElementById('career_goal_skills_error').style.display = 'block';
+        } else {
+          document.getElementById('career-goal-skills-display').classList.remove('invalid-field');
+          document.getElementById('career_goal_skills_error').style.display = 'none';
+        }
+      }
+
+      if (stage === 4) {
+        const certifications = document.getElementById('certifications-input').value;
+        const careerSwitch = document.querySelector('input[name="looking_for_career_switch"]:checked');
+        const projects = document.querySelector('input[name="willing_to_take_projects"]:checked');
+        const course = document.querySelector('input[name="interested_in_new_course"]:checked');
+
+        if (!certifications || JSON.parse(certifications || '[]').length === 0) {
+          isValid = false;
+          document.getElementById('certifications-display').classList.add('invalid-field');
+          document.getElementById('certifications_error').style.display = 'block';
+        } else {
+          document.getElementById('certifications-display').classList.remove('invalid-field');
+          document.getElementById('certifications_error').style.display = 'none';
+        }
+
+        if (!careerSwitch) {
+          isValid = false;
+          document.getElementById('career_switch_error').style.display = 'block';
+        } else {
+          document.getElementById('career_switch_error').style.display = 'none';
+        }
+
+        if (!projects) {
+          isValid = false;
+          document.getElementById('projects_error').style.display = 'block';
+        } else {
+          document.getElementById('projects_error').style.display = 'none';
+        }
+
+        if (!course) {
+          isValid = false;
+          document.getElementById('course_error').style.display = 'block';
+        } else {
+          document.getElementById('course_error').style.display = 'none';
+        }
+      }
+
+      if (stage === 5) {
+        const portfolioLink = document.getElementById('portfolio_link').value.trim();
+        const idealOrganization = document.getElementById('ideal_organization').value.trim();
+
+        if (!portfolioLink || !isValidURL(portfolioLink)) {
+          isValid = false;
+          document.getElementById('portfolio_link').classList.add('invalid-field');
+          document.getElementById('portfolio_link_error').style.display = 'block';
+        } else {
+          document.getElementById('portfolio_link').classList.remove('invalid-field');
+          document.getElementById('portfolio_link_error').style.display = 'none';
+        }
+
+        if (!idealOrganization) {
+          isValid = false;
+          document.getElementById('ideal_organization').classList.add('invalid-field');
+          document.getElementById('ideal_organization_error').style.display = 'block';
+        } else {
+          document.getElementById('ideal_organization').classList.remove('invalid-field');
+          document.getElementById('ideal_organization_error').style.display = 'none';
+        }
+      }
+
+      return isValid;
+    }
+
+    // Navigation functions
     function nextStage(stage) {
-      document.getElementById(`stage-${stage}`).classList.remove("active");
-      document.getElementById(`stage-${stage + 1}`).classList.add("active");
-      document.getElementById(`step-${stage}`).classList.remove("active");
-      document.getElementById(`step-${stage + 1}`).classList.add("active");
-      currentStage++;
+      if (validateStage(stage)) {
+        document.getElementById(`stage-${stage}`).classList.remove("active");
+        document.getElementById(`stage-${stage + 1}`).classList.add("active");
+        document.getElementById(`step-${stage}`).classList.remove("active");
+        document.getElementById(`step-${stage + 1}`).classList.add("active");
+        currentStage++;
+        updateStageImage(currentStage);
+        toggleNextButton(currentStage);
+      }
     }
 
     function prevStage(stage) {
@@ -421,8 +591,11 @@
       document.getElementById(`step-${stage}`).classList.remove("active");
       document.getElementById(`step-${stage - 1}`).classList.add("active");
       currentStage--;
+      updateStageImage(currentStage);
+      toggleNextButton(currentStage);
     }
 
+    // Update specializations based on degree
     function updateSpecializations() {
       const degreeId = document.getElementById('highest_degree').value;
       const specSelect = document.getElementById('specialization');
@@ -438,27 +611,35 @@
               option.text = spec.name;
               specSelect.appendChild(option);
             });
+            toggleNextButton(1);
           })
           .catch(error => console.error('Error:', error));
+      } else {
+        toggleNextButton(1);
       }
     }
 
-    function addSkillInput(containerId) {
-      const container = document.getElementById(containerId);
-      const newInputDiv = document.createElement('div');
-      newInputDiv.className = 'mb-3';
-      const newInput = document.createElement('input');
-      newInput.type = 'text';
-      newInput.className = 'form-control ' + containerId.split('-')[0] + '-input';
-      newInput.placeholder = 'Enter a ' + containerId.split('-')[0].replace('container', '');
-      newInputDiv.appendChild(newInput);
-      container.appendChild(newInputDiv);
-    }
-
+    // Save skills/certifications
     function saveTopSkills() {
-      const inputs = document.querySelectorAll('#top-skills-container .top-skill-input');
-      const skills = Array.from(inputs).map(input => input.value).filter(skill => skill.trim() !== '');
-      
+      const input = document.querySelector('#top-skills-container .top-skill-input');
+      const skill = input.value.trim();
+      const error = document.getElementById('top-skills-modal-error');
+
+      if (!skill) {
+        input.classList.add('invalid-field');
+        error.style.display = 'block';
+        return;
+      }
+
+      input.classList.remove('invalid-field');
+      error.style.display = 'none';
+
+      // Append to existing skills
+      let skills = JSON.parse(document.getElementById('top-skills-input').value || '[]');
+      if (!skills.includes(skill)) {
+        skills.push(skill);
+      }
+
       const display = document.getElementById('top-skills-display');
       display.innerHTML = '';
       skills.forEach(skill => {
@@ -469,14 +650,32 @@
       });
 
       document.getElementById('top-skills-input').value = JSON.stringify(skills);
+      input.value = ''; // Clear input
       const modal = bootstrap.Modal.getInstance(document.getElementById('topSkillsModal'));
       modal.hide();
+      toggleNextButton(2);
     }
 
     function saveCareerGoalSkills() {
-      const inputs = document.querySelectorAll('#career-goal-skills-container .career-goal-skill-input');
-      const skills = Array.from(inputs).map(input => input.value).filter(skill => skill.trim() !== '');
-      
+      const input = document.querySelector('#career-goal-skills-container .career-goal-skill-input');
+      const skill = input.value.trim();
+      const error = document.getElementById('career-goal-skills-modal-error');
+
+      if (!skill) {
+        input.classList.add('invalid-field');
+        error.style.display = 'block';
+        return;
+      }
+
+      input.classList.remove('invalid-field');
+      error.style.display = 'none';
+
+      // Append to existing skills
+      let skills = JSON.parse(document.getElementById('career-goal-skills-input').value || '[]');
+      if (!skills.includes(skill)) {
+        skills.push(skill);
+      }
+
       const display = document.getElementById('career-goal-skills-display');
       display.innerHTML = '';
       skills.forEach(skill => {
@@ -487,14 +686,32 @@
       });
 
       document.getElementById('career-goal-skills-input').value = JSON.stringify(skills);
+      input.value = ''; // Clear input
       const modal = bootstrap.Modal.getInstance(document.getElementById('careerGoalSkillsModal'));
       modal.hide();
+      toggleNextButton(3);
     }
 
     function saveCertifications() {
-      const inputs = document.querySelectorAll('#certifications-container .certification-input');
-      const certifications = Array.from(inputs).map(input => input.value).filter(cert => cert.trim() !== '');
-      
+      const input = document.querySelector('#certifications-container .certification-input');
+      const cert = input.value.trim();
+      const error = document.getElementById('certifications-modal-error');
+
+      if (!cert) {
+        input.classList.add('invalid-field');
+        error.style.display = 'block';
+        return;
+      }
+
+      input.classList.remove('invalid-field');
+      error.style.display = 'none';
+
+      // Append to existing certifications
+      let certifications = JSON.parse(document.getElementById('certifications-input').value || '[]');
+      if (!certifications.includes(cert)) {
+        certifications.push(cert);
+      }
+
       const display = document.getElementById('certifications-display');
       display.innerHTML = '';
       certifications.forEach(cert => {
@@ -505,9 +722,41 @@
       });
 
       document.getElementById('certifications-input').value = JSON.stringify(certifications);
+      input.value = ''; // Clear input
       const modal = bootstrap.Modal.getInstance(document.getElementById('certificationsModal'));
       modal.hide();
+      toggleNextButton(4);
     }
+
+    // Initialize validation and image on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      updateStageImage(1); // Set initial image
+      toggleNextButton(1);
+
+      // Add event listeners for real-time validation
+      const stages = [1, 2, 3, 4, 5];
+      stages.forEach(stage => {
+        const stageElement = document.getElementById(`stage-${stage}`);
+        if (stageElement) {
+          const inputs = stageElement.querySelectorAll('input, select');
+          inputs.forEach(input => {
+            input.addEventListener('input', () => toggleNextButton(stage));
+            input.addEventListener('change', () => toggleNextButton(stage));
+          });
+        }
+      });
+
+      // Special handling for checkboxes and radio buttons
+      const checkboxes = document.querySelectorAll('#stage-2 .form-check-input');
+      checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', () => toggleNextButton(2));
+      });
+
+      const radios = document.querySelectorAll('#stage-4 input[type="radio"]');
+      radios.forEach(radio => {
+        radio.addEventListener('change', () => toggleNextButton(4));
+      });
+    });
   </script>
 </body>
 </html>

@@ -90,17 +90,27 @@ from .models import CustomUser, Organization, User_form  # Import User_form mode
 
 def login_view(request):
     if request.user.is_authenticated:
-        # Check user type and redirect accordingly
+        # Check account status for authenticated users
+        if request.user.account_status == 'Deactivate':
+            return render(request, "login.html", {
+                "message": "Your account has been deactivated. Please contact the admin.",
+                "message_type": "warning"
+            })
+        elif request.user.account_status == 'Suspend' and request.user.suspended_until and request.user.suspended_until > timezone.now():
+            return render(request, "login.html", {
+                "message": f"Your account is suspended until {request.user.suspended_until.strftime('%Y-%m-%d %H:%M')}. Please contact the admin.",
+                "message_type": "warning"
+            })
+
+        # Redirect based on user type
         if request.user.user_type == CustomUser.ORGANIZATIONAL:
             try:
-                # Check if organization profile exists
                 Organization.objects.get(user=request.user)
                 return redirect('dashboard_new')
             except Organization.DoesNotExist:
                 return redirect('org_form')
         elif request.user.user_type == CustomUser.PROFESSIONAL:
             try:
-                # Check if professional profile exists
                 User_form.objects.get(user=request.user)
                 return redirect('dashboard_new')
             except User_form.DoesNotExist:
@@ -110,27 +120,50 @@ def login_view(request):
     if request.method == "POST":
         email = request.POST["email"]
         password = request.POST["password"]
-        user = authenticate(request, username=email, password=password)
 
-        if user is not None:
-            login(request, user)
-            # Check user type and redirect accordingly
-            if user.user_type == CustomUser.ORGANIZATIONAL:
-                try:
-                    Organization.objects.get(user=user)
-                    return redirect('dashboard_new')
-                except Organization.DoesNotExist:
-                    return redirect('org_form')
-            elif user.user_type == CustomUser.PROFESSIONAL:
-                try:
-                    User_form.objects.get(user=user)
-                    return redirect('dashboard_new')
-                except User_form.DoesNotExist:
-                    return redirect('user_form')
-            return redirect('dashboard_new')
-        else:
+        # Check if user exists and their account status
+        try:
+            user = CustomUser.objects.get(email=email)
+            # Check account status before attempting authentication
+            if user.account_status == 'Deactivate':
+                return render(request, "login.html", {
+                    "message": "Your account has been deactivated. Please contact the admin.",
+                    "message_type": "warning"
+                })
+            elif user.account_status == 'Suspend' and user.suspended_until and user.suspended_until > timezone.now():
+                return render(request, "login.html", {
+                    "message": f"Your account is suspended until {user.suspended_until.strftime('%Y-%m-%d %H:%M')}. Please contact the admin.",
+                    "message_type": "warning"
+                })
+            # If account is Open or suspension expired, proceed with authentication
+            user = authenticate(request, username=email, password=password)
+            if user is not None:
+                login(request, user)
+                # Redirect based on user type
+                if user.user_type == CustomUser.ORGANIZATIONAL:
+                    try:
+                        Organization.objects.get(user=user)
+                        return redirect('dashboard_new')
+                    except Organization.DoesNotExist:
+                        return redirect('org_form')
+                elif user.user_type == CustomUser.PROFESSIONAL:
+                    try:
+                        User_form.objects.get(user=user)
+                        return redirect('dashboard_new')
+                    except User_form.DoesNotExist:
+                        return redirect('user_form')
+                return redirect('dashboard_new')
+            else:
+                # Authentication failed (wrong password)
+                return render(request, "login.html", {
+                    "message": "Invalid email and/or password.",
+                    "message_type": "danger"
+                })
+        except CustomUser.DoesNotExist:
+            # User doesn't exist
             return render(request, "login.html", {
-                "message": "Invalid email and/or password."
+                "message": "Invalid email and/or password.",
+                "message_type": "danger"
             })
     else:
         return render(request, "login.html")
@@ -2595,6 +2628,10 @@ import json
 
 @login_required
 def user_form(request):
+    # Check if user has already submitted a profile
+    if UserProfile.objects.filter(user=request.user).exists():
+        return redirect('dashboard_new')  # Redirect to dashboard_new if profile exists
+
     degrees = Degree.objects.all()
     industries = Industry.objects.all()
 
@@ -2605,13 +2642,12 @@ def user_form(request):
             career_goal_skills = json.loads(request.POST.get('career_goal_skills', '[]'))
             certifications = json.loads(request.POST.get('certifications', '[]'))
 
-            # Create User_form instance
-            user_profile = User_form(
+            # Create UserProfile instance
+            user_profile = UserProfile(
                 user=request.user,
                 highest_degree_id=request.POST.get('highest_degree'),
                 specialization_id=request.POST.get('specialization'),
                 graduation_year=request.POST.get('graduation_year'),
-                
                 current_occupation=request.POST.get('current_occupation'),
                 current_organization=request.POST.get('current_organization'),
                 years_of_experience=request.POST.get('experience_years', 0),
@@ -2643,6 +2679,8 @@ def user_form(request):
         'degrees': degrees,
         'industries': industries
     })
+
+
 
 def get_specializations(request):
     degree_id = request.GET.get('degree')
