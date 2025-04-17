@@ -134,8 +134,7 @@ class Like(models.Model):
     class Meta:
         unique_together = ('user_profile', 'post')  # Ensures a user can like a post only once
 
-    def __str__(self):
-        return f"{self.user.username} liked {self.post.title}"
+   
 
 
 class Comment(models.Model):
