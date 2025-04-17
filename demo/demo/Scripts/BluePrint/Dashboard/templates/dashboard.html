@@ -364,6 +364,26 @@
         right: -5px;
       }
     }
+
+
+    .raise-ticket-btn {
+    position: fixed;
+    bottom: 150px;
+    right: 20px;
+    z-index: 1000;
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 50px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+
+  .raise-ticket-btn:hover {
+    background-color: #0056b3;
+  }
   </style>
 </head>
 <body>
@@ -460,6 +480,14 @@
     {% endblock %}
   </div>
 
+
+
+  <!-- Floating "Raise a Ticket" Button -->
+  <a href="{% url 'userraiseticket' %}" class="raise-ticket-btn" >
+    <i class="fa fa-life-ring"></i> Raise a Ticket </a>
+
+
+  
   <script>
     const appsToggle = document.getElementById("appsToggle");
     const appsWindow = document.getElementById("appsWindow");

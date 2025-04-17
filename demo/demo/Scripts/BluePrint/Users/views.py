@@ -2650,3 +2650,8 @@ def get_specializations(request):
         specializations = Specialization.objects.filter(degree_id=degree_id).values('id', 'name')
         return JsonResponse(list(specializations), safe=False)
     return JsonResponse([], safe=False)
+
+
+
+def userraiseticket(request):
+    return render(request,'Raise_a_Ticket.html')

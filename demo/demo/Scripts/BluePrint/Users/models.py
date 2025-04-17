@@ -372,3 +372,40 @@ class newmodel(models.Model):
 
     def __str__(self):
         return f"Admin Dashboard - Users: {self.total_users}, Posts: {self.total_posts}, Comments: {self.total_comments}"
+    
+
+
+#Raise ticket model
+
+
+CATEGORY_CHOICES = [
+    ("technical", "Technical"),
+    ("billing", "Billing"),
+    ("general", "General"),
+]
+
+PRIORITY_CHOICES = [
+    ("low", "Low"),
+    ("medium", "Medium"),
+    ("high", "High"),
+]
+
+STATUS_CHOICES = [
+    ("unassigned", "Unassigned"),
+    ("in_process", "In Process"),
+    ("resolved", "Resolved"),
+]
+
+class Usersticket(models.Model):
+    ticket_id = models.CharField(max_length=20, unique=True)
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='in_process')
+
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='created_tickets', on_delete=models.CASCADE)
+    assigned_to = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='assigned_tickets', null=True, blank=True, on_delete=models.SET_NULL)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

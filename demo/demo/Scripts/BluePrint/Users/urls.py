@@ -123,4 +123,9 @@ urlpatterns = [
     path('user_form',views.user_form,name='user_form'),
     path('get-specializations/', views.get_specializations, name='get_specializations'),
 
+
+
+    #Raise Ticket Section
+    path('userraiseticket', views.userraiseticket, name='userraiseticket'),
+
 ]
