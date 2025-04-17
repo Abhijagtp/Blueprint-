@@ -95,8 +95,12 @@ WSGI_APPLICATION = 'BluePrint.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'lawcrust',
+        'USER': 'lawcrust',
+        'PASSWORD': 'LAWCRUST123',
+        'HOST': 'localhost',  # Or your PostgreSQL host
+        'PORT': '5432',       # Default PostgreSQL port
     }
 }
 
