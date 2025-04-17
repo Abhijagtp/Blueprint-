@@ -93,16 +93,21 @@ WSGI_APPLICATION = 'BluePrint.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'lawcrust',
-        'USER': 'lawcrust',
-        'PASSWORD': 'LAWCRUST123',
-        'HOST': 'localhost',  # Or your PostgreSQL host
-        'PORT': '5432',       # Default PostgreSQL port
+        'NAME': 'neondb',
+        'USER': 'neondb_owner',
+        'PASSWORD': 'npg_UKRy4gbB1fxm',
+        'HOST': 'ep-raspy-snowflake-a155407c-pooler.ap-southeast-1.aws.neon.tech',
+        'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
     }
 }
+
 
 
 # Password validation
