@@ -218,3 +218,4 @@ APSCHEDULER_SCHEDULER_SETTINGS = {
 
 
 
+GOOGLE_CLIENT_ID = "335503189266-2d98dpkgq2uni86tddqhlbchr34n9hia.apps.googleusercontent.com"

@@ -95,8 +95,17 @@ from django.urls import reverse
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
-from .models import CustomUser, Organization, User_form  # Import User_form model
+from django.utils import timezone
+from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.conf import settings
+from .models import CustomUser, Organization, User_form
+import requests
+import json
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
+@ensure_csrf_cookie
 def login_view(request):
     if request.user.is_authenticated:
         if request.user.account_status == 'Deactivate':
@@ -110,7 +119,6 @@ def login_view(request):
                 "message_type": "warning"
             })
 
-        # Redirect based on user type
         if request.user.user_type == CustomUser.ORGANIZATIONAL:
             if Organization.objects.filter(user=request.user).exists():
                 return redirect('dashboard_new')
@@ -118,7 +126,7 @@ def login_view(request):
         elif request.user.user_type == CustomUser.PROFESSIONAL:
             try:
                 user_form = User_form.objects.get(user=request.user)
-                if getattr(user_form, 'is_complete', True):  # Check is_complete if it exists, default to True
+                if getattr(user_form, 'is_complete', True):
                     return redirect('dashboard_new')
                 return redirect('user_form')
             except User_form.DoesNotExist:
@@ -128,8 +136,6 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST["username"].strip()
         password = request.POST["password"]
-
-        # Check if user exists and their account status
         try:
             user = CustomUser.objects.get(username=username)
             if user.account_status == 'Deactivate':
@@ -142,12 +148,9 @@ def login_view(request):
                     "message": f"Your account is suspended until {user.suspended_until.strftime('%Y-%m-%d %H:%M')}. Please contact the admin.",
                     "message_type": "warning"
                 })
-
-            # Authenticate user
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                # Redirect based on user type
                 if user.user_type == CustomUser.ORGANIZATIONAL:
                     if Organization.objects.filter(user=user).exists():
                         return redirect('dashboard_new')
@@ -155,7 +158,7 @@ def login_view(request):
                 elif user.user_type == CustomUser.PROFESSIONAL:
                     try:
                         user_form = User_form.objects.get(user=user)
-                        if getattr(user_form, 'is_complete', True):  # Check is_complete if it exists
+                        if getattr(user_form, 'is_complete', True):
                             return redirect('dashboard_new')
                         return redirect('user_form')
                     except User_form.DoesNotExist:
@@ -172,6 +175,80 @@ def login_view(request):
                 "message_type": "danger"
             })
     return render(request, "login.html")
+
+def google_login(request):
+    if request.method != "POST":
+        return JsonResponse({"success": False, "message": "Invalid request method."}, status=400)
+
+    try:
+        data = json.loads(request.body)
+        id_token_str = data.get("id_token")
+        if not id_token_str:
+            return JsonResponse({"success": False, "message": "No ID token provided."}, status=400)
+
+        # Verify the ID token
+        try:
+            idinfo = id_token.verify_oauth2_token(
+                id_token_str,
+                google_requests.Request(),
+                settings.GOOGLE_CLIENT_ID
+            )
+        except ValueError as e:
+            return JsonResponse({"success": False, "message": "Invalid ID token."}, status=400)
+
+        # Extract user info
+        google_id = idinfo["sub"]  # Unique Google ID
+        email = idinfo["email"]
+        name = idinfo.get("name", "")
+
+        # Find or create user
+        try:
+            user = CustomUser.objects.get(email=email)
+            if user.account_status == 'Deactivate':
+                return JsonResponse({"success": False, "message": "Your account has been deactivated. Please contact the admin."}, status=403)
+            elif user.account_status == 'Suspend' and user.suspended_until and user.suspended_until > timezone.now():
+                return JsonResponse({"success": False, "message": f"Your account is suspended until {user.suspended_until.strftime('%Y-%m-%d %H:%M')}. Please contact the admin."}, status=403)
+        except CustomUser.DoesNotExist:
+            # Create a new user
+            username = email.split("@")[0][:150]  # Use email prefix as username
+            suffix = 1
+            while CustomUser.objects.filter(username=username).exists():
+                username = f"{email.split('@')[0][:145]}{suffix}"
+                suffix += 1
+            user = CustomUser.objects.create(
+                username=username,
+                email=email,
+                user_type=CustomUser.PROFESSIONAL,  # Default to PROFESSIONAL; adjust as needed
+                account_status='Open',
+            )
+            user.set_unusable_password()  # No password for Google users
+            user.save()
+
+        # Log the user in
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+        # Determine redirect URL
+        if user.user_type == CustomUser.ORGANIZATIONAL:
+            if Organization.objects.filter(user=user).exists():
+                redirect_url = reverse('dashboard_new')
+            else:
+                redirect_url = reverse('organization_form')
+        elif user.user_type == CustomUser.PROFESSIONAL:
+            try:
+                user_form = User_form.objects.get(user=user)
+                if getattr(user_form, 'is_complete', True):
+                    redirect_url = reverse('dashboard_new')
+                else:
+                    redirect_url = reverse('user_form')
+            except User_form.DoesNotExist:
+                redirect_url = reverse('user_form')
+        else:
+            redirect_url = reverse('dashboard_new')
+
+        return JsonResponse({"success": True, "redirect_url": redirect_url})
+
+    except Exception as e:
+        return JsonResponse({"success": False, "message": "An error occurred during Google Sign-In."}, status=500)
     
 from django.shortcuts import render
 from django.contrib.auth import logout

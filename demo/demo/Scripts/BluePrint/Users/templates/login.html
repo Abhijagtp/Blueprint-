@@ -229,7 +229,6 @@
                         </div>
                         <a href="{% url 'forgot_password' %}" class="forgot-password">Forgot Password?</a>
                     </div>
-
                     <button type="submit" class="btn register-btn">Login</button>
                 </form>
                 <p class="mt-3 text-center">Don’t have an account? <a href="{% url 'user_selection' %}">Sign up Here</a></p>
@@ -239,21 +238,20 @@
                     <hr class="flex-grow-1">
                 </div>
                 <div class="social-buttons">
-                    <button class="btn">
-                        <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" class="social-icon">
-                        Sign in with Google
-                    </button>
+                    <div id="google-signin-btn" class="google-signin-btn"></div>
                 </div>
             </div>
         </div>
-
         <div class="promo-section lazy-bg" data-bg="{% static 'images/login-banner.jpg' %}">
             <div></div>
         </div>
     </div>
 
+    <!-- Load Google Identity Services library -->
+    <script src="https://accounts.google.com/gsi/client" async></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Password toggle functionality
         document.getElementById('togglePassword').addEventListener('click', function () {
             const passwordInput = document.getElementById('password');
             const icon = this.querySelector('i');
@@ -268,6 +266,7 @@
             }
         });
 
+        // Lazy background loading
         document.addEventListener("DOMContentLoaded", function () {
             const lazySections = document.querySelectorAll(".lazy-bg");
             const observer = new IntersectionObserver((entries, observer) => {
@@ -282,7 +281,79 @@
                 });
             });
             lazySections.forEach((section) => observer.observe(section));
+
+            // Dynamically render Google Sign-In button
+            google.accounts.id.initialize({
+                client_id: "335503189266-2d98dpkgq2uni86tddqhlbchr34n9hia.apps.googleusercontent.com", // Replace with your Client ID
+                callback: handleGoogleCredentialResponse,
+                ux_mode: "popup", // Use popup mode for better UX
+            });
+
+            google.accounts.id.renderButton(
+                document.getElementById("google-signin-btn"),
+                {
+                    type: "standard",
+                    theme: "outline",
+                    size: "large",
+                    text: "signin_with",
+                    shape: "rectangular",
+                    logo_alignment: "left",
+                    width: 400 // Match the max-width of the container
+                }
+            );
+
+            // Optionally display Google One Tap (recommended for better UX)
+            google.accounts.id.prompt();
         });
+
+        // Handle Google Sign-In response
+        function handleGoogleCredentialResponse(response) {
+            // Send the ID token to the backend for validation
+            fetch("{% url 'google_login' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: JSON.stringify({ id_token: response.credential })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Redirect based on backend response
+                    window.location.href = data.redirect_url;
+                } else {
+                    // Display error message
+                    const alertDiv = document.createElement("div");
+                    alertDiv.className = "alert alert-danger";
+                    alertDiv.textContent = data.message || "Google Sign-In failed. Please try again.";
+                    document.querySelector(".form-section").prepend(alertDiv);
+                }
+            })
+            .catch(error => {
+                console.error("Error during Google Sign-In:", error);
+                const alertDiv = document.createElement("div");
+                alertDiv.className = "alert alert-danger";
+                alertDiv.textContent = "An error occurred during Google Sign-In. Please try again.";
+                document.querySelector(".form-section").prepend(alertDiv);
+            });
+        }
+
+        // Helper function to get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
     </script>
 </body>
 </html>

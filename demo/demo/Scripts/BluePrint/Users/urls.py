@@ -31,6 +31,7 @@ urlpatterns = [
     path('user_type_selection/',views.user_type_selection_view,name='user_type_selection'),
     path('register/',views.register,name='register'),
     path('login/',views.login_view,name='login'),
+    path('google-login/', views.google_login, name='google_login'),
     
     path('forgot-password/', views.forgot_password, name='forgot_password'),
     path('verify-otp/', views.verify_otp, name='verify_otp'),
