@@ -17,7 +17,9 @@ urlpatterns = [
    path('mentor_user/', views.mentor_user_view, name='mentor_user'),
    path('mentor_course_details/<int:course_id>', views.mentor_course_details_view, name='mentor_course_details'),
    path('project_moderation/', views.project_moderation_view, name='project_moderation'),
+   path('project/remove/', views.remove_projects, name='remove_projects'),
    path('content_moderation/', views.content_moderation_view, name='content_moderation'),
+   path('moderation/remove/', views.remove_posts, name='remove_posts'),
    path('service_desk_add/', views.service_desk_add_view, name='service_desk_add'),
    path('admin/login/', views.AdminLoginView.as_view(), name='admin_login')
 ]

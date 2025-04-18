@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.utils.timezone import now
 from django.db.models.functions import TruncMonth
 from datetime import datetime, timedelta
+from django.views.decorators.http import require_POST
 import calendar
 # Create your views here.
 @login_required
@@ -536,11 +537,40 @@ def mentor_course_details_view(request, course_id):
 
 @login_required
 def project_moderation_view(request):
-    return render(request, 'project_moderation.html')
+    projects = Project.objects.all()
+    return render(request, 'project_moderation.html', {'projects': projects})
+
+@require_POST
+@login_required
+def remove_projects(request):
+    selected_ids = request.POST.getlist('selected_ids')
+    if selected_ids:
+        Project.objects.filter(id__in=selected_ids).delete()
+        messages.success(request, f"{len(selected_ids)} project(s) removed.")
+    else:
+        messages.warning(request, "No project selected.")
+    return redirect('project_moderation') 
 
 @login_required
 def content_moderation_view(request):
-    return render(request, 'content_moderation.html')
+    category = request.GET.get('category')
+    if category:
+        contents = Post.objects.filter(content_type=category.lower())
+    else:
+        contents = Post.objects.all()
+
+    return render(request, 'content_moderation.html',{'contents': contents})
+
+@require_POST
+@login_required
+def remove_posts(request):
+    selected_ids = request.POST.getlist('selected_ids')
+    if selected_ids:
+        Post.objects.filter(id__in=selected_ids).delete()
+        messages.success(request, f"{len(selected_ids)} post(s) removed.")
+    else:
+        messages.warning(request, "No content selected for removal.")
+    return redirect('content_moderation')
 
 @login_required
 def service_desk_add_view(request):
