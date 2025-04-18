@@ -83,48 +83,47 @@
                     
                     <div class="row g-3">
                         <div class="col-md-3">
-                            <div class="card p-3">
+                            <div class="card p-3 h-100 d-flex flex-column">
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon me-3"><i class="fa-solid fa-users"></i></div>
                                     <div>
                                         <h5>Total Users ({{ selected_month_label }})</h5>
                                         <h3>{{ current_month_users }}</h3>
-                                        <p class="{% if percent_change >= 0 %}text-success{% else %}text-danger{% endif %}">
-                                            <i class="fa-solid {% if percent_change >= 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}"></i>
-                                            {{ percent_change_abs }}% compared to last month
-                                        </p>
                                     </div>
                                 </div>
+                                <p class="mt-auto {% if percent_change >= 0 %}text-success{% else %}text-danger{% endif %}">
+                                    <i class="fa-solid {% if percent_change >= 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}"></i>
+                                    {{ percent_change_abs }}% compared to last month
+                                </p>
                             </div>
                         </div>
-
+            
                         <div class="col-md-3">
-                            <div class="card p-3">
+                            <div class="card p-3 h-100 d-flex flex-column">
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon me-3"><i class="fa-solid fa-box"></i></div>
                                     <div>
                                         <h5>Subscribed Members</h5>
                                         <h3>29,876</h3>
-                                        <p class="text-success"><i class="fa-solid fa-arrow-up"></i>1.3% Increased Last
-                                            Week</p>
                                     </div>
                                 </div>
+                                <p class="mt-auto text-success"><i class="fa-solid fa-arrow-up"></i> 1.3% Increased Last Week</p>
                             </div>
                         </div>
-
+            
                         <div class="col-md-3">
-                            <div class="card p-3">
+                            <div class="card p-3 h-100 d-flex flex-column">
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon me-3"><i class="fa-solid fa-ticket"></i></div>
                                     <div>
                                         <h5>Total Tickets</h5>
                                         <h3>6,877</h3>
-                                        <p class="text-danger"><i class="fa-solid fa-arrow-down"></i> 4.3% than Last
-                                            Month</p>
                                     </div>
                                 </div>
+                                <p class="mt-auto text-danger"><i class="fa-solid fa-arrow-down"></i> 4.3% than Last Month</p>
                             </div>
                         </div>
+                 
 
                         <div class="col-md-3">
                             <div class="card p-3 h-100 d-flex flex-column justify-content-between">
@@ -151,19 +150,7 @@
                             </div>
                         </div>
                         
-                            <!-- Month Selector Dropdown (aligned under cards) -->
-                                    <!-- <div class="col-md-12 d-flex justify-content-end mt-3">
-                                        <div>
-                                            <label for="monthSelect" class="form-label fw-semibold me-2">Filter by Month:</label>
-                                            <select id="monthSelect" class="form-select d-inline-block w-auto">
-                                                {% for month in months %}
-                                                    <option value="{{ month.value }}" {% if month.value == selected_month %}selected{% endif %}>
-                                                        {{ month.label }}
-                                                    </option>
-                                                {% endfor %}
-                                            </select>
-                                        </div>
-                                    </div> -->
+                       
                                     <script>
                                         document.getElementById('monthSelect').addEventListener('change', function () {
                                             const selectedMonth = this.value;
