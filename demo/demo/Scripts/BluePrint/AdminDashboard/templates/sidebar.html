@@ -184,6 +184,8 @@
         .menu-item span {
             opacity: 1;
             transition: opacity 0.3s ease;
+          font-weight: 500 ;
+          
         }
 
         .menu-item:hover {
@@ -209,6 +211,7 @@
         .sidebar.collapsed .menu-item span {
             opacity: 0;
             display: none;
+            
         }
 
         .sidebar.collapsed .menu-item i {
@@ -325,7 +328,7 @@
             <a href="{% url 'admin_dashboard' %}" class="text-decoration-none">
                 <li class="menu-item active">
                     <i class="fas fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
+                    <span class="">Dashboard</span>
                 </li>
             </a>
             <a href="{% url 'analytics' %}" class="text-decoration-none">
@@ -360,7 +363,7 @@
                 </li>
             </a>
         </ul>
-        <ul class="sidebar-menu bottom-items">
+        <ul class="sidebar-menu bottom-items ">
             <a href="#" class="text-decoration-none">
                 <li class="menu-item">
                     <i class="fas fa-cog"></i>

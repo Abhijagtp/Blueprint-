@@ -56,49 +56,26 @@
       transition: all 0.3s ease;
       font-size: 1rem;
       text-transform: capitalize;
+      transition: background-color 0.3s ease, color 0.3s ease;  
     }
 
     /* Default hover effect for all nav links */
     .nav-link:hover {
-      background-color: #0056b3 !important; /* Darker blue for hover */
+      background-color: #0056b3 !important; 
       color: #ffffff !important;
     }
 
-    /* Specific active classes for each tab */
-    .home-active {
-      background-color: #007bff !important  ; /* Blue background for active Home tab */
-      color: red !important;
-    }
+    .home-active,
+.research-active,
+.digital-assets-active,
+.training-active,
+.social-active,
+.work-listing-active,
+.search-talent-active {
+  background-color: #0056b3 !important;
+  color: white !important; 
+}
 
-    .research-active {
-      background-color: #007bff;
-      color: red !important;
-    }
-
-    .digital-assets-active {
-      background-color: #007bff;
-      color: red !important;
-    }
-
-    .training-active {
-      background-color: #007bff;
-      color: #ffffff !important;
-    }
-
-    .social-active {
-      background-color: #007bff;
-      color: red !important;
-    }
-
-    .work-listing-active {
-      background-color: #007bff;
-      color: #ffffff !important;
-    }
-
-    .search-talent-active {
-      background-color: #007bff;
-      color: red !important;
-    }
 
     /* Ensure active state takes precedence over hover */
     .home-active:hover,
@@ -108,7 +85,7 @@
     .social-active:hover,
     .work-listing-active:hover,
     .search-talent-active:hover {
-      background-color: #007bff; /* Keep the same color on hover for active state */
+      background-color: #007bff; 
       color: #ffffff !important;
     }
 
@@ -245,17 +222,6 @@
 
       .nav-link:hover {
         background-color: #0056b3;
-        color: #ffffff !important;
-      }
-
-      .home-active,
-      .research-active,
-      .digital-assets-active,
-      .training-active,
-      .social-active,
-      .work-listing-active,
-      .search-talent-active {
-        background-color: #007bff;
         color: #ffffff !important;
       }
 
@@ -405,7 +371,7 @@
         <div class="nav-center">
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav-link {% if request.path == '/dashboard/' %}home-active{% endif %}" href="{% url 'dashboard_new' %}">Home</a>
+              <a class="nav-link {% if request.path == '/dashboard_new/' %}home-active{% endif %}" href="{% url 'dashboard_new' %}">Home</a>
             </li>
             <li class="nav-item">
               <a class="nav-link {% if request.path == '/research/' %}research-active{% endif %}" href="#">Research</a>
@@ -417,10 +383,10 @@
               <a class="nav-link {% if request.path == '/training/' %}training-active{% endif %}" href="{% url 'traning' %}">Training</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {% if request.path == '/social/' %}social-active{% endif %}" href="{% url 'timeline' %}">Social</a>
+              <a class="nav-link {% if request.path == '/timeline' %}social-active{% endif %}" href="{% url 'timeline' %}">Social</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {% if user.user_type == 'organizational' and request.path == '/search-talent/' %}search-talent-active{% elif user.user_type != 'organizational' and request.path == '/work-listing/' %}work-listing-active{% endif %}" href="{% if user.user_type == 'organizational' %}{% url 'search_talent' %}{% else %}{% url 'explore_projects' %}{% endif %}">
+              <a class="nav-link {% if user.user_type == 'organizational' and request.path == '/search-talent/' %}search-talent-active{% elif user.user_type != 'organizational' and request.path == '/explore_projects/' %}work-listing-active{% endif %}" href="{% if user.user_type == 'organizational' %}{% url 'search_talent' %}{% else %}{% url 'explore_projects' %}{% endif %}">
                 {% if user.user_type == 'organizational' %}Search Talent{% else %}Work Listing{% endif %}
               </a>
             </li>
