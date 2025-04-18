@@ -123,6 +123,7 @@
       cursor: pointer;
       position: relative;
     }
+    
 
     .notification-count {
       position: absolute;
@@ -237,9 +238,7 @@
         margin-right: 10px;
       }
 
-      .notification-icon {
-        font-size: 1.1rem;
-      }
+
 
       .notification-count {
         font-size: 0.5rem;
@@ -334,7 +333,7 @@
 
     .raise-ticket-btn {
     position: fixed;
-    bottom: 150px;
+    bottom: 50px;
     right: 20px;
     z-index: 1000;
     background-color: #007bff;
@@ -350,6 +349,26 @@
   .raise-ticket-btn:hover {
     background-color: #0056b3;
   }
+  .notification-icon {
+    font-size: 20px;
+    color: #666;
+    transition: transform 0.3s ease;
+}
+
+.notification-icon:hover {
+    animation: bounce 0.5s ease;
+}
+@keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-5px);
+            }
+            60% {
+                transform: translateY(-3px);
+            }
+        }
   </style>
 </head>
 <body>
