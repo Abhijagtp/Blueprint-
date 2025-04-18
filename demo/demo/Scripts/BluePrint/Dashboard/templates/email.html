@@ -735,8 +735,8 @@
             <input type="text" id="searchInput" class="form-control" placeholder="Search emails" />
             <button class="btn btn-success" id="searchButton"><i class="ri-search-line"></i></button>
           </div>
-          <img src="{{ user.userprofile.profile_image.url|default:'/static/images/default_profile.png' }}" alt="Profile"
-            class="profile-img" onerror="this.src='/static/images/default_profile.png'" />
+          <img src="{% if user.userprofile.profile_image %}{{ user.userprofile.profile_image.url }}{% else %}/static/images/default_profile.png{% endif %}"
+               alt="Profile" class="profile-img" onerror="this.src='/static/images/Profile-default.png'" />
         </div>
 
         <div class="tabs-container">
@@ -826,7 +826,7 @@
   <button class="floating-button" id="composeBtn"><i class="ri-quill-pen-line"></i></button>
 
  <!-- Compose Container -->
-<div class="compose-container" id="composeContainer">
+ <div class="compose-container" id="composeContainer">
   <div class="compose-header d-flex justify-content-between align-items-center">
     <h6 class="mb-0">New Message</h6>
     <button class="btn btn-sm p-0" id="closeCompose"><i class="ri-close-line text-muted"></i></button>
@@ -836,11 +836,11 @@
     <div class="email-section">
       <div class="email-field">
         <label>From:</label>
-        <input type="email" class="form-control" name="from" value="{{ user.email }}" readonly>
+        <input type="text" class="form-control" name="from" value="{{ user.username }}" readonly>
       </div>
       <div class="email-field">
         <label>To:</label>
-        <input type="email" class="form-control" name="recipient" placeholder="Recipient's email" required>
+        <input type="text" class="form-control" name="recipient" placeholder="Recipient's username" required>
       </div>
       <div class="email-field">
         <label>Subject:</label>
@@ -877,11 +877,11 @@
     <div class="email-section">
       <div class="email-field">
         <label>From:</label>
-        <input type="email" class="form-control" name="from" value="{{ user.email }}" readonly>
+        <input type="text" class="form-control" name="from" value="{{ user.username }}" readonly>
       </div>
       <div class="email-field">
         <label>To:</label>
-        <input type="email" class="form-control" name="recipient" id="replyRecipient" readonly>
+        <input type="text" class="form-control" name="recipient" id="replyRecipient" readonly>
       </div>
     </div>
     <textarea class="form-control email-body" name="reply_body" placeholder="Write your reply..."></textarea>
@@ -909,19 +909,18 @@
     emailContentSection: null,
     repliesContainer: null,
     currentFilter: 'all',
-    currentPage: 1, // Track the current page
-    emailsPerPage: 10, // Number of emails per page
-    emails: [], // Store all emails fetched from the server
-    hasNext: true // Track if there are more emails to load
+    currentPage: 1,
+    emailsPerPage: 10,
+    emails: [],
+    hasNext: true
   };
-  
+
   // Utility Functions
   const utils = {
     getCsrfToken() {
       const csrfInput = document.querySelector('input[name="csrfmiddlewaretoken"]');
       return csrfInput ? csrfInput.value : '{{ csrf_token }}';
     },
-  
     debounce(func, wait) {
       let timeout;
       return function (...args) {
@@ -929,16 +928,14 @@
         timeout = setTimeout(() => func(...args), wait);
       };
     },
-  
     formatTime(timestamp) {
       return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) || 'N/A';
     },
-  
     formatDateTime(timestamp) {
       return new Date(timestamp).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' }) || 'N/A';
     }
   };
-  
+
   // Email Fetching and Rendering
   const emailActions = {
     getEmailUrl(filter) {
@@ -951,22 +948,19 @@
       };
       return urls[filter] || '{% url "inbox" %}';
     },
-  
     filterEmails(emails, filter) {
-      const userEmail = '{{ user.email }}';
-      if (filter === 'all') return emails.filter(e => e.sender !== userEmail && !e.archived && !e.deleted);
-      if (filter === 'sent') return emails.filter(e => e.sender === userEmail && !e.archived && !e.deleted);
+      const userUsername = '{{ user.username }}';
+      if (filter === 'all') return emails.filter(e => e.sender !== userUsername && !e.archived && !e.deleted);
+      if (filter === 'sent') return emails.filter(e => e.sender === userUsername && !e.archived && !e.deleted);
       if (filter === 'archive') return emails.filter(e => e.archived && !e.deleted);
       if (filter === 'starred') return emails.filter(e => e.starred && !e.archived && !e.deleted);
-      if (filter === 'unread') return emails.filter(e => !e.read && e.sender !== userEmail && !e.archived && !e.deleted);
+      if (filter === 'unread') return emails.filter(e => !e.read && e.sender !== userUsername && !e.archived && !e.deleted);
       return emails;
     },
-  
     renderEmails(emailsToRender, append = false) {
       if (!append) {
-        state.emailList.innerHTML = ''; // Clear the email list if not appending
+        state.emailList.innerHTML = '';
       }
-  
       const emailHtml = emailsToRender.length ? emailsToRender.map(email => `
         <div class="card email-card" data-email-id="${email.id}" data-read="${email.read}" data-starred="${email.starred}" data-archived="${email.archived}">
           <div class="card-body d-flex align-items-start">
@@ -978,7 +972,7 @@
               </div>
               <p class="text-muted mb-1">
                 <strong>${email.subject}</strong>
-                ${!email.read && email.sender !== '{{ user.email }}' ? '<span class="badge bg-success ms-2">New</span>' : ''}
+                ${!email.read && email.sender !== '{{ user.username }}' ? '<span class="badge bg-success ms-2">New</span>' : ''}
                 ${email.starred ? '<i class="ri-star-line starred ms-2"></i>' : ''}
               </p>
               <p class="email-preview">${email.body.substring(0, 50)}${email.body.length > 50 ? '...' : ''}</p>
@@ -996,49 +990,41 @@
           </div>
         </div>
       `).join('') : '<p>No emails found</p>';
-  
       if (append) {
         state.emailList.insertAdjacentHTML('beforeend', emailHtml);
       } else {
         state.emailList.innerHTML = emailHtml;
       }
-  
       this.attachEmailCardListeners();
-  
-      // Update Load More button visibility
       const loadMoreContainer = document.getElementById('loadMoreContainer');
       const displayedEmailsCount = document.querySelectorAll('.email-card').length;
       state.hasNext = displayedEmailsCount < state.emails.length;
-  
       if (state.hasNext) {
         loadMoreContainer.innerHTML = '<button class="load-more-btn" id="loadMoreBtn">Load More</button>';
         document.getElementById('loadMoreBtn').addEventListener('click', () => this.loadMoreEmails());
       } else {
         loadMoreContainer.innerHTML = '';
       }
-  
       if (emailsToRender.length && !append) {
         this.loadEmail(emailsToRender[0].id);
       } else if (!document.querySelectorAll('.email-card').length) {
         state.emailContentSection.innerHTML = '<p>No emails selected</p>';
         state.repliesContainer.innerHTML = '';
       }
-  
       if (state.currentFilter === 'all') {
         document.querySelector('#allMailsTab .badge').textContent = state.emails.filter(e => !e.read).length;
       }
     },
-  
     loadEmails(filter) {
       state.currentFilter = filter;
-      state.currentPage = 1; // Reset to first page
+      state.currentPage = 1;
       fetch(this.getEmailUrl(filter), { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
         .then(response => {
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           return response.json();
         })
         .then(emails => {
-          state.emails = this.filterEmails(emails, filter); // Store all emails
+          state.emails = this.filterEmails(emails, filter);
           const startIndex = (state.currentPage - 1) * state.emailsPerPage;
           const emailsToRender = state.emails.slice(startIndex, startIndex + state.emailsPerPage);
           this.renderEmails(emailsToRender);
@@ -1049,21 +1035,17 @@
           document.getElementById('loadMoreContainer').innerHTML = '';
         });
     },
-  
     loadMoreEmails() {
       const loadMoreBtn = document.getElementById('loadMoreBtn');
       loadMoreBtn.classList.add('loading');
       loadMoreBtn.disabled = true;
-  
       state.currentPage += 1;
       const startIndex = (state.currentPage - 1) * state.emailsPerPage;
       const emailsToRender = state.emails.slice(startIndex, startIndex + state.emailsPerPage);
       this.renderEmails(emailsToRender, true);
-  
       loadMoreBtn.classList.remove('loading');
       loadMoreBtn.disabled = false;
     },
-  
     loadEmail(emailId) {
       fetch(`/emails/${emailId}/`)
         .then(response => {
@@ -1115,14 +1097,12 @@
             </div>
           `;
           this.attachEmailContentListeners();
-  
           document.querySelectorAll('.email-card').forEach(card => {
             card.classList.remove('selected');
             if (card.getAttribute('data-email-id') === emailId) {
               card.classList.add('selected');
             }
           });
-  
           this.loadReplies(emailId);
         })
         .catch(error => {
@@ -1131,7 +1111,6 @@
           state.repliesContainer.innerHTML = '';
         });
     },
-  
     loadReplies(emailId) {
       fetch(`/emails/${emailId}/replies/`)
         .then(response => {
@@ -1167,7 +1146,6 @@
           state.repliesContainer.innerHTML = `<p class="text-muted">Error loading replies: ${error.message}</p>`;
         });
     },
-  
     attachEmailCardListeners() {
       document.querySelectorAll('.email-card').forEach(card => {
         card.addEventListener('click', (e) => {
@@ -1176,7 +1154,6 @@
           this.loadEmail(emailId);
         });
       });
-  
       document.querySelectorAll('.archive-action').forEach(action => {
         action.addEventListener('click', (e) => {
           e.preventDefault();
@@ -1184,14 +1161,12 @@
           action.getAttribute('data-action') === 'archive' ? this.archiveEmail(emailId) : this.unarchiveEmail(emailId);
         });
       });
-  
       document.querySelectorAll('.star-action').forEach(action => {
         action.addEventListener('click', (e) => {
           e.preventDefault();
           this.starEmail(action.getAttribute('data-email-id'));
         });
       });
-  
       document.querySelectorAll('.delete-action').forEach(action => {
         action.addEventListener('click', (e) => {
           e.preventDefault();
@@ -1199,14 +1174,12 @@
         });
       });
     },
-  
     attachEmailContentListeners() {
       const stopPropagation = (e) => e.stopPropagation();
       document.querySelectorAll('.reply-btn').forEach(btn => {
         btn.addEventListener('click', stopPropagation);
         btn.addEventListener('click', () => compose.openReplyContainer(btn.getAttribute('data-email-id')));
       });
-  
       document.querySelectorAll('.archive-btn, .unarchive-btn, .archive-action').forEach(btn => {
         btn.addEventListener('click', stopPropagation);
         btn.addEventListener('click', () => {
@@ -1215,28 +1188,23 @@
             this.archiveEmail(emailId) : this.unarchiveEmail(emailId);
         });
       });
-  
       document.querySelectorAll('.star-btn, .star-action').forEach(btn => {
         btn.addEventListener('click', stopPropagation);
         btn.addEventListener('click', () => this.starEmail(btn.getAttribute('data-email-id')));
       });
-  
       document.querySelectorAll('.mark-as-read-btn').forEach(btn => {
         btn.addEventListener('click', stopPropagation);
         btn.addEventListener('click', () => this.markAsRead(btn.getAttribute('data-email-id')));
       });
-  
       document.querySelectorAll('.mark-as-unread-btn').forEach(btn => {
         btn.addEventListener('click', stopPropagation);
         btn.addEventListener('click', () => this.markAsUnread(btn.getAttribute('data-email-id')));
       });
-  
       document.querySelectorAll('.delete-action').forEach(action => {
         action.addEventListener('click', stopPropagation);
         action.addEventListener('click', () => this.deleteEmail(action.getAttribute('data-email-id')));
       });
     },
-  
     archiveEmail(emailId) {
       this.performAction('{% url "archive_email" 0 %}'.replace('0', emailId), () => {
         if (state.currentFilter !== 'archive') {
@@ -1245,11 +1213,10 @@
         } else {
           this.loadEmail(emailId);
         }
-        state.currentPage = 1; // Reset pagination
+        state.currentPage = 1;
         this.loadEmails(state.currentFilter);
       });
     },
-  
     unarchiveEmail(emailId) {
       this.performAction('{% url "unarchive_email" 0 %}'.replace('0', emailId), () => {
         if (state.currentFilter === 'archive') {
@@ -1258,45 +1225,40 @@
         } else {
           this.loadEmail(emailId);
         }
-        state.currentPage = 1; // Reset pagination
+        state.currentPage = 1;
         this.loadEmails(state.currentFilter);
       });
     },
-  
     starEmail(emailId) {
       this.performAction('{% url "star_email" 0 %}'.replace('0', emailId), () => {
         this.loadEmail(emailId);
-        state.currentPage = 1; // Reset pagination
+        state.currentPage = 1;
         this.loadEmails(state.currentFilter);
       }, { body: JSON.stringify({ action: 'toggle' }) });
     },
-  
     markAsRead(emailId) {
       this.performAction('{% url "mark_as_read" 0 %}'.replace('0', emailId), () => {
         this.loadEmail(emailId);
-        state.currentPage = 1; // Reset pagination
+        state.currentPage = 1;
         this.loadEmails(state.currentFilter);
       });
     },
-  
     markAsUnread(emailId) {
       this.performAction('{% url "mark_as_unread" 0 %}'.replace('0', emailId), () => {
         this.loadEmail(emailId);
-        state.currentPage = 1; // Reset pagination
+        state.currentPage = 1;
         this.loadEmails(state.currentFilter);
       });
     },
-  
     deleteEmail(emailId) {
       if (!confirm('Are you sure you want to delete this email?')) return;
       this.performAction('{% url "delete_email" 0 %}'.replace('0', emailId), () => {
         state.emailContentSection.innerHTML = '<p>No emails selected</p>';
         state.repliesContainer.innerHTML = '';
-        state.currentPage = 1; // Reset pagination
+        state.currentPage = 1;
         this.loadEmails(state.currentFilter);
       });
     },
-  
     performAction(url, callback, additionalOptions = {}) {
       fetch(url, {
         method: 'POST',
@@ -1320,143 +1282,114 @@
         });
     }
   };
-  
-// Compose and Reply Handling
-const compose = {
-  MAX_TOTAL_SIZE: 100 * 1024 * 1024, // 100MB in bytes
-  composeFiles: [], // Store files for the Compose form
-  replyFiles: [], // Store files for the Reply form
 
-  // Function to update the attachment preview
-  updateAttachmentPreview(input, previewContainer, sizeInfoContainer, fileList) {
-    const newFiles = Array.from(input.files);
-
-    // Add new files to the file list without clearing it
-    newFiles.forEach(file => {
-      if (!fileList.some(f => f.name === file.name && f.size === file.size)) {
-        fileList.push(file); // Add only unique files
-      }
-    });
-
-    const totalSize = fileList.reduce((sum, file) => sum + file.size, 0);
-    const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
-
-    // Check if the total size exceeds the limit
-    if (totalSize > this.MAX_TOTAL_SIZE) {
-      alert('Total attachment size exceeds 100MB. Please remove some files.');
-      fileList.length = 0; // Clear the file list
-      input.value = ''; // Clear the input
-      previewContainer.innerHTML = '';
-      sizeInfoContainer.textContent = 'Total size: 0 MB / 100 MB';
-      return;
-    }
-
-    // Update the input.files to reflect the current fileList
-    const dt = new DataTransfer();
-    fileList.forEach(file => dt.items.add(file));
-    input.files = dt.files;
-
-    // Render the preview
-    previewContainer.innerHTML = ''; // Clear the preview
-    fileList.forEach((file, index) => {
-      const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
-      const fileItem = document.createElement('div');
-      fileItem.className = 'attachment-item';
-      fileItem.innerHTML = `
-        <i class="ri-attachment-line"></i>
-        <span>${file.name}</span>
-        <span class="size">(${fileSizeMB} MB)</span>
-        <button type="button" class="remove-attachment" data-index="${index}">
-          <i class="ri-close-line"></i>
-        </button>
-      `;
-      previewContainer.appendChild(fileItem);
-
-      // Add event listener for removing files
-      fileItem.querySelector('.remove-attachment').addEventListener('click', () => {
-        const indexToRemove = parseInt(fileItem.querySelector('.remove-attachment').getAttribute('data-index'), 10);
-        fileList.splice(indexToRemove, 1); // Remove the file from the fileList
-
-        // Update the input.files to reflect the updated fileList
-        const dt = new DataTransfer();
-        fileList.forEach(f => dt.items.add(f));
-        input.files = dt.files;
-
-        // Re-render the preview with the updated fileList
-        this.updateAttachmentPreview(input, previewContainer, sizeInfoContainer, fileList);
-      });
-    });
-
-    // Update the total size info
-    sizeInfoContainer.textContent = `Total size: ${totalSizeMB} MB / 100 MB`;
-  },
-
-  // Function to open the reply container
-  openReplyContainer(emailId) {
-    const emailIdInput = document.getElementById('emailId');
-    const replyContainer = document.getElementById('replyContainer');
-    emailIdInput.value = emailId;
-    fetch(`/emails/${emailId}/`)
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('replyRecipient').value = data.sender;
-        replyContainer.classList.add('active');
-      })
-      .catch(error => console.error('Error fetching email:', error));
-  },
-
-  // Function to reset the form
-  resetForm(container, form, preview, input, sizeInfo, fileList) {
-    container.classList.remove('active');
-    form.reset();
-    preview.innerHTML = '';
-    input.value = '';
-    fileList.length = 0; // Clear the file list
-    sizeInfo.textContent = 'Total size: 0 MB / 100 MB';
-  },
-
-  // Function to submit the form
-  submitForm(form, container, preview, input, sizeInfo, successCallback, fileList) {
-    const formData = new FormData(form);
-    const files = input.files;
-    const totalSize = Array.from(files).reduce((sum, file) => sum + file.size, 0);
-
-    if (totalSize > this.MAX_TOTAL_SIZE) {
-      alert('Total attachment size exceeds 100MB. Please remove some files.');
-      return;
-    }
-
-    for (let i = 0; i < files.length; i++) {
-      formData.append('attachments', files[i]);
-    }
-
-    fetch(form.action, {
-      method: 'POST',
-      body: formData,
-      headers: { 'X-CSRFToken': utils.getCsrfToken() }
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.status === 'success') {
-          this.resetForm(container, form, preview, input, sizeInfo, fileList);
-          successCallback();
-          const emailId = form.querySelector('#emailId')?.value;
-          if (emailId) {
-            emailActions.loadReplies(emailId);
-          }
-        } else {
-          alert(data.message || 'Failed to send');
+  // Compose and Reply Handling
+  const compose = {
+    MAX_TOTAL_SIZE: 100 * 1024 * 1024,
+    composeFiles: [],
+    replyFiles: [],
+    updateAttachmentPreview(input, previewContainer, sizeInfoContainer, fileList) {
+      const newFiles = Array.from(input.files);
+      newFiles.forEach(file => {
+        if (!fileList.some(f => f.name === file.name && f.size === file.size)) {
+          fileList.push(file);
         }
+      });
+      const totalSize = fileList.reduce((sum, file) => sum + file.size, 0);
+      const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+      if (totalSize > this.MAX_TOTAL_SIZE) {
+        alert('Total attachment size exceeds 100MB. Please remove some files.');
+        fileList.length = 0;
+        input.value = '';
+        previewContainer.innerHTML = '';
+        sizeInfoContainer.textContent = 'Total size: 0 MB / 100 MB';
+        return;
+      }
+      const dt = new DataTransfer();
+      fileList.forEach(file => dt.items.add(file));
+      input.files = dt.files;
+      previewContainer.innerHTML = '';
+      fileList.forEach((file, index) => {
+        const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        const fileItem = document.createElement('div');
+        fileItem.className = 'attachment-item';
+        fileItem.innerHTML = `
+          <i class="ri-attachment-line"></i>
+          <span>${file.name}</span>
+          <span class="size">(${fileSizeMB} MB)</span>
+          <button type="button" class="remove-attachment" data-index="${index}">
+            <i class="ri-close-line"></i>
+          </button>
+        `;
+        previewContainer.appendChild(fileItem);
+        fileItem.querySelector('.remove-attachment').addEventListener('click', () => {
+          const indexToRemove = parseInt(fileItem.querySelector('.remove-attachment').getAttribute('data-index'), 10);
+          fileList.splice(indexToRemove, 1);
+          const dt = new DataTransfer();
+          fileList.forEach(f => dt.items.add(f));
+          input.files = dt.files;
+          this.updateAttachmentPreview(input, previewContainer, sizeInfoContainer, fileList);
+        });
+      });
+      sizeInfoContainer.textContent = `Total size: ${totalSizeMB} MB / 100 MB`;
+    },
+    openReplyContainer(emailId) {
+      const emailIdInput = document.getElementById('emailId');
+      const replyContainer = document.getElementById('replyContainer');
+      emailIdInput.value = emailId;
+      fetch(`/emails/${emailId}/`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('replyRecipient').value = data.sender; // Now uses username
+          replyContainer.classList.add('active');
+        })
+        .catch(error => console.error('Error fetching email:', error));
+    },
+    resetForm(container, form, preview, input, sizeInfo, fileList) {
+      container.classList.remove('active');
+      form.reset();
+      preview.innerHTML = '';
+      input.value = '';
+      fileList.length = 0;
+      sizeInfo.textContent = 'Total size: 0 MB / 100 MB';
+    },
+    submitForm(form, container, preview, input, sizeInfo, successCallback, fileList) {
+      const formData = new FormData(form);
+      const files = input.files;
+      const totalSize = Array.from(files).reduce((sum, file) => sum + file.size, 0);
+      if (totalSize > this.MAX_TOTAL_SIZE) {
+        alert('Total attachment size exceeds 100MB. Please remove some files.');
+        return;
+      }
+      for (let i = 0; i < files.length; i++) {
+        formData.append('attachments', files[i]);
+      }
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-CSRFToken': utils.getCsrfToken() }
       })
-      .catch(error => console.error('Error submitting form:', error));
-  }
-};
-  
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            this.resetForm(container, form, preview, input, sizeInfo, fileList);
+            successCallback();
+            const emailId = form.querySelector('#emailId')?.value;
+            if (emailId) {
+              emailActions.loadReplies(emailId);
+            }
+          } else {
+            alert(data.message || 'Failed to send');
+          }
+        })
+        .catch(error => console.error('Error submitting form:', error));
+    }
+  };
+
   // Search Functionality
   const search = {
     searchEmails(query) {
       const lowercaseQuery = query.toLowerCase().trim();
-  
       if (!lowercaseQuery) {
         state.currentPage = 1;
         const startIndex = (state.currentPage - 1) * state.emailsPerPage;
@@ -1464,14 +1397,12 @@ const compose = {
         emailActions.renderEmails(emailsToRender);
         return;
       }
-  
       const filteredEmails = state.emails.filter(email => {
         const sender = (email.username || email.sender).toLowerCase();
         const subject = email.subject.toLowerCase();
         const body = email.body.toLowerCase();
         return sender.includes(lowercaseQuery) || subject.includes(lowercaseQuery) || body.includes(lowercaseQuery);
       });
-  
       state.emailList.innerHTML = filteredEmails.length ? filteredEmails.map(email => `
         <div class="card email-card" data-email-id="${email.id}" data-read="${email.read}" data-starred="${email.starred}" data-archived="${email.archived}">
           <div class="card-body d-flex align-items-start">
@@ -1483,7 +1414,7 @@ const compose = {
               </div>
               <p class="text-muted mb-1">
                 <strong>${email.subject}</strong>
-                ${!email.read && email.sender !== '{{ user.email }}' ? '<span class="badge bg-success ms-2">New</span>' : ''}
+                ${!email.read && email.sender !== '{{ user.username }}' ? '<span class="badge bg-success ms-2">New</span>' : ''}
                 ${email.starred ? '<i class="ri-star-line starred ms-2"></i>' : ''}
               </p>
               <p class="email-preview">${email.body.substring(0, 50)}${email.body.length > 50 ? '...' : ''}</p>
@@ -1501,26 +1432,21 @@ const compose = {
           </div>
         </div>
       `).join('') : '<p class="text-muted text-center mt-3">No emails found</p>';
-  
       emailActions.attachEmailCardListeners();
-  
       const loadMoreContainer = document.getElementById('loadMoreContainer');
-      loadMoreContainer.innerHTML = ''; // Hide Load More button during search
-  
+      loadMoreContainer.innerHTML = '';
       if (!filteredEmails.length) {
         state.emailContentSection.innerHTML = '<p>No emails selected</p>';
         state.repliesContainer.innerHTML = '';
       }
     }
   };
-  
+
   // Initialization
   document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements
     state.emailList = document.getElementById('emailList');
     state.emailContentSection = document.querySelector('.email-content-section');
     state.repliesContainer = document.getElementById('repliesContainer');
-  
     const elements = {
       composeBtn: document.getElementById('composeBtn'),
       composeContainer: document.getElementById('composeContainer'),
@@ -1545,11 +1471,7 @@ const compose = {
       searchInput: document.getElementById('searchInput'),
       searchButton: document.getElementById('searchButton')
     };
-  
-    // Initial Load
     emailActions.loadEmails(state.currentFilter);
-  
-    // Event Listeners
     elements.composeBtn.addEventListener('click', () => elements.composeContainer.classList.add('active'));
     elements.closeCompose.addEventListener('click', () => elements.composeContainer.classList.remove('active'));
     elements.discardCompose.addEventListener('click', () => 
@@ -1557,48 +1479,41 @@ const compose = {
     elements.closeReply.addEventListener('click', () => elements.replyContainer.classList.remove('active'));
     elements.discardReply.addEventListener('click', () => 
       compose.resetForm(elements.replyContainer, elements.replyForm, elements.replyPreview, elements.replyAttachment, elements.replySizeInfo, compose.replyFiles));
-  
     elements.composeAttachment.addEventListener('change', () => 
       compose.updateAttachmentPreview(elements.composeAttachment, elements.composePreview, elements.composeSizeInfo, compose.composeFiles));
     elements.replyAttachment.addEventListener('change', () => 
       compose.updateAttachmentPreview(elements.replyAttachment, elements.replyPreview, elements.replySizeInfo, compose.replyFiles));
-  
     elements.composeForm.addEventListener('submit', (e) => {
       e.preventDefault();
       compose.submitForm(elements.composeForm, elements.composeContainer, elements.composePreview, elements.composeAttachment, elements.composeSizeInfo, 
         () => {
-          state.currentPage = 1; // Reset pagination
+          state.currentPage = 1;
           emailActions.loadEmails(state.currentFilter);
         }, compose.composeFiles);
     });
-  
     elements.replyForm.addEventListener('submit', (e) => {
       e.preventDefault();
       compose.submitForm(elements.replyForm, elements.replyContainer, elements.replyPreview, elements.replyAttachment, elements.replySizeInfo, 
         () => emailActions.loadEmail(document.getElementById('emailId').value), compose.replyFiles);
     });
-  
     const switchTab = (filter) => {
       [elements.allMailsTab, elements.sentTab, elements.archiveTab].forEach(tab => tab.classList.remove('active'));
       const tabMap = { 'all': elements.allMailsTab, 'sent': elements.sentTab, 'archive': elements.archiveTab };
       if (tabMap[filter]) tabMap[filter].classList.add('active');
       state.currentFilter = filter;
-      state.currentPage = 1; // Reset pagination when switching tabs
+      state.currentPage = 1;
       emailActions.loadEmails(filter);
     };
-  
     const closeDropdown = () => {
       const dropdown = document.querySelector('.options-dropdown .btn');
       const bsDropdown = bootstrap.Dropdown.getInstance(dropdown);
       if (bsDropdown) bsDropdown.hide();
     };
-  
     elements.allMailsTab.addEventListener('click', (e) => { e.preventDefault(); switchTab('all'); });
     elements.sentTab.addEventListener('click', (e) => { e.preventDefault(); switchTab('sent'); });
     elements.archiveTab.addEventListener('click', (e) => { e.preventDefault(); switchTab('archive'); });
     elements.starredTab.addEventListener('click', (e) => { e.preventDefault(); switchTab('starred'); closeDropdown(); });
     elements.unreadTab.addEventListener('click', (e) => { e.preventDefault(); switchTab('unread'); closeDropdown(); });
-  
     const debouncedSearch = utils.debounce(() => search.searchEmails(elements.searchInput.value), 300);
     elements.searchInput.addEventListener('input', (e) => {
       debouncedSearch();

@@ -31,6 +31,7 @@ urlpatterns = [
     path('user_type_selection/',views.user_type_selection_view,name='user_type_selection'),
     path('register/',views.register,name='register'),
     path('login/',views.login_view,name='login'),
+    
     path('forgot-password/', views.forgot_password, name='forgot_password'),
     path('verify-otp/', views.verify_otp, name='verify_otp'),
     path('set-new-password/', views.set_new_password, name='set_new_password'),

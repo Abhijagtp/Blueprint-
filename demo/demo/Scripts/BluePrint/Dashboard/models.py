@@ -18,7 +18,6 @@ class Email(models.Model):
     archived = models.BooleanField(default=False)
     starred = models.BooleanField(default=False, blank=True)
     deleted = models.BooleanField(default=False, blank=True)
-    # Removed: attachment = models.TextField(null=True, blank=True)
 
     def encrypt_body(self, plaintext_body):
         """Encrypts the plaintext email body."""
@@ -44,9 +43,9 @@ class Email(models.Model):
         """Returns the email object data in a serialized form, including decrypted body and profile image."""
         return {
             "id": self.id,
-            "username": f"{self.sender.first_name} {self.sender.last_name}",
-            "sender": self.sender.email,
-            "recipients": [f"{user.first_name} {user.last_name}" for user in self.recipients.all()],
+            "username": f"{self.sender.first_name} {self.sender.last_name}".strip() or self.sender.username,
+            "sender": self.sender.username,  # Changed from email to username
+            "recipients": [f"{user.first_name} {user.last_name}".strip() or user.username for user in self.recipients.all()],
             "subject": self.subject,
             "body": self.decrypt_body(),
             "timestamp": self.timestamp.isoformat(),
@@ -55,15 +54,19 @@ class Email(models.Model):
             "starred": self.starred,
             "deleted": self.deleted,
             "attachments": [attachment.file.url for attachment in self.attachments.all()],
-            "sender_profile_image": self.sender.userprofile.profile_image.url if hasattr(self.sender, 'userprofile') and self.sender.userprofile.profile_image else '/static/images/default_profile.png',
+            "sender_profile_image": (
+                self.sender.userprofile.profile_image.url
+                if hasattr(self.sender, 'userprofile') and self.sender.userprofile.profile_image
+                else '/static/images/default_profile.png'
+            ),
         }
+    
 
 class Reply(models.Model):
     email = models.ForeignKey(Email, on_delete=models.CASCADE, related_name="replies")
     sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     body = models.TextField(blank=True)  # Encrypted content
     timestamp = models.DateTimeField(auto_now_add=True)
-    # Removed: attachment = models.TextField(null=True, blank=True)
 
     def encrypt_body(self, plaintext_body):
         """Encrypts the plaintext reply body."""
@@ -86,16 +89,13 @@ class Reply(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Reply by {self.sender.email} to {self.email.subject}"
+        return f"Reply by {self.sender.username} to {self.email.subject}"
 
     def serialize(self):
         """Returns the reply object data in a serialized form."""
-        username = f"{self.sender.first_name} {self.sender.last_name}".strip()
-        if not username:
-            username = self.sender.email
-
+        username = f"{self.sender.first_name} {self.sender.last_name}".strip() or self.sender.username
         return {
-            "sender": self.sender.email,
+            "sender": self.sender.username,  # Changed from email to username
             "username": username,
             "sender_profile_image": (
                 self.sender.userprofile.profile_image.url

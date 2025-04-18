@@ -350,20 +350,23 @@ from Users.models import CustomUser
 @login_required
 @require_POST
 def send_email(request):
-    """Handle sending a new email with multiple attachments."""
+    """Handle sending a new email with multiple attachments using usernames."""
     try:
         data = request.POST
-        recipient_email = data.get('recipient')
+        recipient_username = data.get('recipient')
         subject = data.get('subject')
         body = data.get('body')
         attachments = request.FILES.getlist('attachments')
 
-        recipient = get_object_or_404(CustomUser, email=recipient_email)
+        # Look up the recipient by username
+        recipient = get_object_or_404(CustomUser, username=recipient_username)
 
+        # Validate total attachment size
         total_size = sum(file.size for file in attachments)
         if total_size > 100 * 1024 * 1024:  # 100MB limit
             return JsonResponse({'status': 'error', 'message': 'Total attachment size exceeds 100MB'}, status=400)
 
+        # Create email for the sender
         sender_email = Email(
             user=request.user,
             sender=request.user,
@@ -373,6 +376,7 @@ def send_email(request):
         sender_email.save()
         sender_email.recipients.add(recipient)
 
+        # Create email for the recipient
         recipient_email = Email(
             user=recipient,
             sender=request.user,
@@ -389,27 +393,36 @@ def send_email(request):
             Attachment.objects.create(email=recipient_email, file=attachment)
 
         return JsonResponse({'status': 'success', 'message': 'Email sent successfully'})
+    except CustomUser.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Recipient username does not exist'}, status=400)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
 @login_required
 @require_POST
 def reply_email(request):
-    """Handle replying to an email with multiple attachments."""
+    """Handle replying to an email with multiple attachments using usernames."""
     try:
         data = request.POST
         email_id = data.get('email_id')
         body = data.get('reply_body')
+        recipient_username = data.get('recipient')
         attachments = request.FILES.getlist('attachments')
 
+        # Look up the email and recipient
         email = get_object_or_404(Email, id=email_id)
+        recipient = get_object_or_404(CustomUser, username=recipient_username)
+
+        # Authorization check
         if request.user != email.sender and request.user != email.user:
             return JsonResponse({'status': 'error', 'message': 'Unauthorized'}, status=403)
 
+        # Validate total attachment size
         total_size = sum(file.size for file in attachments)
         if total_size > 100 * 1024 * 1024:  # 100MB limit
             return JsonResponse({'status': 'error', 'message': 'Total attachment size exceeds 100MB'}, status=400)
 
+        # Create the reply
         reply = Reply(
             email=email,
             sender=request.user,
@@ -422,6 +435,8 @@ def reply_email(request):
             Attachment.objects.create(reply=reply, file=attachment)
 
         return JsonResponse({'status': 'success', 'message': 'Reply sent successfully'})
+    except CustomUser.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Recipient username does not exist'}, status=400)
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
     

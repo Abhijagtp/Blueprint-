@@ -40,10 +40,11 @@ User = get_user_model()
 
 def register(request):
     if request.method == "POST":
+        username = request.POST.get("username")
         email = request.POST.get("email")
         first_name = request.POST.get("fname")
         last_name = request.POST.get("lname")
-        password = request.POST.get("password")
+        password = request.POST.get("confirmation")
         confirmation = request.POST.get("confirmation")
         user_type = request.session.get("user_type", "professional")  # Get the user type from the session
 
@@ -55,30 +56,38 @@ def register(request):
             # Validate the password
             validate_password(password)
 
+            # Check if username is already taken
+            if CustomUser.objects.filter(username=username).exists():
+                return render(request, "register.html", {"message": "Username is already taken."})
+
+            # Check if email is already taken
+            if CustomUser.objects.filter(email=email).exists():
+                return render(request, "register.html", {"message": "Email is already registered."})
+
             # Attempt to create the user
-            user = User.objects.create_user(
-                username=email,
+            user = CustomUser.objects.create_user(
+                username=username,
                 email=email,
                 password=password,
                 first_name=first_name,
                 last_name=last_name,
-                user_type=user_type,  # Set the user type
+                user_type=user_type,
+                full_name=f"{first_name} {last_name}".strip() if first_name or last_name else None
             )
             user.save()
 
             # Log in the user
-           
+            login(request, user)
 
-            # Redirect to the login page
-            return redirect('login')
+            # Redirect to a success page or dashboard
+            return redirect('login')  # Replace 'dashboard' with your desired URL name
 
         except ValidationError as e:
             return render(request, "register.html", {"message": e.messages[0]})
         except Exception as e:
-            return render(request, "register.html", {"message": "An unexpected error occurred. Please try again."})
+            return render(request, "register.html", {"message": f"An error occurred: {str(e)}"})
     else:
         return render(request, "register.html")
-
 
 from django.shortcuts import render, HttpResponseRedirect
 from django.contrib.auth import authenticate, login
@@ -108,7 +117,7 @@ def login_view(request):
                 Organization.objects.get(user=request.user)
                 return redirect('dashboard_new')
             except Organization.DoesNotExist:
-                return redirect('org_form')
+                return redirect('organization_form')
         elif request.user.user_type == CustomUser.PROFESSIONAL:
             try:
                 User_form.objects.get(user=request.user)
@@ -145,7 +154,7 @@ def login_view(request):
                         Organization.objects.get(user=user)
                         return redirect('dashboard_new')
                     except Organization.DoesNotExist:
-                        return redirect('org_form')
+                        return redirect('organization_form')
                 elif user.user_type == CustomUser.PROFESSIONAL:
                     try:
                         User_form.objects.get(user=user)
