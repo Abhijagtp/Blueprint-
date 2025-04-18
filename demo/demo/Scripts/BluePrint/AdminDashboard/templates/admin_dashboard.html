@@ -64,17 +64,19 @@
         .total-ticket{
             color: #3102FF;
         }
-
+        .card {
+    height: 100%;
+    min-height: 180px; 
+}
 
     </style>
 </head>
 
 <body>
     
- 
 
             <!-- right section -->
-            <div class="col-md-10">
+            <div class="col-md-12">
                 <div class="container my-4">
                     <h4 class="fw-bold">Welcome Jordi</h4>
                     <p>This is your Admin Dashboard</p>
@@ -125,7 +127,7 @@
                         </div>
 
                         <div class="col-md-3">
-                            <div class="card p-3">
+                            <div class="card p-3 h-100 d-flex flex-column justify-content-between">
                                 <div class="d-flex align-items-center">
                                     <div class="card-icon me-3"><i class="fa-solid fa-signs-post"></i></div>
                                     <div>
@@ -133,9 +135,24 @@
                                         <h3>2,040</h3>
                                     </div>
                                 </div>
+                                <!-- Filter dropdown aligned to bottom right -->
+                                <div class="d-flex justify-content-end mt-3">
+                                    <div>
+                                        <label for="monthSelect" class="form-label fw-semibold me-2">Filter by Month:</label>
+                                        <select id="monthSelect" class="form-select d-inline-block w-auto">
+                                            {% for month in months %}
+                                                <option value="{{ month.value }}" {% if month.value == selected_month %}selected{% endif %}>
+                                                    {{ month.label }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
+                        </div>
+                        
                             <!-- Month Selector Dropdown (aligned under cards) -->
-                                    <div class="col-md-12 d-flex justify-content-end mt-3">
+                                    <!-- <div class="col-md-12 d-flex justify-content-end mt-3">
                                         <div>
                                             <label for="monthSelect" class="form-label fw-semibold me-2">Filter by Month:</label>
                                             <select id="monthSelect" class="form-select d-inline-block w-auto">
@@ -146,7 +163,7 @@
                                                 {% endfor %}
                                             </select>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <script>
                                         document.getElementById('monthSelect').addEventListener('change', function () {
                                             const selectedMonth = this.value;

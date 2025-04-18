@@ -35,37 +35,43 @@
         /* Styling for the first dropdown (Filter Data on Same Page) */
         .filter-dropdown {
             padding: 8px 12px;
-            border-radius: 20px;
-            border: 2px solid #007bff;
-            background-color: #e7f1ff;
-            color: #007bff;
+            border-radius: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
             font-weight: 500;
             font-size: 14px;
             transition: all 0.3s ease;
         }
-
+        .filter-dropdown  option {
+            background: lightgray;
+            color: black;
+        }
         .filter-dropdown:focus {
             outline: none;
             box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-            background-color: #fff;
+            /* background-color: #fff; */
         }
 
         /* Styling for the second dropdown (Redirect to Other Pages) */
         .redirect-dropdown {
             padding: 8px 12px;
             border-radius: 5px;
-            border: 2px solid #ff6f61;
-            background-color: #fff5f5;
-            color: #ff6f61;
+            border: none;
+            background-color: #064c89;
+            color: white;
             font-weight: 500;
             font-size: 14px;
             transition: all 0.3s ease;
         }
-
+        .redirect-dropdown option {
+            background: lightgray;
+            color: black;
+        }
         .redirect-dropdown:focus {
             outline: none;
             box-shadow: 0 0 5px rgba(255, 111, 97, 0.5);
-            background-color: #fff;
+            /* background-color: #fff; */
         }
 
         /* Ensure dropdowns are spaced properly */
