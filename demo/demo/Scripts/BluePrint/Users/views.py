@@ -99,7 +99,6 @@ from .models import CustomUser, Organization, User_form  # Import User_form mode
 
 def login_view(request):
     if request.user.is_authenticated:
-        # Check account status for authenticated users
         if request.user.account_status == 'Deactivate':
             return render(request, "login.html", {
                 "message": "Your account has been deactivated. Please contact the admin.",
@@ -113,27 +112,26 @@ def login_view(request):
 
         # Redirect based on user type
         if request.user.user_type == CustomUser.ORGANIZATIONAL:
-            try:
-                Organization.objects.get(user=request.user)
+            if Organization.objects.filter(user=request.user).exists():
                 return redirect('dashboard_new')
-            except Organization.DoesNotExist:
-                return redirect('organization_form')
+            return redirect('organization_form')
         elif request.user.user_type == CustomUser.PROFESSIONAL:
             try:
-                User_form.objects.get(user=request.user)
-                return redirect('dashboard_new')
+                user_form = User_form.objects.get(user=request.user)
+                if getattr(user_form, 'is_complete', True):  # Check is_complete if it exists, default to True
+                    return redirect('dashboard_new')
+                return redirect('user_form')
             except User_form.DoesNotExist:
                 return redirect('user_form')
         return redirect('dashboard_new')
 
     if request.method == "POST":
-        email = request.POST["email"]
+        username = request.POST["username"].strip()
         password = request.POST["password"]
 
         # Check if user exists and their account status
         try:
-            user = CustomUser.objects.get(email=email)
-            # Check account status before attempting authentication
+            user = CustomUser.objects.get(username=username)
             if user.account_status == 'Deactivate':
                 return render(request, "login.html", {
                     "message": "Your account has been deactivated. Please contact the admin.",
@@ -144,38 +142,36 @@ def login_view(request):
                     "message": f"Your account is suspended until {user.suspended_until.strftime('%Y-%m-%d %H:%M')}. Please contact the admin.",
                     "message_type": "warning"
                 })
-            # If account is Open or suspension expired, proceed with authentication
-            user = authenticate(request, username=email, password=password)
+
+            # Authenticate user
+            user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
                 # Redirect based on user type
                 if user.user_type == CustomUser.ORGANIZATIONAL:
-                    try:
-                        Organization.objects.get(user=user)
+                    if Organization.objects.filter(user=user).exists():
                         return redirect('dashboard_new')
-                    except Organization.DoesNotExist:
-                        return redirect('organization_form')
+                    return redirect('organization_form')
                 elif user.user_type == CustomUser.PROFESSIONAL:
                     try:
-                        User_form.objects.get(user=user)
-                        return redirect('dashboard_new')
+                        user_form = User_form.objects.get(user=user)
+                        if getattr(user_form, 'is_complete', True):  # Check is_complete if it exists
+                            return redirect('dashboard_new')
+                        return redirect('user_form')
                     except User_form.DoesNotExist:
                         return redirect('user_form')
                 return redirect('dashboard_new')
             else:
-                # Authentication failed (wrong password)
                 return render(request, "login.html", {
-                    "message": "Invalid email and/or password.",
+                    "message": "Invalid username or password.",
                     "message_type": "danger"
                 })
         except CustomUser.DoesNotExist:
-            # User doesn't exist
             return render(request, "login.html", {
-                "message": "Invalid email and/or password.",
+                "message": "Invalid username or password.",
                 "message_type": "danger"
             })
-    else:
-        return render(request, "login.html")
+    return render(request, "login.html")
     
 from django.shortcuts import render
 from django.contrib.auth import logout
