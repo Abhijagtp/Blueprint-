@@ -216,22 +216,17 @@
 
 
         <script>
-            const ctx = document.getElementById('visitorsChart').getContext('2d');
-            const visitorsChart = new Chart(ctx, {
+            const visitorCtx = document.getElementById('visitorsChart').getContext('2d');
+            const visitorsChart = new Chart(visitorCtx, {
                 type: 'line',
                 data: {
-                    labels: ["5k", "10k", "15k", "20k", "25k", "30k", "35k", "40k", "45k", "50k", "55k", "60k"],
+                    labels: {{ monthly_login_labels|safe }},
                     datasets: [{
-                        label: 'Visitors',
-                        data: [20, 35, 45, 25, 40, 50, 20, 60, 30, 50, 40, 45],
-                        borderColor: '#4A90E2',
-                        backgroundColor: 'rgba(74, 144, 226, 0.1)',
-                        pointBackgroundColor: '#4A90E2',
-                        pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: '#4A90E2',
-                        tension: 0.4,
-                        fill: true
+                        label: 'Monthly Logins (non-superusers)',
+                        data: {{ monthly_login_counts|safe }},
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        fill: false,
+                        tension: 0.4, // curved line
                     }]
                 },
                 options: {
@@ -243,7 +238,16 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            ticks: { callback: (value) => `${value}%` }
+                            title: {
+                                display: true,
+                                text: 'Login Count'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Day of Month'
+                            }
                         }
                     }
                 }

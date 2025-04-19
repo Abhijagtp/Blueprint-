@@ -7,6 +7,11 @@ from django.db.models.functions import TruncMonth
 from datetime import datetime, timedelta
 from django.views.decorators.http import require_POST
 import calendar
+from collections import Counter
+from django.db.models import Q
+from collections import OrderedDict
+from dateutil.relativedelta import relativedelta
+
 # Create your views here.
 @login_required
 def dashboard_view(request):
@@ -22,22 +27,43 @@ def dashboard_view(request):
     _, last_day = calendar.monthrange(selected_year, selected_month)
     end_selected = datetime(selected_year, selected_month, last_day, 23, 59, 59)
 
+    # Previous month range for comparison
     prev_month = selected_month - 1 or 12
     prev_year = selected_year - 1 if prev_month == 12 else selected_year
     start_prev = datetime(prev_year, prev_month, 1)
     _, last_day_prev = calendar.monthrange(prev_year, prev_month)
     end_prev = datetime(prev_year, prev_month, last_day_prev, 23, 59, 59)
 
+    # Count for current and previous month
     current_month_users = CustomUser.objects.filter(date_joined__range=(start_selected, end_selected)).count()
     previous_month_users = CustomUser.objects.filter(date_joined__range=(start_prev, end_prev)).count()
+
+    # Logins this month (main point)
+    current_month_logins = CustomUser.objects.filter(last_login__range=(start_selected, end_selected)).count()
+
+    # Generate monthly login counts for the past 12 months
+    monthly_login_labels = []
+    monthly_login_counts = []
+
+    for i in range(11, -1, -1):  # Last 12 months
+        month_date = today - relativedelta(months=i)
+        start = datetime(month_date.year, month_date.month, 1)
+        _, last_day = calendar.monthrange(month_date.year, month_date.month)
+        end = datetime(month_date.year, month_date.month, last_day, 23, 59, 59)
+
+        count = CustomUser.objects.filter(
+            last_login__range=(start, end),
+            is_superuser=False
+        ).count()
+
+        monthly_login_labels.append(calendar.month_abbr[month_date.month])
+        monthly_login_counts.append(count)
 
     if previous_month_users == 0:
         percent_change = 100
     else:
         percent_change = ((current_month_users - previous_month_users) / previous_month_users) * 100
 
-    selected_month = int(request.GET.get('month', datetime.now().month))
-    
     months = [{'value': i, 'label': calendar.month_name[i]} for i in range(1, 13)]
     selected_month_label = calendar.month_name[selected_month]
 
@@ -48,7 +74,12 @@ def dashboard_view(request):
         'selected_month': selected_month,
         'selected_month_label': selected_month_label,
         'months': months,
+        'monthly_logins': current_month_logins,
+        'monthly_login_labels': monthly_login_labels,  # For graph X-axis
+        'monthly_login_counts': monthly_login_counts,  # For graph Y-axis
     }
+
+
 
     return render(request, 'admin_dashboard.html', context)
 
