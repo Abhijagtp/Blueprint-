@@ -15,3 +15,6 @@ class newmodel(models.Model):
 
     def __str__(self):
         return f"Admin Dashboard - Users: {self.total_users}, Posts: {self.total_posts}, Comments: {self.total_comments}"
+    
+
+

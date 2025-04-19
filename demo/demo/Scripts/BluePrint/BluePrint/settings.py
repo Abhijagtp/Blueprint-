@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'Social',
     'WorkListing',
     'DigitalAssets',
-    #'AdminDashboard.apps.AdminConfig',
     'AdminDashboard',
     'Notifications',
     'django_celery_beat',
@@ -62,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'Users.middleware.VisitCounterMiddleware',
 ]
 
 ROOT_URLCONF = 'BluePrint.urls'

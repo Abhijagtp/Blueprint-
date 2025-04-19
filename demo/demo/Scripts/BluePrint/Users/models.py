@@ -1,5 +1,6 @@
 from django.db import models
 
+from django.utils import timezone
 # Create your models here.
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -408,3 +409,8 @@ class Usersticket(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class SiteVisit(models.Model):
+    count = models.PositiveIntegerField(default=0)
+    date = models.DateField(default=timezone.now)

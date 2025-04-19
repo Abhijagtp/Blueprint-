@@ -3,9 +3,6 @@ from django.shortcuts import render
 # Create your views here.
 
 
-def home(request):
-    return render(request,'home.html')
-
 
 def user_selection(request):
     return render(request,'user_selection.html')
@@ -99,7 +96,7 @@ from django.utils import timezone
 from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.conf import settings
-from .models import CustomUser, Organization, User_form
+from .models import CustomUser, Organization, SiteVisit, User_form
 import requests
 import json
 from google.oauth2 import id_token
@@ -2775,3 +2772,9 @@ def get_specializations(request):
 
 def userraiseticket(request):
     return render(request,'Raise_a_Ticket.html')
+
+
+
+def home(request):
+    visit = SiteVisit.objects.first()
+    return render(request, 'home.html', {'visit_count': visit.count if visit else 0})
